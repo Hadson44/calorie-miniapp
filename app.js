@@ -3,10 +3,12 @@ tg.expand();
 
 const btn = document.getElementById("testBtn");
 const result = document.getElementById("result");
+const gramsInput = document.getElementById("grams");
+const kcal100Input = document.getElementById("kcal100");
 
 btn.addEventListener("click", () => {
-  const grams = prompt("Введи грам:");
-  const kcal100 = prompt("Введи ккал на 100г:");
+  const grams = Number(gramsInput.value);
+  const kcal100 = Number(kcal100Input.value);
 
   if (!grams || !kcal100) {
     result.textContent = "Введи дані";
