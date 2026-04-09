@@ -11,6 +11,21 @@ body {
   padding: 20px;
 }
 
+label {
+  display: block;
+  margin-top: 12px;
+  margin-bottom: 6px;
+}
+
+input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  margin-bottom: 10px;
+}
+
 button {
   padding: 12px 16px;
   border: none;
@@ -19,4 +34,10 @@ button {
   color: white;
   font-size: 16px;
   cursor: pointer;
+  width: 100%;
+}
+
+#result {
+  margin-top: 16px;
+  font-size: 18px;
 }
