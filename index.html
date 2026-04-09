@@ -2,81 +2,244 @@
 <html lang="uk">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Calorie Mini App</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="app">
-    <header class="top">
-      <div>
-        <h1>Calorie Tracker</h1>
-        <p class="sub">Твій денний контроль калорій</p>
-      </div>
-      <div class="badge" id="todayDate">Сьогодні</div>
-    </header>
+  <div class="app-shell">
 
-    <section class="hero-card">
-      <p class="hero-label">ЗА СЬОГОДНІ</p>
-      <div class="hero-total" id="dayTotal">0</div>
-      <p class="hero-unit">ккал</p>
+    <!-- ЕКРАН ЩОДЕННИК -->
+    <section id="screenDiary" class="screen active">
+      <div class="top-gradient">
+        <div class="top-bar">
+          <div class="top-title-block">
+            <h1>Щоденник</h1>
+            <div class="top-date" id="todayDate">Сьогодні</div>
+          </div>
+          <button class="icon-btn" id="openSettingsBtn">⚙</button>
+        </div>
+      </div>
+
+      <div class="content diary-content">
+        <div class="summary-card">
+          <div class="ring-wrap">
+            <div class="ring" id="calorieRing">
+              <div class="ring-inner">
+                <div class="ring-main" id="dayCalories">0</div>
+                <div class="ring-unit">ккал</div>
+                <div class="ring-sub" id="goalText">ціль 2200</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="macros-grid">
+            <div class="macro-card protein">
+              <div class="macro-title">Білки</div>
+              <div class="macro-value"><span id="proteinTotal">0</span> г</div>
+            </div>
+
+            <div class="macro-card fat">
+              <div class="macro-title">Жири</div>
+              <div class="macro-value"><span id="fatTotal">0</span> г</div>
+            </div>
+
+            <div class="macro-card carbs">
+              <div class="macro-title">Вуглеводи</div>
+              <div class="macro-value"><span id="carbsTotal">0</span> г</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="meal-sections">
+          <div class="meal-section">
+            <div class="meal-section-top">
+              <div>
+                <div class="meal-section-title">Сніданок</div>
+                <div class="meal-section-total" id="breakfastCalories">0 ккал</div>
+              </div>
+              <button class="mini-add-btn" data-meal="breakfast">＋</button>
+            </div>
+            <div id="breakfastList" class="meal-items"></div>
+          </div>
+
+          <div class="meal-section">
+            <div class="meal-section-top">
+              <div>
+                <div class="meal-section-title">Обід</div>
+                <div class="meal-section-total" id="lunchCalories">0 ккал</div>
+              </div>
+              <button class="mini-add-btn" data-meal="lunch">＋</button>
+            </div>
+            <div id="lunchList" class="meal-items"></div>
+          </div>
+
+          <div class="meal-section">
+            <div class="meal-section-top">
+              <div>
+                <div class="meal-section-title">Вечеря</div>
+                <div class="meal-section-total" id="dinnerCalories">0 ккал</div>
+              </div>
+              <button class="mini-add-btn" data-meal="dinner">＋</button>
+            </div>
+            <div id="dinnerList" class="meal-items"></div>
+          </div>
+
+          <div class="meal-section">
+            <div class="meal-section-top">
+              <div>
+                <div class="meal-section-title">Перекус</div>
+                <div class="meal-section-total" id="snackCalories">0 ккал</div>
+              </div>
+              <button class="mini-add-btn" data-meal="snack">＋</button>
+            </div>
+            <div id="snackList" class="meal-items"></div>
+          </div>
+        </div>
+      </div>
     </section>
 
-    <section class="meals-grid">
-      <div class="meal-card">
-        <div class="meal-name">Сніданок</div>
-        <div class="meal-value" id="breakfastTotal">0 ккал</div>
+    <!-- ЕКРАН ДОДАТИ ЇЖУ -->
+    <section id="screenAdd" class="screen">
+      <div class="top-gradient add-top">
+        <div class="top-bar">
+          <button class="icon-btn" id="backToDiaryBtn">‹</button>
+          <h1 class="center-title">Додати їжу</h1>
+          <button class="icon-btn" id="closeAddBtn">✕</button>
+        </div>
+
+        <div class="search-block">
+          <input id="foodSearch" class="search-input" type="text" placeholder="Пошук їжі">
+        </div>
+
+        <div class="quick-actions">
+          <button class="quick-btn" id="createFoodBtn">＋ Створити</button>
+          <button class="quick-btn" id="scanFoodBtn">📷 Скан їжі</button>
+        </div>
       </div>
 
-      <div class="meal-card">
-        <div class="meal-name">Обід</div>
-        <div class="meal-value" id="lunchTotal">0 ккал</div>
-      </div>
+      <div class="content add-content">
+        <div class="tabs">
+          <button class="tab-btn active" data-tab="recent">Недавні</button>
+          <button class="tab-btn" data-tab="favorites">Обране</button>
+          <button class="tab-btn" data-tab="myfoods">Мої продукти</button>
+          <button class="tab-btn" data-tab="recipes">Рецепти</button>
+        </div>
 
-      <div class="meal-card">
-        <div class="meal-name">Вечеря</div>
-        <div class="meal-value" id="dinnerTotal">0 ккал</div>
-      </div>
+        <div id="tabTitle" class="section-title">Недавні продукти</div>
+        <div id="foodList" class="food-list"></div>
 
-      <div class="meal-card">
-        <div class="meal-name">Перекус</div>
-        <div class="meal-value" id="snackTotal">0 ккал</div>
+        <div class="manual-form-card">
+          <h3>Швидке додавання</h3>
+
+          <label for="selectedMealType">Прийом їжі</label>
+          <select id="selectedMealType">
+            <option value="breakfast">Сніданок</option>
+            <option value="lunch">Обід</option>
+            <option value="dinner">Вечеря</option>
+            <option value="snack">Перекус</option>
+          </select>
+
+          <label for="foodName">Назва продукту</label>
+          <input id="foodName" type="text" placeholder="Наприклад: банан">
+
+          <div class="row-2">
+            <div>
+              <label for="grams">Грами</label>
+              <input id="grams" type="number" placeholder="150">
+            </div>
+            <div>
+              <label for="kcal100">Ккал / 100 г</label>
+              <input id="kcal100" type="number" placeholder="89">
+            </div>
+          </div>
+
+          <div class="row-3">
+            <div>
+              <label for="protein">Білки</label>
+              <input id="protein" type="number" step="0.1" placeholder="1.1">
+            </div>
+            <div>
+              <label for="fat">Жири</label>
+              <input id="fat" type="number" step="0.1" placeholder="0.3">
+            </div>
+            <div>
+              <label for="carbs">Вуглеводи</label>
+              <input id="carbs" type="number" step="0.1" placeholder="22.8">
+            </div>
+          </div>
+
+          <button id="addManualBtn" class="primary-btn">Додати в щоденник</button>
+          <p id="addResult" class="add-result"></p>
+        </div>
       </div>
     </section>
 
-    <section class="form-card">
-      <h2>Додати їжу</h2>
-
-      <label for="mealType">Прийом їжі</label>
-      <select id="mealType">
-        <option value="breakfast">Сніданок</option>
-        <option value="lunch">Обід</option>
-        <option value="dinner">Вечеря</option>
-        <option value="snack">Перекус</option>
-      </select>
-
-      <label for="foodName">Назва</label>
-      <input id="foodName" type="text" placeholder="Наприклад: рис, курка, банан">
-
-      <label for="grams">Грами</label>
-      <input id="grams" type="number" placeholder="Наприклад 200">
-
-      <label for="kcal100">Ккал на 100 г</label>
-      <input id="kcal100" type="number" placeholder="Наприклад 250">
-
-      <button id="addBtn" class="primary-btn">Додати</button>
-      <button id="resetBtn" class="secondary-btn">Очистити день</button>
-
-      <p id="result" class="result-text"></p>
-    </section>
-
-    <section class="history-card">
-      <div class="history-top">
-        <h2>Сьогодні з’їв</h2>
+    <!-- ЕКРАН РЕЦЕПТИ -->
+    <section id="screenRecipes" class="screen">
+      <div class="top-gradient">
+        <div class="top-bar">
+          <div class="top-title-block">
+            <h1>Рецепти</h1>
+            <div class="top-date">Добірка ідей</div>
+          </div>
+        </div>
       </div>
-      <div id="entriesList" class="entries-list"></div>
+
+      <div class="content">
+        <div class="recipes-list" id="recipesList"></div>
+      </div>
     </section>
+
+    <!-- ЕКРАН ПРОФІЛЬ -->
+    <section id="screenProfile" class="screen">
+      <div class="top-gradient">
+        <div class="top-bar">
+          <div class="top-title-block">
+            <h1>Профіль</h1>
+            <div class="top-date">Налаштування цілі</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="profile-card">
+          <label for="goalCalories">Ціль калорій на день</label>
+          <input id="goalCalories" type="number" placeholder="2200">
+
+          <button id="saveGoalBtn" class="primary-btn">Зберегти ціль</button>
+          <button id="clearDayBtn" class="secondary-btn">Очистити сьогодні</button>
+
+          <div class="profile-note">
+            Тут можна задати свою денну ціль. Вона буде показуватись у кільці на головному екрані.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- НИЖНЯ НАВІГАЦІЯ -->
+    <nav class="bottom-nav">
+      <button class="nav-btn active" data-screen="diary">
+        <span class="nav-icon">◉</span>
+        <span class="nav-text">Щоденник</span>
+      </button>
+
+      <button class="nav-btn" data-screen="add">
+        <span class="nav-icon">＋</span>
+        <span class="nav-text">Додати</span>
+      </button>
+
+      <button class="nav-btn" data-screen="recipes">
+        <span class="nav-icon">🍽</span>
+        <span class="nav-text">Рецепти</span>
+      </button>
+
+      <button class="nav-btn" data-screen="profile">
+        <span class="nav-icon">👤</span>
+        <span class="nav-text">Профіль</span>
+      </button>
+    </nav>
   </div>
 
   <script src="app.js"></script>
