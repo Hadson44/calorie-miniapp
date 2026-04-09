@@ -5,7 +5,8 @@ const DEFAULT_GOALS = {
   calories: 2200,
   protein: 140,
   fat: 70,
-  carbs: 230
+  carbs: 230,
+  water: 2000
 };
 
 const DEFAULT_PROFILE = {
@@ -18,7 +19,8 @@ const DEFAULT_PROFILE = {
   activity: 1.2,
   goal: "lose",
   autoGoals: true,
-  isOnboardingDone: false
+  isOnboardingDone: false,
+  avatar: null
 };
 
 const ACTIVITY_LABELS = {
@@ -91,12 +93,12 @@ const resultFat = document.getElementById("resultFat");
 const resultCarbs = document.getElementById("resultCarbs");
 
 let onboardingData = { ...DEFAULT_PROFILE };
-let currentStep = 1;
 
-/* main app */
+/* app screens */
 const screens = {
   diary: document.getElementById("screenDiary"),
   add: document.getElementById("screenAdd"),
+  stats: document.getElementById("screenStats"),
   recipes: document.getElementById("screenRecipes"),
   profile: document.getElementById("screenProfile")
 };
@@ -133,6 +135,14 @@ const lunchListEl = document.getElementById("lunchList");
 const dinnerListEl = document.getElementById("dinnerList");
 const snackListEl = document.getElementById("snackList");
 
+/* water */
+const waterMlView = document.getElementById("waterMlView");
+const waterGoalView = document.getElementById("waterGoalView");
+const waterBarFill = document.getElementById("waterBarFill");
+const waterButtons = document.querySelectorAll("[data-water-add]");
+const resetWaterBtn = document.getElementById("resetWaterBtn");
+
+/* add food */
 const foodListEl = document.getElementById("foodList");
 const recipesListEl = document.getElementById("recipesList");
 const tabTitleEl = document.getElementById("tabTitle");
@@ -156,8 +166,19 @@ const openSettingsBtn = document.getElementById("openSettingsBtn");
 
 const mainGreetingTitle = document.getElementById("mainGreetingTitle");
 
-/* profile screen */
+/* stats */
+const statsTodayCalories = document.getElementById("statsTodayCalories");
+const statsAverageCalories = document.getElementById("statsAverageCalories");
+const statsDaysCount = document.getElementById("statsDaysCount");
+const statsWaterToday = document.getElementById("statsWaterToday");
+const weekChart = document.getElementById("weekChart");
+const historyDaysList = document.getElementById("historyDaysList");
+
+/* profile */
 const profileAvatar = document.getElementById("profileAvatar");
+const avatarInput = document.getElementById("avatarInput");
+const changeAvatarBtn = document.getElementById("changeAvatarBtn");
+
 const profileNameView = document.getElementById("profileNameView");
 const profileGoalBadge = document.getElementById("profileGoalBadge");
 const profileActivityBadge = document.getElementById("profileActivityBadge");
@@ -175,6 +196,7 @@ const goalCaloriesEl = document.getElementById("goalCalories");
 const goalProteinEl = document.getElementById("goalProtein");
 const goalFatEl = document.getElementById("goalFat");
 const goalCarbsEl = document.getElementById("goalCarbs");
+const waterGoalInput = document.getElementById("waterGoalInput");
 
 const autoGoalsToggle = document.getElementById("autoGoalsToggle");
 const recalculateGoalsBtn = document.getElementById("recalculateGoalsBtn");
@@ -191,6 +213,10 @@ function getTodayKey() {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
+function dateKeyFromDate(d) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
 function getTodayLabel() {
   const d = new Date();
   return d.toLocaleDateString("uk-UA", {
@@ -199,8 +225,12 @@ function getTodayLabel() {
   });
 }
 
-function entriesKey() {
-  return `calorie_entries_${getTodayKey()}`;
+function entriesKey(dateKey = getTodayKey()) {
+  return `calorie_entries_${dateKey}`;
+}
+
+function waterKey(dateKey = getTodayKey()) {
+  return `calorie_water_${dateKey}`;
 }
 
 function goalsKey() {
@@ -212,8 +242,8 @@ function profileKey() {
 }
 
 /* storage */
-function loadEntries() {
-  const raw = localStorage.getItem(entriesKey());
+function loadEntries(dateKey = getTodayKey()) {
+  const raw = localStorage.getItem(entriesKey(dateKey));
   if (!raw) return [];
   try {
     return JSON.parse(raw);
@@ -222,8 +252,16 @@ function loadEntries() {
   }
 }
 
-function saveEntries(entries) {
-  localStorage.setItem(entriesKey(), JSON.stringify(entries));
+function saveEntries(entries, dateKey = getTodayKey()) {
+  localStorage.setItem(entriesKey(dateKey), JSON.stringify(entries));
+}
+
+function loadWater(dateKey = getTodayKey()) {
+  return Number(localStorage.getItem(waterKey(dateKey))) || 0;
+}
+
+function saveWater(value, dateKey = getTodayKey()) {
+  localStorage.setItem(waterKey(dateKey), String(value));
 }
 
 function loadGoals() {
@@ -315,12 +353,32 @@ function calculateGoalsFromProfile(profile) {
   const fatCalories = fat * 9;
   const carbs = Math.max(0, Math.round((calories - proteinCalories - fatCalories) / 4));
 
-  return { calories, protein, fat, carbs };
+  return {
+    calories,
+    protein,
+    fat,
+    carbs,
+    water: DEFAULT_GOALS.water
+  };
+}
+
+function prettyDate(dateKey) {
+  const [y, m, d] = dateKey.split("-");
+  const dt = new Date(Number(y), Number(m) - 1, Number(d));
+  return dt.toLocaleDateString("uk-UA", {
+    day: "numeric",
+    month: "long"
+  });
+}
+
+function shortDay(dateKey) {
+  const [y, m, d] = dateKey.split("-");
+  const dt = new Date(Number(y), Number(m) - 1, Number(d));
+  return dt.toLocaleDateString("uk-UA", { weekday: "short" });
 }
 
 /* onboarding */
 function showStep(step) {
-  currentStep = step;
   stepEls.forEach(el => {
     el.classList.toggle("active", Number(el.dataset.step) === step);
   });
@@ -362,7 +420,8 @@ function finishOnboardingFlow() {
     activity: Number(onboardingData.activity),
     goal: onboardingData.goal,
     autoGoals: true,
-    isOnboardingDone: true
+    isOnboardingDone: true,
+    avatar: null
   };
 
   const goals = calculateGoalsFromProfile(profile);
@@ -419,7 +478,7 @@ openAppBtn.addEventListener("click", () => {
   renderAll();
 });
 
-/* app */
+/* app core */
 function openScreen(name) {
   Object.values(screens).forEach(screen => screen.classList.remove("active"));
   screens[name].classList.add("active");
@@ -427,6 +486,10 @@ function openScreen(name) {
   navButtons.forEach(btn => {
     btn.classList.toggle("active", btn.dataset.screen === name);
   });
+
+  if (name === "stats") {
+    renderStats();
+  }
 }
 
 function getTotals(entries) {
@@ -494,6 +557,7 @@ function deleteEntry(id) {
   const entries = loadEntries().filter(item => item.id !== id);
   saveEntries(entries);
   renderDiary();
+  renderStats();
 }
 
 function fillManualForm(product) {
@@ -528,6 +592,15 @@ function renderMealList(container, entries, mealType) {
       </div>
     </div>
   `).join("");
+}
+
+function renderWater() {
+  const goals = loadGoals();
+  const water = loadWater();
+
+  waterMlView.textContent = water;
+  waterGoalView.textContent = goals.water || DEFAULT_GOALS.water;
+  waterBarFill.style.width = `${percent(water, goals.water || DEFAULT_GOALS.water)}%`;
 }
 
 function renderDiary() {
@@ -573,6 +646,8 @@ function renderDiary() {
   renderMealList(lunchListEl, entries, "lunch");
   renderMealList(dinnerListEl, entries, "dinner");
   renderMealList(snackListEl, entries, "snack");
+
+  renderWater();
 }
 
 function renderFoodCards() {
@@ -631,11 +706,77 @@ function renderRecipes() {
   `).join("");
 }
 
+/* stats */
+function getLastDaysData(days = 7) {
+  const arr = [];
+  for (let i = days - 1; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const key = dateKeyFromDate(d);
+    const entries = loadEntries(key);
+    const totals = getTotals(entries);
+    const water = loadWater(key);
+    arr.push({
+      key,
+      calories: totals.calories,
+      water
+    });
+  }
+  return arr;
+}
+
+function renderStats() {
+  const week = getLastDaysData(7);
+  const today = week[week.length - 1];
+  const totalDaysWithData = week.filter(x => x.calories > 0 || x.water > 0).length;
+  const avg = totalDaysWithData
+    ? Math.round(week.reduce((sum, x) => sum + x.calories, 0) / totalDaysWithData)
+    : 0;
+
+  statsTodayCalories.textContent = today.calories;
+  statsAverageCalories.textContent = avg;
+  statsDaysCount.textContent = totalDaysWithData;
+  statsWaterToday.textContent = today.water;
+
+  const maxCalories = Math.max(...week.map(x => x.calories), 1);
+
+  weekChart.innerHTML = week.map(day => {
+    const h = Math.max((day.calories / maxCalories) * 130, day.calories > 0 ? 8 : 4);
+    return `
+      <div class="chart-col">
+        <div class="chart-value">${day.calories}</div>
+        <div class="chart-bar-wrap">
+          <div class="chart-bar" style="height:${h}px"></div>
+        </div>
+        <div class="chart-day">${shortDay(day.key)}</div>
+      </div>
+    `;
+  }).join("");
+
+  const history = week.slice().reverse();
+
+  historyDaysList.innerHTML = history.map(day => `
+    <div class="history-day-card">
+      <div class="history-day-top">
+        <div class="history-day-date">${prettyDate(day.key)}</div>
+        <div class="history-day-kcal">${day.calories} ккал</div>
+      </div>
+      <div class="history-meta">Вода: ${day.water} мл</div>
+    </div>
+  `).join("");
+}
+
+/* profile */
 function renderProfile() {
   const profile = loadProfile() || { ...DEFAULT_PROFILE };
   const goals = loadGoals();
 
-  profileAvatar.textContent = (profile.name || "U").charAt(0).toUpperCase();
+  if (profile.avatar) {
+    profileAvatar.innerHTML = `<img src="${profile.avatar}">`;
+  } else {
+    profileAvatar.textContent = (profile.name || "U").charAt(0).toUpperCase();
+  }
+
   profileNameView.textContent = profile.name || "Користувач";
   profileGoalBadge.textContent = GOAL_LABELS[profile.goal] || "Ціль";
   profileActivityBadge.textContent = ACTIVITY_LABELS[String(profile.activity)] || "Активність";
@@ -653,6 +794,7 @@ function renderProfile() {
   goalProteinEl.value = goals.protein;
   goalFatEl.value = goals.fat;
   goalCarbsEl.value = goals.carbs;
+  waterGoalInput.value = goals.water || DEFAULT_GOALS.water;
 
   autoGoalsToggle.classList.toggle("active", !!profile.autoGoals);
   autoGoalsToggle.textContent = profile.autoGoals ? "Увімкнено" : "Вимкнено";
@@ -666,6 +808,7 @@ function renderAll() {
   renderFoodCards();
   renderDiary();
   renderProfile();
+  renderStats();
   openScreen("diary");
 }
 
@@ -694,13 +837,15 @@ function saveProfileAndMaybeGoals(recalc = false) {
 
   if (profile.autoGoals || recalc) {
     const goals = calculateGoalsFromProfile(profile);
+    goals.water = Number(waterGoalInput.value) || DEFAULT_GOALS.water;
     saveGoals(goals);
   } else {
     saveGoals({
       calories: Number(goalCaloriesEl.value) || DEFAULT_GOALS.calories,
       protein: Number(goalProteinEl.value) || DEFAULT_GOALS.protein,
       fat: Number(goalFatEl.value) || DEFAULT_GOALS.fat,
-      carbs: Number(goalCarbsEl.value) || DEFAULT_GOALS.carbs
+      carbs: Number(goalCarbsEl.value) || DEFAULT_GOALS.carbs,
+      water: Number(waterGoalInput.value) || DEFAULT_GOALS.water
     });
   }
 
@@ -800,6 +945,43 @@ openSettingsBtn.addEventListener("click", () => {
   openScreen("profile");
 });
 
+/* water events */
+waterButtons.forEach(btn => {
+  btn.addEventListener("click", () => {
+    const add = Number(btn.dataset.waterAdd);
+    const current = loadWater();
+    saveWater(current + add);
+    renderDiary();
+    renderStats();
+  });
+});
+
+resetWaterBtn.addEventListener("click", () => {
+  saveWater(0);
+  renderDiary();
+  renderStats();
+});
+
+/* avatar */
+changeAvatarBtn.addEventListener("click", () => {
+  avatarInput.click();
+});
+
+avatarInput.addEventListener("change", () => {
+  const file = avatarInput.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const profile = loadProfile() || { ...DEFAULT_PROFILE };
+    profile.avatar = e.target.result;
+    saveProfile(profile);
+    renderProfile();
+  };
+  reader.readAsDataURL(file);
+});
+
+/* profile buttons */
 autoGoalsToggle.addEventListener("click", () => {
   const profile = loadProfile() || { ...DEFAULT_PROFILE };
   profile.autoGoals = !profile.autoGoals;
@@ -811,7 +993,9 @@ recalculateGoalsBtn.addEventListener("click", () => {
   const profile = collectProfileFromInputs();
   profile.autoGoals = true;
   saveProfile(profile);
-  saveGoals(calculateGoalsFromProfile(profile));
+  const goals = calculateGoalsFromProfile(profile);
+  goals.water = Number(waterGoalInput.value) || DEFAULT_GOALS.water;
+  saveGoals(goals);
   renderAll();
 });
 
@@ -821,7 +1005,9 @@ saveProfileBtn.addEventListener("click", () => {
 
 clearDayBtn.addEventListener("click", () => {
   localStorage.removeItem(entriesKey());
+  localStorage.removeItem(waterKey());
   renderDiary();
+  renderStats();
 });
 
 restartOnboardingBtn.addEventListener("click", () => {
