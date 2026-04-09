@@ -1,7 +1,12 @@
 const tg = window.Telegram.WebApp;
 tg.expand();
 
-const DEFAULT_GOAL = 2200;
+const DEFAULT_GOALS = {
+  calories: 2200,
+  protein: 140,
+  fat: 70,
+  carbs: 230
+};
 
 const mealLabels = {
   breakfast: "Сніданок",
@@ -34,21 +39,9 @@ const foodDatabase = {
 };
 
 const recipesCollection = [
-  {
-    name: "Омлет з овочами",
-    text: "2 яйця, овочі, трохи сиру. Легкий сніданок.",
-    kcal: 320
-  },
-  {
-    name: "Курка з рисом",
-    text: "Куряче філе, рис і овочі. Хороший обід.",
-    kcal: 540
-  },
-  {
-    name: "Салат з тунцем",
-    text: "Тунець, яйце, зелень, овочі. Білковий варіант.",
-    kcal: 410
-  }
+  { name: "Омлет з овочами", text: "2 яйця, овочі, трохи сиру. Легкий сніданок.", kcal: 320 },
+  { name: "Курка з рисом", text: "Куряче філе, рис і овочі. Хороший обід.", kcal: 540 },
+  { name: "Салат з тунцем", text: "Тунець, яйце, зелень, овочі. Білковий варіант.", kcal: 410 }
 ];
 
 const screens = {
@@ -65,9 +58,20 @@ const miniAddButtons = document.querySelectorAll(".mini-add-btn");
 const todayDateEl = document.getElementById("todayDate");
 const dayCaloriesEl = document.getElementById("dayCalories");
 const goalTextEl = document.getElementById("goalText");
+const remainingTextEl = document.getElementById("remainingText");
+
 const proteinTotalEl = document.getElementById("proteinTotal");
 const fatTotalEl = document.getElementById("fatTotal");
 const carbsTotalEl = document.getElementById("carbsTotal");
+
+const proteinGoalViewEl = document.getElementById("proteinGoalView");
+const fatGoalViewEl = document.getElementById("fatGoalView");
+const carbsGoalViewEl = document.getElementById("carbsGoalView");
+
+const proteinBarEl = document.getElementById("proteinBar");
+const fatBarEl = document.getElementById("fatBar");
+const carbsBarEl = document.getElementById("carbsBar");
+
 const calorieRingEl = document.getElementById("calorieRing");
 
 const breakfastCaloriesEl = document.getElementById("breakfastCalories");
@@ -96,6 +100,10 @@ const addManualBtn = document.getElementById("addManualBtn");
 const addResultEl = document.getElementById("addResult");
 
 const goalCaloriesEl = document.getElementById("goalCalories");
+const goalProteinEl = document.getElementById("goalProtein");
+const goalFatEl = document.getElementById("goalFat");
+const goalCarbsEl = document.getElementById("goalCarbs");
+
 const saveGoalBtn = document.getElementById("saveGoalBtn");
 const clearDayBtn = document.getElementById("clearDayBtn");
 
@@ -127,8 +135,8 @@ function entriesKey() {
   return `calorie_entries_${getTodayKey()}`;
 }
 
-function goalKey() {
-  return "calorie_goal_value";
+function goalsKey() {
+  return "calorie_goals_value";
 }
 
 function loadEntries() {
@@ -145,14 +153,18 @@ function saveEntries(entries) {
   localStorage.setItem(entriesKey(), JSON.stringify(entries));
 }
 
-function loadGoal() {
-  const raw = localStorage.getItem(goalKey());
-  const val = Number(raw);
-  return val || DEFAULT_GOAL;
+function loadGoals() {
+  const raw = localStorage.getItem(goalsKey());
+  if (!raw) return { ...DEFAULT_GOALS };
+  try {
+    return { ...DEFAULT_GOALS, ...JSON.parse(raw) };
+  } catch {
+    return { ...DEFAULT_GOALS };
+  }
 }
 
-function saveGoal(goal) {
-  localStorage.setItem(goalKey(), String(goal));
+function saveGoals(goals) {
+  localStorage.setItem(goalsKey(), JSON.stringify(goals));
 }
 
 function openScreen(name) {
@@ -187,64 +199,18 @@ function getTotals(entries) {
   return totals;
 }
 
-function setRingProgress(calories, goal) {
-  const progress = Math.min(calories / goal, 1);
-  calorieRingEl.style.setProperty("--progress", `${progress}turn`);
-}
-
 function formatNumber(value) {
   return Number(value).toFixed(1).replace(".0", "");
 }
 
-function renderMealList(container, entries, mealType) {
-  const list = entries.filter(item => item.mealType === mealType);
-
-  if (!list.length) {
-    container.innerHTML = `<div class="empty-box">Поки що нічого не додано</div>`;
-    return;
-  }
-
-  container.innerHTML = list
-    .map((item, index) => `
-      <div class="meal-item">
-        <div class="meal-item-top">
-          <div class="meal-item-name">${item.foodName}</div>
-          <div class="meal-item-kcal">${item.totalCalories} ккал</div>
-        </div>
-        <div class="meal-item-meta">${item.grams} г • ${item.kcal100} ккал/100г</div>
-        <div class="meal-item-macros">
-          Б: ${formatNumber(item.totalProtein)} • Ж: ${formatNumber(item.totalFat)} • В: ${formatNumber(item.totalCarbs)}
-        </div>
-      </div>
-    `)
-    .join("");
+function percent(value, goal) {
+  if (!goal) return 0;
+  return Math.min((value / goal) * 100, 100);
 }
 
-function renderDiary() {
-  const entries = loadEntries();
-  const totals = getTotals(entries);
-  const goal = loadGoal();
-
-  todayDateEl.textContent = `Сьогодні, ${getTodayLabel()}`;
-  dayCaloriesEl.textContent = totals.calories;
-  goalTextEl.textContent = `ціль ${goal}`;
-  proteinTotalEl.textContent = formatNumber(totals.protein);
-  fatTotalEl.textContent = formatNumber(totals.fat);
-  carbsTotalEl.textContent = formatNumber(totals.carbs);
-
-  breakfastCaloriesEl.textContent = `${totals.breakfast} ккал`;
-  lunchCaloriesEl.textContent = `${totals.lunch} ккал`;
-  dinnerCaloriesEl.textContent = `${totals.dinner} ккал`;
-  snackCaloriesEl.textContent = `${totals.snack} ккал`;
-
-  setRingProgress(totals.calories, goal);
-
-  renderMealList(breakfastListEl, entries, "breakfast");
-  renderMealList(lunchListEl, entries, "lunch");
-  renderMealList(dinnerListEl, entries, "dinner");
-  renderMealList(snackListEl, entries, "snack");
-
-  goalCaloriesEl.value = goal;
+function setRingProgress(calories, goal) {
+  const progress = Math.min(calories / goal, 1);
+  calorieRingEl.style.setProperty("--progress", `${progress}turn`);
 }
 
 function fillManualForm(product) {
@@ -272,6 +238,7 @@ function addEntry({
 
   const entries = loadEntries();
   entries.push({
+    id: Date.now(),
     mealType,
     foodName,
     grams,
@@ -301,13 +268,92 @@ function addEntry({
   } catch (e) {}
 }
 
+function deleteEntry(id) {
+  const entries = loadEntries().filter(item => item.id !== id);
+  saveEntries(entries);
+  renderDiary();
+}
+
+function renderMealList(container, entries, mealType) {
+  const list = entries.filter(item => item.mealType === mealType);
+
+  if (!list.length) {
+    container.innerHTML = `<div class="empty-box">Поки що нічого не додано</div>`;
+    return;
+  }
+
+  container.innerHTML = list
+    .map(item => `
+      <div class="meal-item">
+        <div class="meal-item-top">
+          <div class="meal-item-name">${item.foodName}</div>
+          <div class="meal-item-kcal">${item.totalCalories} ккал</div>
+        </div>
+        <div class="meal-item-meta">${item.grams} г • ${item.kcal100} ккал/100г</div>
+        <div class="meal-item-macros">
+          Б: ${formatNumber(item.totalProtein)} • Ж: ${formatNumber(item.totalFat)} • В: ${formatNumber(item.totalCarbs)}
+        </div>
+        <div class="meal-item-actions">
+          <button class="delete-btn" data-id="${item.id}">Видалити</button>
+        </div>
+      </div>
+    `)
+    .join("");
+}
+
+function renderDiary() {
+  const entries = loadEntries();
+  const totals = getTotals(entries);
+  const goals = loadGoals();
+
+  todayDateEl.textContent = `Сьогодні, ${getTodayLabel()}`;
+
+  dayCaloriesEl.textContent = totals.calories;
+  goalTextEl.textContent = `ціль ${goals.calories}`;
+
+  if (totals.calories <= goals.calories) {
+    remainingTextEl.textContent = `Залишилось ${goals.calories - totals.calories}`;
+    remainingTextEl.style.color = "#6d3ff2";
+  } else {
+    remainingTextEl.textContent = `Перебір ${totals.calories - goals.calories}`;
+    remainingTextEl.style.color = "#d9465f";
+  }
+
+  proteinTotalEl.textContent = formatNumber(totals.protein);
+  fatTotalEl.textContent = formatNumber(totals.fat);
+  carbsTotalEl.textContent = formatNumber(totals.carbs);
+
+  proteinGoalViewEl.textContent = goals.protein;
+  fatGoalViewEl.textContent = goals.fat;
+  carbsGoalViewEl.textContent = goals.carbs;
+
+  proteinBarEl.style.width = `${percent(totals.protein, goals.protein)}%`;
+  fatBarEl.style.width = `${percent(totals.fat, goals.fat)}%`;
+  carbsBarEl.style.width = `${percent(totals.carbs, goals.carbs)}%`;
+
+  breakfastCaloriesEl.textContent = `${totals.breakfast} ккал`;
+  lunchCaloriesEl.textContent = `${totals.lunch} ккал`;
+  dinnerCaloriesEl.textContent = `${totals.dinner} ккал`;
+  snackCaloriesEl.textContent = `${totals.snack} ккал`;
+
+  setRingProgress(totals.calories, goals.calories);
+
+  renderMealList(breakfastListEl, entries, "breakfast");
+  renderMealList(lunchListEl, entries, "lunch");
+  renderMealList(dinnerListEl, entries, "dinner");
+  renderMealList(snackListEl, entries, "snack");
+
+  goalCaloriesEl.value = goals.calories;
+  goalProteinEl.value = goals.protein;
+  goalFatEl.value = goals.fat;
+  goalCarbsEl.value = goals.carbs;
+}
+
 function renderFoodCards() {
   const search = foodSearchEl.value.trim().toLowerCase();
   const list = foodDatabase[currentTab] || [];
 
-  const filtered = list.filter(item =>
-    item.name.toLowerCase().includes(search)
-  );
+  const filtered = list.filter(item => item.name.toLowerCase().includes(search));
 
   const titles = {
     recent: "Недавні продукти",
@@ -358,9 +404,7 @@ function renderRecipes() {
 }
 
 navButtons.forEach(btn => {
-  btn.addEventListener("click", () => {
-    openScreen(btn.dataset.screen);
-  });
+  btn.addEventListener("click", () => openScreen(btn.dataset.screen));
 });
 
 tabButtons.forEach(btn => {
@@ -391,6 +435,14 @@ foodListEl.addEventListener("click", (e) => {
 
   fillManualForm(item);
   addResultEl.textContent = `Заповнено дані для: ${item.name}`;
+});
+
+document.addEventListener("click", (e) => {
+  const btn = e.target.closest(".delete-btn");
+  if (!btn) return;
+
+  const id = Number(btn.dataset.id);
+  deleteEntry(id);
 });
 
 addManualBtn.addEventListener("click", () => {
@@ -429,9 +481,14 @@ addManualBtn.addEventListener("click", () => {
 });
 
 saveGoalBtn.addEventListener("click", () => {
-  const goal = Number(goalCaloriesEl.value);
-  if (!goal) return;
-  saveGoal(goal);
+  const goals = {
+    calories: Number(goalCaloriesEl.value) || DEFAULT_GOALS.calories,
+    protein: Number(goalProteinEl.value) || DEFAULT_GOALS.protein,
+    fat: Number(goalFatEl.value) || DEFAULT_GOALS.fat,
+    carbs: Number(goalCarbsEl.value) || DEFAULT_GOALS.carbs
+  };
+
+  saveGoals(goals);
   renderDiary();
 });
 
@@ -444,11 +501,11 @@ backToDiaryBtn.addEventListener("click", () => openScreen("diary"));
 closeAddBtn.addEventListener("click", () => openScreen("diary"));
 
 createFoodBtn.addEventListener("click", () => {
-  addResultEl.textContent = "Заповни форму нижче і збережи продукт";
+  addResultEl.textContent = "Заповни форму нижче і додай свій продукт";
 });
 
 scanFoodBtn.addEventListener("click", () => {
-  addResultEl.textContent = "Скан їжі можна додати пізніше як окрему функцію";
+  addResultEl.textContent = "Скан їжі можна додати наступним етапом";
 });
 
 openSettingsBtn.addEventListener("click", () => {
