@@ -1,20 +1,25 @@
-<!doctype html>
-<html lang="uk">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Calorie Mini App</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <div class="app">
-    <h1>Моя Mini App</h1>
-    <p>Якщо ти це бачиш — апка працює</p>
-    <button id="testBtn">Натисни мене</button>
-    <p id="result"></p>
-  </div>
+const tg = window.Telegram.WebApp;
+tg.expand();
 
-  <script src="app.js"></script>
-</body>
-</html>
+const btn = document.getElementById("testBtn");
+const result = document.getElementById("result");
+
+btn.addEventListener("click", () => {
+  const grams = prompt("Р’РІРµРґРё РіСЂР°Рј:");
+  const kcal100 = prompt("Р’РІРµРґРё РєРєР°Р» РЅР° 100Рі:");
+
+  if (!grams || !kcal100) {
+    result.textContent = "Р’РІРµРґРё РґР°РЅС–";
+    return;
+  }
+
+  const total = Math.round((grams * kcal100) / 100);
+
+  result.textContent = "РљР°Р»РѕСЂС–С—: " + total + " РєРєР°Р»";
+
+  tg.sendData(JSON.stringify({
+    grams,
+    kcal100,
+    total
+  }));
+});
