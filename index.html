@@ -9,17 +9,74 @@
 </head>
 <body>
   <div class="app">
-    <h1>Calorie Mini App</h1>
-    <p>Введи дані нижче</p>
+    <header class="top">
+      <div>
+        <h1>Calorie Tracker</h1>
+        <p class="sub">Твій денний контроль калорій</p>
+      </div>
+      <div class="badge" id="todayDate">Сьогодні</div>
+    </header>
 
-    <label>Грами:</label>
-    <input id="grams" type="number" placeholder="Наприклад 200">
+    <section class="hero-card">
+      <p class="hero-label">ЗА СЬОГОДНІ</p>
+      <div class="hero-total" id="dayTotal">0</div>
+      <p class="hero-unit">ккал</p>
+    </section>
 
-    <label>Ккал на 100 г:</label>
-    <input id="kcal100" type="number" placeholder="Наприклад 250">
+    <section class="meals-grid">
+      <div class="meal-card">
+        <div class="meal-name">Сніданок</div>
+        <div class="meal-value" id="breakfastTotal">0 ккал</div>
+      </div>
 
-    <button id="testBtn">Порахувати</button>
-    <p id="result"></p>
+      <div class="meal-card">
+        <div class="meal-name">Обід</div>
+        <div class="meal-value" id="lunchTotal">0 ккал</div>
+      </div>
+
+      <div class="meal-card">
+        <div class="meal-name">Вечеря</div>
+        <div class="meal-value" id="dinnerTotal">0 ккал</div>
+      </div>
+
+      <div class="meal-card">
+        <div class="meal-name">Перекус</div>
+        <div class="meal-value" id="snackTotal">0 ккал</div>
+      </div>
+    </section>
+
+    <section class="form-card">
+      <h2>Додати їжу</h2>
+
+      <label for="mealType">Прийом їжі</label>
+      <select id="mealType">
+        <option value="breakfast">Сніданок</option>
+        <option value="lunch">Обід</option>
+        <option value="dinner">Вечеря</option>
+        <option value="snack">Перекус</option>
+      </select>
+
+      <label for="foodName">Назва</label>
+      <input id="foodName" type="text" placeholder="Наприклад: рис, курка, банан">
+
+      <label for="grams">Грами</label>
+      <input id="grams" type="number" placeholder="Наприклад 200">
+
+      <label for="kcal100">Ккал на 100 г</label>
+      <input id="kcal100" type="number" placeholder="Наприклад 250">
+
+      <button id="addBtn" class="primary-btn">Додати</button>
+      <button id="resetBtn" class="secondary-btn">Очистити день</button>
+
+      <p id="result" class="result-text"></p>
+    </section>
+
+    <section class="history-card">
+      <div class="history-top">
+        <h2>Сьогодні з’їв</h2>
+      </div>
+      <div id="entriesList" class="entries-list"></div>
+    </section>
   </div>
 
   <script src="app.js"></script>
