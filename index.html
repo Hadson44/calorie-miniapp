@@ -1,25 +1,27 @@
-const tg = window.Telegram.WebApp;
-tg.expand();
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calorie Mini App</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <h1>Calorie Mini App</h1>
+    <p>Введи дані нижче</p>
 
-const btn = document.getElementById("testBtn");
-const result = document.getElementById("result");
+    <label>Грами:</label>
+    <input id="grams" type="number" placeholder="Наприклад 200">
 
-btn.addEventListener("click", () => {
-  const grams = prompt("Введи грам:");
-  const kcal100 = prompt("Введи ккал на 100г:");
+    <label>Ккал на 100 г:</label>
+    <input id="kcal100" type="number" placeholder="Наприклад 250">
 
-  if (!grams || !kcal100) {
-    result.textContent = "Введи дані";
-    return;
-  }
+    <button id="testBtn">Порахувати</button>
+    <p id="result"></p>
+  </div>
 
-  const total = Math.round((grams * kcal100) / 100);
-
-  result.textContent = "Калорії: " + total + " ккал";
-
-  tg.sendData(JSON.stringify({
-    grams,
-    kcal100,
-    total
-  }));
-});
+  <script src="app.js"></script>
+</body>
+</html>
