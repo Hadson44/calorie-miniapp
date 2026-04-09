@@ -44,6 +44,45 @@ const recipesCollection = [
   { name: "Салат з тунцем", text: "Тунець, яйце, зелень, овочі. Білковий варіант.", kcal: 410 }
 ];
 
+/* onboarding elements */
+const onboardingScreenEl = document.getElementById("onboardingScreen");
+const mainAppEl = document.getElementById("mainApp");
+const progressFillEl = document.getElementById("onboardingProgressFill");
+const stepEls = document.querySelectorAll(".step");
+
+const startOnboardingBtn = document.getElementById("startOnboardingBtn");
+const toStep3Btn = document.getElementById("toStep3Btn");
+const toStep4Btn = document.getElementById("toStep4Btn");
+const toStep5Btn = document.getElementById("toStep5Btn");
+const finishOnboardingBtn = document.getElementById("finishOnboardingBtn");
+const openAppBtn = document.getElementById("openAppBtn");
+
+const userNameInput = document.getElementById("userNameInput");
+const userGenderInput = document.getElementById("userGenderInput");
+const userAgeInput = document.getElementById("userAgeInput");
+const userHeightInput = document.getElementById("userHeightInput");
+const userWeightInput = document.getElementById("userWeightInput");
+
+const resultHelloText = document.getElementById("resultHelloText");
+const resultSummaryText = document.getElementById("resultSummaryText");
+const resultCalories = document.getElementById("resultCalories");
+const resultProtein = document.getElementById("resultProtein");
+const resultFat = document.getElementById("resultFat");
+const resultCarbs = document.getElementById("resultCarbs");
+
+let onboardingData = {
+  name: "",
+  gender: "male",
+  age: 30,
+  height: 175,
+  weight: 80,
+  activity: 1.2,
+  goal: "lose"
+};
+
+let currentStep = 1;
+
+/* app elements */
 const screens = {
   diary: document.getElementById("screenDiary"),
   add: document.getElementById("screenAdd"),
@@ -113,8 +152,12 @@ const createFoodBtn = document.getElementById("createFoodBtn");
 const scanFoodBtn = document.getElementById("scanFoodBtn");
 const openSettingsBtn = document.getElementById("openSettingsBtn");
 
+const mainGreetingTitle = document.getElementById("mainGreetingTitle");
+const profileUserInfo = document.getElementById("profileUserInfo");
+
 let currentTab = "recent";
 
+/* keys */
 function getTodayKey() {
   const d = new Date();
   const year = d.getFullYear();
@@ -139,6 +182,11 @@ function goalsKey() {
   return "calorie_goals_value";
 }
 
+function profileKey() {
+  return "calorie_user_profile";
+}
+
+/* storage */
 function loadEntries() {
   const raw = localStorage.getItem(entriesKey());
   if (!raw) return [];
@@ -167,6 +215,177 @@ function saveGoals(goals) {
   localStorage.setItem(goalsKey(), JSON.stringify(goals));
 }
 
+function loadProfile() {
+  const raw = localStorage.getItem(profileKey());
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+}
+
+function saveProfile(profile) {
+  localStorage.setItem(profileKey(), JSON.stringify(profile));
+}
+
+/* onboarding */
+function showStep(step) {
+  currentStep = step;
+  stepEls.forEach(el => {
+    el.classList.toggle("active", Number(el.dataset.step) === step);
+  });
+
+  const progressMap = {
+    1: 0,
+    2: 20,
+    3: 40,
+    4: 60,
+    5: 80,
+    6: 100
+  };
+
+  progressFillEl.style.width = `${progressMap[step] || 0}%`;
+}
+
+function selectChoiceGroup(buttons, activeBtn) {
+  buttons.forEach(btn => btn.classList.remove("active"));
+  activeBtn.classList.add("active");
+}
+
+const activityButtons = document.querySelectorAll("[data-activity]");
+const goalButtons = document.querySelectorAll("[data-goal]");
+
+activityButtons.forEach(btn => {
+  btn.addEventListener("click", () => {
+    selectChoiceGroup(activityButtons, btn);
+    onboardingData.activity = Number(btn.dataset.activity);
+  });
+});
+
+goalButtons.forEach(btn => {
+  btn.addEventListener("click", () => {
+    selectChoiceGroup(goalButtons, btn);
+    onboardingData.goal = btn.dataset.goal;
+  });
+});
+
+function calculatePersonalGoals(profile) {
+  const weight = Number(profile.weight);
+  const height = Number(profile.height);
+  const age = Number(profile.age);
+  const activity = Number(profile.activity);
+
+  let bmr = 0;
+
+  if (profile.gender === "female") {
+    bmr = 10 * weight + 6.25 * height - 5 * age - 161;
+  } else {
+    bmr = 10 * weight + 6.25 * height - 5 * age + 5;
+  }
+
+  let calories = Math.round(bmr * activity);
+
+  if (profile.goal === "lose") calories -= 400;
+  if (profile.goal === "gain") calories += 300;
+
+  if (calories < 1200) calories = 1200;
+
+  let protein = 0;
+  let fat = 0;
+  let carbs = 0;
+
+  if (profile.goal === "lose") {
+    protein = Math.round(weight * 1.8);
+    fat = Math.round(weight * 0.8);
+  } else if (profile.goal === "gain") {
+    protein = Math.round(weight * 1.8);
+    fat = Math.round(weight * 1);
+  } else {
+    protein = Math.round(weight * 1.6);
+    fat = Math.round(weight * 0.9);
+  }
+
+  const proteinCalories = protein * 4;
+  const fatCalories = fat * 9;
+  const remainingCalories = calories - proteinCalories - fatCalories;
+  carbs = Math.max(0, Math.round(remainingCalories / 4));
+
+  return {
+    calories,
+    protein,
+    fat,
+    carbs
+  };
+}
+
+function finishOnboardingFlow() {
+  const profile = {
+    name: onboardingData.name,
+    gender: onboardingData.gender,
+    age: Number(onboardingData.age),
+    height: Number(onboardingData.height),
+    weight: Number(onboardingData.weight),
+    activity: Number(onboardingData.activity),
+    goal: onboardingData.goal,
+    isOnboardingDone: true
+  };
+
+  const goals = calculatePersonalGoals(profile);
+
+  saveProfile(profile);
+  saveGoals(goals);
+
+  resultHelloText.textContent = `Готово, ${profile.name}`;
+  resultSummaryText.textContent = "Я розрахував твою денну норму калорій і Б/Ж/В. Їх можна змінити пізніше в профілі.";
+  resultCalories.textContent = goals.calories;
+  resultProtein.textContent = `${goals.protein} г`;
+  resultFat.textContent = `${goals.fat} г`;
+  resultCarbs.textContent = `${goals.carbs} г`;
+
+  showStep(6);
+}
+
+startOnboardingBtn.addEventListener("click", () => showStep(2));
+
+toStep3Btn.addEventListener("click", () => {
+  const name = userNameInput.value.trim();
+  if (!name) return;
+  onboardingData.name = name;
+  showStep(3);
+});
+
+toStep4Btn.addEventListener("click", () => {
+  const age = Number(userAgeInput.value);
+  const height = Number(userHeightInput.value);
+  const weight = Number(userWeightInput.value);
+  const gender = userGenderInput.value;
+
+  if (!age || !height || !weight) return;
+
+  onboardingData.gender = gender;
+  onboardingData.age = age;
+  onboardingData.height = height;
+  onboardingData.weight = weight;
+
+  showStep(4);
+});
+
+toStep5Btn.addEventListener("click", () => {
+  showStep(5);
+});
+
+finishOnboardingBtn.addEventListener("click", () => {
+  finishOnboardingFlow();
+});
+
+openAppBtn.addEventListener("click", () => {
+  onboardingScreenEl.classList.add("hidden");
+  mainAppEl.classList.remove("hidden");
+  renderAll();
+});
+
+/* main app */
 function openScreen(name) {
   Object.values(screens).forEach(screen => screen.classList.remove("active"));
   screens[name].classList.add("active");
@@ -282,31 +501,31 @@ function renderMealList(container, entries, mealType) {
     return;
   }
 
-  container.innerHTML = list
-    .map(item => `
-      <div class="meal-item">
-        <div class="meal-item-top">
-          <div class="meal-item-name">${item.foodName}</div>
-          <div class="meal-item-kcal">${item.totalCalories} ккал</div>
-        </div>
-        <div class="meal-item-meta">${item.grams} г • ${item.kcal100} ккал/100г</div>
-        <div class="meal-item-macros">
-          Б: ${formatNumber(item.totalProtein)} • Ж: ${formatNumber(item.totalFat)} • В: ${formatNumber(item.totalCarbs)}
-        </div>
-        <div class="meal-item-actions">
-          <button class="delete-btn" data-id="${item.id}">Видалити</button>
-        </div>
+  container.innerHTML = list.map(item => `
+    <div class="meal-item">
+      <div class="meal-item-top">
+        <div class="meal-item-name">${item.foodName}</div>
+        <div class="meal-item-kcal">${item.totalCalories} ккал</div>
       </div>
-    `)
-    .join("");
+      <div class="meal-item-meta">${item.grams} г • ${item.kcal100} ккал/100г</div>
+      <div class="meal-item-macros">
+        Б: ${formatNumber(item.totalProtein)} • Ж: ${formatNumber(item.totalFat)} • В: ${formatNumber(item.totalCarbs)}
+      </div>
+      <div class="meal-item-actions">
+        <button class="delete-btn" data-id="${item.id}">Видалити</button>
+      </div>
+    </div>
+  `).join("");
 }
 
 function renderDiary() {
   const entries = loadEntries();
   const totals = getTotals(entries);
   const goals = loadGoals();
+  const profile = loadProfile();
 
   todayDateEl.textContent = `Сьогодні, ${getTodayLabel()}`;
+  mainGreetingTitle.textContent = profile?.name ? `${profile.name}, щоденник` : "Щоденник";
 
   dayCaloriesEl.textContent = totals.calories;
   goalTextEl.textContent = `ціль ${goals.calories}`;
@@ -347,6 +566,11 @@ function renderDiary() {
   goalProteinEl.value = goals.protein;
   goalFatEl.value = goals.fat;
   goalCarbsEl.value = goals.carbs;
+
+  if (profile) {
+    profileUserInfo.textContent =
+      `${profile.name} • ${profile.age} р. • ${profile.height} см • ${profile.weight} кг`;
+  }
 }
 
 function renderFoodCards() {
@@ -403,6 +627,14 @@ function renderRecipes() {
   `).join("");
 }
 
+function renderAll() {
+  renderRecipes();
+  renderFoodCards();
+  renderDiary();
+  openScreen("diary");
+}
+
+/* events */
 navButtons.forEach(btn => {
   btn.addEventListener("click", () => openScreen(btn.dataset.screen));
 });
@@ -512,7 +744,19 @@ openSettingsBtn.addEventListener("click", () => {
   openScreen("profile");
 });
 
-renderRecipes();
-renderFoodCards();
-renderDiary();
-openScreen("diary");
+/* init */
+function initApp() {
+  const savedProfile = loadProfile();
+
+  if (!savedProfile || !savedProfile.isOnboardingDone) {
+    onboardingScreenEl.classList.remove("hidden");
+    mainAppEl.classList.add("hidden");
+    showStep(1);
+  } else {
+    onboardingScreenEl.classList.add("hidden");
+    mainAppEl.classList.remove("hidden");
+    renderAll();
+  }
+}
+
+initApp();
