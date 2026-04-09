@@ -10,7 +10,6 @@
 <body>
   <div class="app-shell">
 
-    <!-- ЕКРАН ЩОДЕННИК -->
     <section id="screenDiary" class="screen active">
       <div class="top-gradient">
         <div class="top-bar">
@@ -30,6 +29,7 @@
                 <div class="ring-main" id="dayCalories">0</div>
                 <div class="ring-unit">ккал</div>
                 <div class="ring-sub" id="goalText">ціль 2200</div>
+                <div class="ring-extra" id="remainingText">Залишилось 2200</div>
               </div>
             </div>
           </div>
@@ -37,17 +37,20 @@
           <div class="macros-grid">
             <div class="macro-card protein">
               <div class="macro-title">Білки</div>
-              <div class="macro-value"><span id="proteinTotal">0</span> г</div>
+              <div class="macro-value"><span id="proteinTotal">0</span> / <span id="proteinGoalView">140</span> г</div>
+              <div class="macro-bar"><div id="proteinBar" class="macro-fill protein-fill"></div></div>
             </div>
 
             <div class="macro-card fat">
               <div class="macro-title">Жири</div>
-              <div class="macro-value"><span id="fatTotal">0</span> г</div>
+              <div class="macro-value"><span id="fatTotal">0</span> / <span id="fatGoalView">70</span> г</div>
+              <div class="macro-bar"><div id="fatBar" class="macro-fill fat-fill"></div></div>
             </div>
 
             <div class="macro-card carbs">
               <div class="macro-title">Вуглеводи</div>
-              <div class="macro-value"><span id="carbsTotal">0</span> г</div>
+              <div class="macro-value"><span id="carbsTotal">0</span> / <span id="carbsGoalView">230</span> г</div>
+              <div class="macro-bar"><div id="carbsBar" class="macro-fill carbs-fill"></div></div>
             </div>
           </div>
         </div>
@@ -100,7 +103,6 @@
       </div>
     </section>
 
-    <!-- ЕКРАН ДОДАТИ ЇЖУ -->
     <section id="screenAdd" class="screen">
       <div class="top-gradient add-top">
         <div class="top-bar">
@@ -176,7 +178,6 @@
       </div>
     </section>
 
-    <!-- ЕКРАН РЕЦЕПТИ -->
     <section id="screenRecipes" class="screen">
       <div class="top-gradient">
         <div class="top-bar">
@@ -192,13 +193,12 @@
       </div>
     </section>
 
-    <!-- ЕКРАН ПРОФІЛЬ -->
     <section id="screenProfile" class="screen">
       <div class="top-gradient">
         <div class="top-bar">
           <div class="top-title-block">
             <h1>Профіль</h1>
-            <div class="top-date">Налаштування цілі</div>
+            <div class="top-date">Налаштування цілей</div>
           </div>
         </div>
       </div>
@@ -208,17 +208,31 @@
           <label for="goalCalories">Ціль калорій на день</label>
           <input id="goalCalories" type="number" placeholder="2200">
 
-          <button id="saveGoalBtn" class="primary-btn">Зберегти ціль</button>
+          <div class="row-3">
+            <div>
+              <label for="goalProtein">Білки</label>
+              <input id="goalProtein" type="number" placeholder="140">
+            </div>
+            <div>
+              <label for="goalFat">Жири</label>
+              <input id="goalFat" type="number" placeholder="70">
+            </div>
+            <div>
+              <label for="goalCarbs">Вуглеводи</label>
+              <input id="goalCarbs" type="number" placeholder="230">
+            </div>
+          </div>
+
+          <button id="saveGoalBtn" class="primary-btn">Зберегти цілі</button>
           <button id="clearDayBtn" class="secondary-btn">Очистити сьогодні</button>
 
           <div class="profile-note">
-            Тут можна задати свою денну ціль. Вона буде показуватись у кільці на головному екрані.
+            Тут можна задати денну ціль калорій і норми Б/Ж/В.
           </div>
         </div>
       </div>
     </section>
 
-    <!-- НИЖНЯ НАВІГАЦІЯ -->
     <nav class="bottom-nav">
       <button class="nav-btn active" data-screen="diary">
         <span class="nav-icon">◉</span>
