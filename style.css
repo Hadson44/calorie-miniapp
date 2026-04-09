@@ -10,12 +10,142 @@ body {
   color: #241f31;
 }
 
+.hidden {
+  display: none !important;
+}
+
 .app-shell {
   max-width: 430px;
   margin: 0 auto;
   min-height: 100vh;
   background: #f3eefc;
   position: relative;
+}
+
+.onboarding-screen {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #9a68f0 0%, #7e59df 100%);
+  padding: 20px 16px;
+  display: flex;
+  align-items: center;
+}
+
+.onboarding-card {
+  width: 100%;
+  background: #ffffff;
+  border-radius: 30px;
+  padding: 20px;
+  box-shadow: 0 20px 40px rgba(59, 25, 115, 0.2);
+}
+
+.onboarding-progress {
+  width: 100%;
+  height: 8px;
+  background: #ebe2fb;
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 22px;
+}
+
+.onboarding-progress-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #8b5cf6, #6d3ff2);
+  transition: width 0.25s ease;
+}
+
+.step {
+  display: none;
+}
+
+.step.active {
+  display: block;
+}
+
+.welcome-emoji {
+  font-size: 52px;
+  margin-bottom: 8px;
+}
+
+.onboarding-title {
+  margin: 0 0 12px;
+  font-size: 30px;
+  font-weight: 700;
+  color: #2d1b57;
+}
+
+.onboarding-title.small {
+  font-size: 24px;
+}
+
+.onboarding-text {
+  margin: 0 0 18px;
+  color: #6f6390;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.step-label {
+  color: #7c4dff;
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.choice-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.choice-btn {
+  width: 100%;
+  border: 2px solid #ede5fb;
+  background: #f8f5ff;
+  color: #241f31;
+  border-radius: 20px;
+  padding: 16px;
+  text-align: left;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.choice-btn span {
+  display: block;
+  margin-top: 6px;
+  color: #7b6f96;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.choice-btn.active {
+  border-color: #7c4dff;
+  background: #f1eaff;
+}
+
+.result-box {
+  background: #f7f3ff;
+  border-radius: 22px;
+  padding: 14px;
+  margin: 18px 0;
+}
+
+.result-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid #e8def9;
+}
+
+.result-row:last-child {
+  border-bottom: none;
+}
+
+.main-app {
+  min-height: 100vh;
   padding-bottom: 92px;
 }
 
