@@ -31,9 +31,7 @@
           <div class="step-label">Крок 1 з 5</div>
           <h2 class="onboarding-title small">Як до вас звертатись?</h2>
           <p class="onboarding-text">Вкажіть ім’я або нік</p>
-
           <input id="userNameInput" type="text" placeholder="Наприклад: Ед">
-
           <button class="primary-btn" id="toStep3Btn">Далі</button>
         </div>
 
@@ -199,6 +197,26 @@
             </div>
           </div>
 
+          <div class="water-card">
+            <div class="water-top">
+              <div>
+                <div class="water-title">Вода</div>
+                <div class="water-sub">Щоденний трекер води</div>
+              </div>
+              <div class="water-total"><span id="waterMlView">0</span> / <span id="waterGoalView">2000</span> мл</div>
+            </div>
+
+            <div class="water-bar">
+              <div id="waterBarFill" class="water-bar-fill"></div>
+            </div>
+
+            <div class="water-actions">
+              <button class="water-btn" data-water-add="250">+250 мл</button>
+              <button class="water-btn" data-water-add="500">+500 мл</button>
+              <button class="water-btn water-btn-reset" id="resetWaterBtn">Скинути</button>
+            </div>
+          </div>
+
           <div class="meal-sections">
             <div class="meal-section">
               <div class="meal-section-top">
@@ -322,6 +340,55 @@
         </div>
       </section>
 
+      <section id="screenStats" class="screen">
+        <div class="top-gradient">
+          <div class="top-bar">
+            <div class="top-title-block">
+              <h1>Статистика</h1>
+              <div class="top-date">Огляд по днях</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="content">
+          <div class="stats-grid">
+            <div class="stats-card">
+              <div class="stats-label">Сьогодні</div>
+              <div class="stats-value" id="statsTodayCalories">0</div>
+              <div class="stats-sub">ккал</div>
+            </div>
+
+            <div class="stats-card">
+              <div class="stats-label">Середнє</div>
+              <div class="stats-value" id="statsAverageCalories">0</div>
+              <div class="stats-sub">ккал / день</div>
+            </div>
+
+            <div class="stats-card">
+              <div class="stats-label">Днів з історією</div>
+              <div class="stats-value" id="statsDaysCount">0</div>
+              <div class="stats-sub">днів</div>
+            </div>
+
+            <div class="stats-card">
+              <div class="stats-label">Вода сьогодні</div>
+              <div class="stats-value" id="statsWaterToday">0</div>
+              <div class="stats-sub">мл</div>
+            </div>
+          </div>
+
+          <div class="chart-card">
+            <div class="chart-title">Останні 7 днів</div>
+            <div id="weekChart" class="week-chart"></div>
+          </div>
+
+          <div class="history-card">
+            <div class="chart-title">Історія по днях</div>
+            <div id="historyDaysList" class="history-days-list"></div>
+          </div>
+        </div>
+      </section>
+
       <section id="screenRecipes" class="screen">
         <div class="top-gradient">
           <div class="top-bar">
@@ -350,7 +417,12 @@
         <div class="content">
 
           <div class="profile-hero-card">
-            <div class="profile-avatar" id="profileAvatar">E</div>
+            <div class="profile-avatar-wrap">
+              <div class="profile-avatar" id="profileAvatar">E</div>
+              <input type="file" id="avatarInput" accept="image/*" hidden>
+              <button id="changeAvatarBtn" class="avatar-btn">✎</button>
+            </div>
+
             <div class="profile-hero-info">
               <div class="profile-name" id="profileNameView">Користувач</div>
               <div class="profile-badges">
@@ -439,6 +511,9 @@
               </div>
             </div>
 
+            <label for="waterGoalInput">Ціль води на день, мл</label>
+            <input id="waterGoalInput" type="number" placeholder="2000">
+
             <button id="recalculateGoalsBtn" class="secondary-btn">Перерахувати автоматично</button>
             <button id="saveProfileBtn" class="primary-btn">Зберегти профіль і цілі</button>
 
@@ -449,7 +524,6 @@
 
           <div class="profile-card">
             <h3 class="card-title">Керування</h3>
-
             <button id="clearDayBtn" class="secondary-btn">Очистити сьогодні</button>
             <button id="restartOnboardingBtn" class="danger-btn">Пройти знайомство заново</button>
           </div>
@@ -457,7 +531,7 @@
         </div>
       </section>
 
-      <nav class="bottom-nav">
+      <nav class="bottom-nav nav-5">
         <button class="nav-btn active" data-screen="diary">
           <span class="nav-icon">◉</span>
           <span class="nav-text">Щоденник</span>
@@ -466,6 +540,11 @@
         <button class="nav-btn" data-screen="add">
           <span class="nav-icon">＋</span>
           <span class="nav-text">Додати</span>
+        </button>
+
+        <button class="nav-btn" data-screen="stats">
+          <span class="nav-icon">📊</span>
+          <span class="nav-text">Статистика</span>
         </button>
 
         <button class="nav-btn" data-screen="recipes">
