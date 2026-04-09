@@ -5,19 +5,18 @@ const btn = document.getElementById("testBtn");
 const result = document.getElementById("result");
 
 btn.addEventListener("click", () => {
-  const grams = prompt("Скільки грам?");
-  const kcal100 = prompt("Скільки ккал на 100г?");
+  const grams = prompt("Введи грам:");
+  const kcal100 = prompt("Введи ккал на 100г:");
 
   if (!grams || !kcal100) {
-    result.textContent = "Введи значення";
+    result.textContent = "Введи дані";
     return;
   }
 
   const total = Math.round((grams * kcal100) / 100);
 
-  result.textContent = `Калорії: ${total} ккал`;
+  result.textContent = "Калорії: " + total + " ккал";
 
-  // ВІДПРАВКА В БОТА
   tg.sendData(JSON.stringify({
     grams,
     kcal100,
