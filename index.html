@@ -301,12 +301,13 @@
             </div>
           </div>
 
-          <div class="section-head">
-            <h2>Раціон</h2>
-            <button class="section-link" id="openProgressScreenBtn">Історія</button>
+          <div class="card overview-card">
+            <div class="card-header">
+              <h3>Сьогоднішній раціон</h3>
+              <button class="section-link" id="openMealsScreenBtn">До страв</button>
+            </div>
+            <div class="overview-text" id="todayMealsSummary">Ще немає записів за сьогодні.</div>
           </div>
-
-          <div class="meal-cards-list" id="mealCardsList"></div>
 
           <div class="card water-card-blue">
             <div class="water-card-top">
@@ -402,6 +403,13 @@
             <button class="tab-pill" data-search-tab="recipes">Рецепти</button>
             <button class="tab-pill" data-search-tab="foodcourt">Фуд-корт</button>
           </div>
+
+          <div class="section-head">
+            <h2>Сьогоднішній раціон</h2>
+            <button class="section-link" id="openProgressScreenBtn">Історія</button>
+          </div>
+
+          <div class="meal-cards-list" id="mealCardsList"></div>
 
           <div class="card empty-meal-builder">
             <div class="builder-emoji">🧑‍🍳</div>
