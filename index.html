@@ -184,10 +184,9 @@
                 <div class="macro-tile-label">Жири</div>
                 <div class="macro-tile-value" id="planFat">0 г</div>
               </div>
-              <div class="macro-tile fiber-tile demo-badge-parent">
+              <div class="macro-tile fiber-tile">
                 <div class="macro-tile-label">Клітковина</div>
                 <div class="macro-tile-value" id="planFiber">0 г</div>
-                <span class="demo-chip">demo</span>
               </div>
             </div>
           </div>
@@ -231,7 +230,7 @@
 
             <div class="side-stat right">
               <div class="side-stat-icon">🏃</div>
-              <div class="side-stat-value demo-color" id="activityBurn">387 ккал</div>
+              <div class="side-stat-value" id="activityBurn">0 ккал</div>
               <div class="side-stat-label">Активність</div>
             </div>
           </div>
@@ -240,13 +239,16 @@
 
           <div class="quick-action-row">
             <button class="quick-mini-btn" id="quickAddBtn">＋</button>
-            <button class="quick-mini-btn demo-btn">▥</button>
-            <button class="quick-mini-btn demo-btn">🎤</button>
-            <button class="quick-mini-btn demo-btn">📷</button>
-            <button class="quick-mini-btn demo-btn">🏃</button>
+            <button class="quick-mini-btn" id="quickSearchBtn">⌕</button>
+            <button class="quick-mini-btn" id="quickWaterBtn">💧</button>
+            <button class="quick-mini-btn" id="quickBalanceBtn">⚡</button>
+            <button class="quick-mini-btn" id="quickProgressBtn">▥</button>
           </div>
 
-          <div class="hint-pill demo-pill">Запиши їжу за допомогою фото <span>×</span></div>
+          <div class="hint-pill" id="viewHintPill">
+            <span>Швидкий запис: додай продукт через + або через пошук</span>
+            <button class="hint-pill-close" id="hideHintBtn" type="button">×</button>
+          </div>
 
           <div class="card nutrients-card">
             <div class="card-header">
@@ -280,8 +282,8 @@
                 <div class="nutrient-box">
                   <div class="mini-progress fiber"></div>
                   <div class="nutrient-name">Волокна</div>
-                  <div class="nutrient-current demo-value">0 г</div>
-                  <div class="nutrient-target">27,5 г</div>
+                  <div class="nutrient-current" id="viewFiberCurrent">0 г</div>
+                  <div class="nutrient-target" id="viewFiberGoal">0 г</div>
                 </div>
 
                 <div class="nutrient-box premium-locked">
@@ -301,7 +303,7 @@
 
           <div class="section-head">
             <h2>Раціон</h2>
-            <button class="section-link demo-btn">Аналіз</button>
+            <button class="section-link" id="openProgressScreenBtn">Історія</button>
           </div>
 
           <div class="meal-cards-list" id="mealCardsList"></div>
@@ -336,9 +338,9 @@
           </div>
 
           <div class="card demo-card">
-            <div class="demo-card-title">Активність <span class="demo-tag">demo</span></div>
-            <div class="demo-card-text">Підключення годинника, Garmin, Apple Health та активності зробимо пізніше.</div>
-            <button class="secondary-action demo-btn">Підключити пристрій</button>
+            <div class="demo-card-title">Щоденна активність</div>
+            <div class="demo-card-text" id="activityCardText">Рівень активності підлаштовує твою добову норму калорій.</div>
+            <button class="secondary-action" id="openGoalFromActivityBtn">Оновити рівень активності</button>
           </div>
         </section>
 
@@ -652,10 +654,9 @@
                 <div class="macro-tile-label">Жири</div>
                 <div class="macro-tile-value" id="goalFatsValue">0 г</div>
               </div>
-              <div class="macro-tile fiber-tile demo-badge-parent">
+              <div class="macro-tile fiber-tile">
                 <div class="macro-tile-label">Волокна</div>
-                <div class="macro-tile-value">27,5 г</div>
-                <span class="demo-chip">demo</span>
+                <div class="macro-tile-value" id="goalFiberValue">0 г</div>
               </div>
             </div>
           </div>
@@ -770,9 +771,10 @@
       </div>
 
       <div class="card modal-content-card">
-        <div class="detail-row"><span>Твої енерговитрати за сьогодні</span><strong id="detailBurnToday">0 ккал</strong></div>
+        <div class="detail-row"><span>Базовий обмін</span><strong id="detailBmr">0 ккал</strong></div>
+        <div class="detail-row"><span>Активність</span><strong id="detailActivity">0 ккал</strong></div>
         <div class="detail-row"><span>Добова норма калорій для підтримки</span><strong id="detailMaintain">0 ккал</strong></div>
-        <div class="detail-row"><span>Дефіцит калорій</span><strong id="detailDeficit">0 ккал</strong></div>
+        <div class="detail-row"><span id="detailGoalDeltaLabel">Дефіцит калорій</span><strong id="detailDeficit">0 ккал</strong></div>
         <div class="detail-row"><span>Добова норма калорій для цілі</span><strong id="detailGoalCalories">0 ккал</strong></div>
         <div class="detail-row"><span>Сьогодні вже спожито</span><strong id="detailConsumed">0 / 0</strong></div>
         <div class="detail-row"><span>Залишилося спожити</span><strong id="detailLeft">0 / 0</strong></div>
@@ -830,45 +832,61 @@
           <strong id="recordDateValue">сьогодні</strong>
         </div>
 
-        <div class="record-shortcuts">
-          <button class="record-shortcut active">＋</button>
-          <button class="record-shortcut demo-btn">▥</button>
-          <button class="record-shortcut demo-btn">🎤</button>
-          <button class="record-shortcut demo-btn">📷</button>
-        </div>
-
         <div class="record-food-card">
           <div class="record-food-top">
             <img id="recordFoodImage" src="" alt="" />
             <div class="record-food-info">
               <div class="record-food-name" id="recordFoodName">Куряче філе</div>
-              <div class="record-food-sub">ккал на 100 г: <span id="recordFoodKcal100">165</span></div>
+              <div class="record-food-sub" id="recordFoodMeta">0 ккал / 100 г</div>
             </div>
             <div class="record-food-actions">
-              <button class="small-icon-circle demo-btn">i</button>
               <button class="small-icon-circle danger" id="recordDeleteBtn">🗑</button>
             </div>
           </div>
 
           <div class="record-food-inputs">
-            <input id="recordCountInput" class="small-dark-input" type="number" value="1" />
-            <input id="recordGramsInput" class="small-dark-input" type="number" value="120" />
+            <label class="record-input-group">
+              <span>Порцій</span>
+              <input id="recordCountInput" class="small-dark-input" type="number" value="1" min="1" step="1" />
+            </label>
+            <label class="record-input-group">
+              <span>Грамів за порцію</span>
+              <input id="recordGramsInput" class="small-dark-input" type="number" value="120" min="1" step="1" />
+            </label>
           </div>
         </div>
 
         <div class="card impact-card">
           <div class="card-header">
-            <h3>Вплив на споживання</h3>
-            <button class="collapse-btn">⌃</button>
+            <h3>Поживна цінність запису</h3>
           </div>
-          <div class="impact-rings">
-            <div class="impact-ring white"></div>
-            <div class="impact-ring orange"></div>
-            <div class="impact-ring green"></div>
-            <div class="impact-ring blue"></div>
+          <div class="impact-metrics">
+            <div class="impact-metric">
+              <span>Калорії</span>
+              <strong id="recordPreviewCalories">0 ккал</strong>
+            </div>
+            <div class="impact-metric">
+              <span>Білки</span>
+              <strong id="recordPreviewProtein">0 г</strong>
+            </div>
+            <div class="impact-metric">
+              <span>Жири</span>
+              <strong id="recordPreviewFats">0 г</strong>
+            </div>
+            <div class="impact-metric">
+              <span>Вуглеводи</span>
+              <strong id="recordPreviewCarbs">0 г</strong>
+            </div>
+            <div class="impact-metric">
+              <span>Волокна</span>
+              <strong id="recordPreviewFiber">0 г</strong>
+            </div>
+            <div class="impact-metric">
+              <span>Всього грамів</span>
+              <strong id="recordPreviewGrams">0 г</strong>
+            </div>
           </div>
-          <div class="impact-text">Контролюй діаграми безпосередньо під час запису.</div>
-          <button class="premium-orange-btn demo-btn">👑 ОТРИМАЙ ПРЕМІУМ ПЕРЕВАГИ</button>
+          <div class="impact-text" id="recordImpactText">Зміни порції й вагу, щоб одразу побачити, як це вплине на день.</div>
         </div>
       </div>
     </section>
