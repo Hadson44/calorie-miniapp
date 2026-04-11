@@ -243,9 +243,11 @@ function getStreakData() {
 }
 
 function openRootScreen(screenId) {
+  closeAllFloating();
   $$(".tab-screen").forEach(s => s.classList.remove("active"));
   $(screenId).classList.add("active");
   $$(".dock-btn").forEach(btn => btn.classList.toggle("active", btn.dataset.openScreen === screenId));
+  window.scrollTo({ top: 0, behavior: "auto" });
 }
 
 function openMainApp() {
@@ -429,6 +431,10 @@ function renderView() {
   renderWater();
   renderWeightCard();
   $("viewHintPill").classList.toggle("hidden", isHintHidden() || totals.entries.length > 0);
+  const mealsWithEntries = Object.values(totals.mealMap).filter(items => items.length).length;
+  $("todayMealsSummary").textContent = totals.entries.length
+    ? `За сьогодні записано ${totals.entries.length} продуктів у ${mealsWithEntries} прийомах їжі на ${totals.kcal} ккал.`
+    : "Ще немає записів за сьогодні. Перейди в Страви, щоб додати перший продукт.";
   $("activityCardText").textContent = `Зараз обрано ${activityLabel(Number(profile.activity || 1.2))} рівень активності (${formatNumber(profile.activity || 1.2)}). Це додає приблизно ${plan.activityCalories} ккал до добових витрат.`;
   $("detailBmr").textContent = `${plan.bmr} ккал`;
   $("detailActivity").textContent = `${plan.activityCalories} ккал`;
@@ -786,6 +792,7 @@ function bindEvents() {
   $("openAddSheetBtn").addEventListener("click", openAddSheet);
   $("quickSearchBtn").addEventListener("click", openSearchScreen);
   $("quickProgressBtn").addEventListener("click", () => openRootScreen("screenProgress"));
+  $("openMealsScreenBtn").addEventListener("click", () => openRootScreen("screenMeals"));
   $("openProgressScreenBtn").addEventListener("click", () => openRootScreen("screenProgress"));
   $("quickBalanceBtn").addEventListener("click", openBalanceModal);
   $$('[data-close-sheet]').forEach(btn => btn.addEventListener('click', () => { $(btn.dataset.closeSheet).classList.add('hidden'); closeOverlay(); }));
