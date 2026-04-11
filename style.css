@@ -47,6 +47,8 @@ button, input { font: inherit; }
 }
 .screen { display: none; min-height: 100vh; }
 .screen.active { display: block; }
+.tab-screen { display: none; }
+.tab-screen.active { display: block; }
 .phone-top-space { height: 12px; }
 .onboarding-screen { padding: 18px 18px 40px; }
 .onboarding-wrap { display: flex; flex-direction: column; min-height: calc(100vh - 36px); }
@@ -212,6 +214,8 @@ button, input { font: inherit; }
 .small-icon-circle { background: rgba(255,255,255,.08); color: #fff; }
 .small-icon-circle.danger { background: transparent; color: var(--danger); }
 .water-card-blue { background: linear-gradient(180deg, rgba(0,84,170,.20), rgba(0,84,170,.10)); border: 1px solid rgba(31,160,255,.18); }
+.overview-card { background: linear-gradient(180deg, rgba(31,160,255,.08), rgba(255,138,0,.08)); }
+.overview-text { color: #d6dbe3; font-size: 18px; line-height: 1.45; }
 .water-card-top, .weight-card-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
 .water-card-title, .weight-card-title { font-size: 20px; font-weight: 800; }
 .water-line { display: flex; align-items: baseline; gap: 10px; margin: 18px 0 16px; }
