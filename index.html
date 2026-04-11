@@ -10,7 +10,6 @@
 <body>
   <div class="app" id="app">
 
-    <!-- ONBOARDING -->
     <section id="onboardingScreen" class="screen active onboarding-screen">
       <div class="phone-top-space"></div>
 
@@ -18,8 +17,8 @@
         <button class="circle-back-btn ghost" id="onboardingBackBtn">‹</button>
 
         <div class="onboarding-progress-wrap">
-          <div class="progress-ring-mini">
-            <div class="progress-ring-mini-inner">✓</div>
+          <div class="progress-ring-mini" id="onboardingProgressRing">
+            <div class="progress-ring-mini-inner" id="onboardingProgressInner">✓</div>
           </div>
         </div>
 
@@ -51,9 +50,9 @@
           <h1 class="hero-title">Коли ти народився?</h1>
           <p class="hero-subtitle">Твій вік потрібен для точнішого плану.</p>
 
-          <div class="onboarding-card dark-panel">
-            <label class="field-label">Рік народження</label>
-            <input id="obBirthYear" class="neon-input" type="number" placeholder="1994" />
+          <div class="wheel-picker-card">
+            <div class="wheel-picker" id="birthYearPicker"></div>
+            <div class="wheel-highlight"></div>
           </div>
 
           <button class="primary-action" data-next-step="4">Продовжити</button>
@@ -63,9 +62,9 @@
           <h1 class="hero-title">Вкажи свій зріст</h1>
           <p class="hero-subtitle">Ця інформація допоможе порахувати денну норму.</p>
 
-          <div class="onboarding-card dark-panel">
-            <label class="field-label">Зріст, см</label>
-            <input id="obHeight" class="neon-input" type="number" placeholder="174" />
+          <div class="wheel-picker-card">
+            <div class="wheel-picker with-unit" id="heightPicker"></div>
+            <div class="wheel-highlight"><span>СМ</span></div>
           </div>
 
           <button class="primary-action" data-next-step="5">Продовжити</button>
@@ -73,11 +72,11 @@
 
         <div class="onboarding-step" data-step="5">
           <h1 class="hero-title">Яка твоя поточна вага?</h1>
-          <p class="hero-subtitle">Поточна вага є ключовим фактором для створення плану.</p>
+          <p class="hero-subtitle">Твоя поточна вага є ключовим фактором для створення Твого плану.</p>
 
-          <div class="onboarding-card dark-panel">
-            <label class="field-label">Вага, кг</label>
-            <input id="obWeight" class="neon-input" type="number" placeholder="110" />
+          <div class="wheel-picker-card">
+            <div class="wheel-picker with-unit" id="weightPicker"></div>
+            <div class="wheel-highlight"><span>КГ</span></div>
           </div>
 
           <button class="primary-action" data-next-step="6">Продовжити</button>
@@ -98,11 +97,11 @@
 
         <div class="onboarding-step" data-step="7">
           <h1 class="hero-title">Яка твоя цільова вага?</h1>
-          <p class="hero-subtitle">Цільову вагу можна буде змінити пізніше.</p>
+          <p class="hero-subtitle">Цільову вагу ти можеш змінити пізніше.</p>
 
-          <div class="onboarding-card dark-panel">
-            <label class="field-label">Цільова вага, кг</label>
-            <input id="obTargetWeight" class="neon-input" type="number" placeholder="85" />
+          <div class="wheel-picker-card">
+            <div class="wheel-picker with-unit" id="targetWeightPicker"></div>
+            <div class="wheel-highlight"><span>КГ</span></div>
           </div>
 
           <button class="primary-action" data-next-step="8">Створи мені план</button>
@@ -196,7 +195,6 @@
       </div>
     </section>
 
-    <!-- MAIN APP -->
     <section id="mainAppScreen" class="screen">
       <div class="main-layout">
         <header class="top-premium-bar">
@@ -213,7 +211,6 @@
           </button>
         </header>
 
-        <!-- VIEW -->
         <section id="screenView" class="tab-screen active">
           <div class="week-strip" id="weekStrip"></div>
 
@@ -345,7 +342,6 @@
           </div>
         </section>
 
-        <!-- PROGRESS -->
         <section id="screenProgress" class="tab-screen">
           <div class="page-heading">
             <h1>Прогрес</h1>
@@ -393,7 +389,6 @@
           </div>
         </section>
 
-        <!-- MEALS -->
         <section id="screenMeals" class="tab-screen">
           <div class="page-heading">
             <h1>Страви</h1>
@@ -447,7 +442,6 @@
           </div>
         </section>
 
-        <!-- MORE -->
         <section id="screenMore" class="tab-screen">
           <div class="page-heading">
             <h1>Більше</h1>
@@ -557,7 +551,6 @@
           </div>
         </section>
 
-        <!-- PROFILE DETAIL -->
         <section id="screenProfileDetail" class="tab-screen nested-screen">
           <div class="nested-top">
             <button class="circle-back-btn" data-back-to="screenMore">‹</button>
@@ -610,7 +603,6 @@
           </div>
         </section>
 
-        <!-- GOAL DETAIL -->
         <section id="screenGoalDetail" class="tab-screen nested-screen">
           <div class="nested-top">
             <button class="circle-back-btn" data-back-to="screenMore">‹</button>
@@ -669,7 +661,6 @@
           </div>
         </section>
 
-        <!-- PREMIUM SCREEN -->
         <section id="screenPremium" class="tab-screen nested-screen">
           <div class="premium-top-hero">
             <button class="promo-chip">ПРОМОКОД</button>
@@ -713,7 +704,6 @@
         </section>
       </div>
 
-      <!-- BOTTOM NAV -->
       <nav class="bottom-dock">
         <div class="bottom-dock-pill">
           <button class="dock-btn active" data-open-screen="screenView">
@@ -741,7 +731,6 @@
       </nav>
     </section>
 
-    <!-- MODALS -->
     <div class="overlay hidden" id="overlay"></div>
 
     <section class="modal-sheet hidden" id="addSheet">
