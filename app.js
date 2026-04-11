@@ -1,248 +1,157 @@
-const tg = window.Telegram.WebApp;
-tg.expand();
+const tg = window.Telegram?.WebApp;
+if (tg) tg.expand();
 
-const DEFAULT_GOALS = {
-  calories: 2200,
-  protein: 140,
-  fat: 70,
-  carbs: 230,
-  water: 2000
+const state = {
+  onboardingStep: 1,
+  selectedDate: getTodayKey(),
+  currentMonth: new Date().getMonth(),
+  currentYear: new Date().getFullYear(),
+  selectedGender: "male",
+  selectedGoal: "lose",
+  selectedActivity: 1.2,
+  recordMeal: "Сніданок",
+  editingFood: null,
 };
 
 const DEFAULT_PROFILE = {
   name: "",
+  birthYear: 1994,
+  height: 174,
+  weight: 110,
+  targetWeight: 85,
   gender: "male",
-  age: 30,
-  height: 175,
-  weight: 80,
-  targetWeight: 75,
-  activity: 1.2,
   goal: "lose",
-  autoGoals: true,
-  isOnboardingDone: false,
-  avatar: null
+  activity: 1.2,
+  waterGoalLiters: 3.5,
+  avatar: null,
+  onboarded: false,
 };
 
-const ACTIVITY_LABELS = {
-  "1.2": "Сидяча активність",
-  "1.375": "Легка активність",
-  "1.55": "Середня активність",
-  "1.725": "Висока активність"
-};
+const DEMO_ACTIVITY_BURN = 387;
 
-const GOAL_LABELS = {
-  lose: "Схуднення",
-  maintain: "Підтримка",
-  gain: "Набір"
-};
-
-const foodDatabase = {
-  recent: [
-    { name: "Сир моцарела", kcal100: 280, protein: 18, fat: 22, carbs: 3, defaultGrams: 30 },
-    { name: "Банан", kcal100: 89, protein: 1.1, fat: 0.3, carbs: 22.8, defaultGrams: 120 },
-    { name: "Куряче філе", kcal100: 165, protein: 31, fat: 3.6, carbs: 0, defaultGrams: 150 },
-    { name: "Рис варений", kcal100: 130, protein: 2.7, fat: 0.3, carbs: 28, defaultGrams: 180 }
-  ],
-  favorites: [
-    { name: "Яйце варене", kcal100: 155, protein: 13, fat: 11, carbs: 1.1, defaultGrams: 60 },
-    { name: "Вівсянка", kcal100: 68, protein: 2.4, fat: 1.4, carbs: 12, defaultGrams: 200 },
-    { name: "Грецький йогурт", kcal100: 97, protein: 9, fat: 5, carbs: 3.6, defaultGrams: 150 }
-  ],
-  myfoods: [
-    { name: "Шаурма домашня", kcal100: 210, protein: 11, fat: 9, carbs: 20, defaultGrams: 250 },
-    { name: "Сендвіч з шинкою", kcal100: 240, protein: 12, fat: 10, carbs: 24, defaultGrams: 180 }
-  ],
-  recipes: [
-    { name: "Омлет з овочами", kcal100: 140, protein: 9, fat: 9, carbs: 4, defaultGrams: 220 },
-    { name: "Салат з куркою", kcal100: 120, protein: 14, fat: 5, carbs: 4, defaultGrams: 250 },
-    { name: "Сирники запечені", kcal100: 180, protein: 13, fat: 6, carbs: 18, defaultGrams: 180 }
-  ]
-};
-
-const recipesCollection = [
-  { name: "Омлет з овочами", text: "2 яйця, овочі, трохи сиру. Легкий сніданок.", kcal: 320 },
-  { name: "Курка з рисом", text: "Куряче філе, рис і овочі. Хороший обід.", kcal: 540 },
-  { name: "Салат з тунцем", text: "Тунець, яйце, зелень, овочі. Білковий варіант.", kcal: 410 }
+const FOOD_DB = [
+  {
+    id: "banana",
+    name: "Банан",
+    kcal100: 94,
+    type: "Продукт",
+    image: "https://images.unsplash.com/photo-1574226516831-e1dff420e38e?auto=format&fit=crop&w=300&q=80",
+    badge: "🌿"
+  },
+  {
+    id: "water",
+    name: "Вода питна",
+    kcal100: 0,
+    type: "Напій",
+    image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=300&q=80",
+    badge: "🌿"
+  },
+  {
+    id: "coffee",
+    name: "Кава з молоком без цукру",
+    kcal100: 12,
+    type: "Напій",
+    image: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=300&q=80",
+    badge: "🍲"
+  },
+  {
+    id: "egg",
+    name: "Яйце куряче сире",
+    kcal100: 151,
+    type: "Продукт",
+    image: "https://images.unsplash.com/photo-1518569656558-1f25e69d93d7?auto=format&fit=crop&w=300&q=80",
+    badge: "🌿"
+  },
+  {
+    id: "cucumber",
+    name: "Огірок свіжий",
+    kcal100: 16,
+    type: "Продукт",
+    image: "https://images.unsplash.com/photo-1604977042946-1eecc30f269e?auto=format&fit=crop&w=300&q=80",
+    badge: "🌿"
+  },
+  {
+    id: "oats",
+    name: "Вівсяні пластівці",
+    kcal100: 400,
+    type: "Продукт",
+    image: "https://images.unsplash.com/photo-1517673400267-0251440c45dc?auto=format&fit=crop&w=300&q=80",
+    badge: "🌿"
+  },
+  {
+    id: "rice",
+    name: "Рис білий варений",
+    kcal100: 126,
+    type: "Продукт",
+    image: "https://images.unsplash.com/photo-1516684732162-798a0062be99?auto=format&fit=crop&w=300&q=80",
+    badge: "🍲"
+  },
+  {
+    id: "olive",
+    name: "Оливкова олія",
+    kcal100: 819,
+    type: "Продукт",
+    image: "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=300&q=80",
+    badge: "🌿"
+  },
+  {
+    id: "chicken",
+    name: "Куряче філе",
+    kcal100: 165,
+    type: "Продукт",
+    image: "https://images.unsplash.com/photo-1604503468506-a8da13d82791?auto=format&fit=crop&w=300&q=80",
+    badge: "🌿"
+  },
+  {
+    id: "salad",
+    name: "Салат латук",
+    kcal100: 16,
+    type: "Продукт",
+    image: "https://images.unsplash.com/photo-1622206151246-4f5f734abf17?auto=format&fit=crop&w=300&q=80",
+    badge: "🌿"
+  }
 ];
 
-/* onboarding */
-const onboardingScreenEl = document.getElementById("onboardingScreen");
-const mainAppEl = document.getElementById("mainApp");
-const progressFillEl = document.getElementById("onboardingProgressFill");
-const stepEls = document.querySelectorAll(".step");
+const MEAL_CONFIG = [
+  { key: "Сніданок", emoji: "🥣" },
+  { key: "Перекус", emoji: "🥪" },
+  { key: "Обід", emoji: "🍛" },
+  { key: "Другий перекус", emoji: "🥪" },
+  { key: "Вечеря", emoji: "🍽" },
+  { key: "Третій перекус", emoji: "🍽" },
+];
 
-const startOnboardingBtn = document.getElementById("startOnboardingBtn");
-const toStep3Btn = document.getElementById("toStep3Btn");
-const toStep4Btn = document.getElementById("toStep4Btn");
-const toStep5Btn = document.getElementById("toStep5Btn");
-const finishOnboardingBtn = document.getElementById("finishOnboardingBtn");
-const openAppBtn = document.getElementById("openAppBtn");
+const $ = (id) => document.getElementById(id);
+const $$ = (sel) => document.querySelectorAll(sel);
 
-const userNameInput = document.getElementById("userNameInput");
-const userGenderInput = document.getElementById("userGenderInput");
-const userAgeInput = document.getElementById("userAgeInput");
-const userHeightInput = document.getElementById("userHeightInput");
-const userWeightInput = document.getElementById("userWeightInput");
-const targetWeightInput = document.getElementById("targetWeightInput");
-
-const resultHelloText = document.getElementById("resultHelloText");
-const resultSummaryText = document.getElementById("resultSummaryText");
-const resultCalories = document.getElementById("resultCalories");
-const resultProtein = document.getElementById("resultProtein");
-const resultFat = document.getElementById("resultFat");
-const resultCarbs = document.getElementById("resultCarbs");
-
-let onboardingData = { ...DEFAULT_PROFILE };
-
-/* app screens */
-const screens = {
-  diary: document.getElementById("screenDiary"),
-  add: document.getElementById("screenAdd"),
-  stats: document.getElementById("screenStats"),
-  recipes: document.getElementById("screenRecipes"),
-  profile: document.getElementById("screenProfile")
-};
-
-const navButtons = document.querySelectorAll(".nav-btn");
-const tabButtons = document.querySelectorAll(".tab-btn");
-const miniAddButtons = document.querySelectorAll(".mini-add-btn");
-
-const todayDateEl = document.getElementById("todayDate");
-const dayCaloriesEl = document.getElementById("dayCalories");
-const goalTextEl = document.getElementById("goalText");
-const remainingTextEl = document.getElementById("remainingText");
-
-const proteinTotalEl = document.getElementById("proteinTotal");
-const fatTotalEl = document.getElementById("fatTotal");
-const carbsTotalEl = document.getElementById("carbsTotal");
-
-const proteinGoalViewEl = document.getElementById("proteinGoalView");
-const fatGoalViewEl = document.getElementById("fatGoalView");
-const carbsGoalViewEl = document.getElementById("carbsGoalView");
-
-const proteinBarEl = document.getElementById("proteinBar");
-const fatBarEl = document.getElementById("fatBar");
-const carbsBarEl = document.getElementById("carbsBar");
-const calorieRingEl = document.getElementById("calorieRing");
-
-const breakfastCaloriesEl = document.getElementById("breakfastCalories");
-const lunchCaloriesEl = document.getElementById("lunchCalories");
-const dinnerCaloriesEl = document.getElementById("dinnerCalories");
-const snackCaloriesEl = document.getElementById("snackCalories");
-
-const breakfastListEl = document.getElementById("breakfastList");
-const lunchListEl = document.getElementById("lunchList");
-const dinnerListEl = document.getElementById("dinnerList");
-const snackListEl = document.getElementById("snackList");
-
-/* water */
-const waterMlView = document.getElementById("waterMlView");
-const waterGoalView = document.getElementById("waterGoalView");
-const waterBarFill = document.getElementById("waterBarFill");
-const waterButtons = document.querySelectorAll("[data-water-add]");
-const resetWaterBtn = document.getElementById("resetWaterBtn");
-
-/* add food */
-const foodListEl = document.getElementById("foodList");
-const recipesListEl = document.getElementById("recipesList");
-const tabTitleEl = document.getElementById("tabTitle");
-const foodSearchEl = document.getElementById("foodSearch");
-
-const selectedMealTypeEl = document.getElementById("selectedMealType");
-const foodNameEl = document.getElementById("foodName");
-const gramsEl = document.getElementById("grams");
-const kcal100El = document.getElementById("kcal100");
-const proteinEl = document.getElementById("protein");
-const fatEl = document.getElementById("fat");
-const carbsEl = document.getElementById("carbs");
-const addManualBtn = document.getElementById("addManualBtn");
-const addResultEl = document.getElementById("addResult");
-
-const backToDiaryBtn = document.getElementById("backToDiaryBtn");
-const closeAddBtn = document.getElementById("closeAddBtn");
-const createFoodBtn = document.getElementById("createFoodBtn");
-const scanFoodBtn = document.getElementById("scanFoodBtn");
-const openSettingsBtn = document.getElementById("openSettingsBtn");
-
-const mainGreetingTitle = document.getElementById("mainGreetingTitle");
-
-/* stats */
-const statsTodayCalories = document.getElementById("statsTodayCalories");
-const statsAverageCalories = document.getElementById("statsAverageCalories");
-const statsDaysCount = document.getElementById("statsDaysCount");
-const statsWaterToday = document.getElementById("statsWaterToday");
-const weekChart = document.getElementById("weekChart");
-const historyDaysList = document.getElementById("historyDaysList");
-
-/* profile */
-const profileAvatar = document.getElementById("profileAvatar");
-const avatarInput = document.getElementById("avatarInput");
-const changeAvatarBtn = document.getElementById("changeAvatarBtn");
-
-const profileNameView = document.getElementById("profileNameView");
-const profileGoalBadge = document.getElementById("profileGoalBadge");
-const profileActivityBadge = document.getElementById("profileActivityBadge");
-
-const profileNameInput = document.getElementById("profileNameInput");
-const profileGenderInput = document.getElementById("profileGenderInput");
-const profileAgeInput = document.getElementById("profileAgeInput");
-const profileHeightInput = document.getElementById("profileHeightInput");
-const profileWeightInput = document.getElementById("profileWeightInput");
-const profileTargetWeightInput = document.getElementById("profileTargetWeightInput");
-const profileActivityInput = document.getElementById("profileActivityInput");
-const profileGoalInput = document.getElementById("profileGoalInput");
-
-const goalCaloriesEl = document.getElementById("goalCalories");
-const goalProteinEl = document.getElementById("goalProtein");
-const goalFatEl = document.getElementById("goalFat");
-const goalCarbsEl = document.getElementById("goalCarbs");
-const waterGoalInput = document.getElementById("waterGoalInput");
-
-const autoGoalsToggle = document.getElementById("autoGoalsToggle");
-const recalculateGoalsBtn = document.getElementById("recalculateGoalsBtn");
-const saveProfileBtn = document.getElementById("saveProfileBtn");
-const clearDayBtn = document.getElementById("clearDayBtn");
-const restartOnboardingBtn = document.getElementById("restartOnboardingBtn");
-const profileUserInfo = document.getElementById("profileUserInfo");
-
-let currentTab = "recent";
-
-/* keys */
-function getTodayKey() {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-}
-
-function dateKeyFromDate(d) {
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-}
-
-function getTodayLabel() {
-  const d = new Date();
-  return d.toLocaleDateString("uk-UA", {
-    day: "numeric",
-    month: "long"
-  });
-}
-
-function entriesKey(dateKey = getTodayKey()) {
-  return `calorie_entries_${dateKey}`;
-}
-
-function waterKey(dateKey = getTodayKey()) {
-  return `calorie_water_${dateKey}`;
-}
-
-function goalsKey() {
-  return "calorie_goals_value";
-}
-
+/* ---------- STORAGE ---------- */
 function profileKey() {
-  return "calorie_user_profile";
+  return "neon_calorie_profile";
 }
 
-/* storage */
-function loadEntries(dateKey = getTodayKey()) {
+function entriesKey(dateKey = state.selectedDate) {
+  return `neon_calorie_entries_${dateKey}`;
+}
+
+function waterKey(dateKey = state.selectedDate) {
+  return `neon_calorie_water_${dateKey}`;
+}
+
+function loadProfile() {
+  const raw = localStorage.getItem(profileKey());
+  if (!raw) return { ...DEFAULT_PROFILE };
+  try {
+    return { ...DEFAULT_PROFILE, ...JSON.parse(raw) };
+  } catch {
+    return { ...DEFAULT_PROFILE };
+  }
+}
+
+function saveProfile(profile) {
+  localStorage.setItem(profileKey(), JSON.stringify(profile));
+}
+
+function loadEntries(dateKey = state.selectedDate) {
   const raw = localStorage.getItem(entriesKey(dateKey));
   if (!raw) return [];
   try {
@@ -252,75 +161,65 @@ function loadEntries(dateKey = getTodayKey()) {
   }
 }
 
-function saveEntries(entries, dateKey = getTodayKey()) {
+function saveEntries(entries, dateKey = state.selectedDate) {
   localStorage.setItem(entriesKey(dateKey), JSON.stringify(entries));
 }
 
-function loadWater(dateKey = getTodayKey()) {
+function loadWater(dateKey = state.selectedDate) {
   return Number(localStorage.getItem(waterKey(dateKey))) || 0;
 }
 
-function saveWater(value, dateKey = getTodayKey()) {
-  localStorage.setItem(waterKey(dateKey), String(value));
+function saveWater(liters, dateKey = state.selectedDate) {
+  localStorage.setItem(waterKey(dateKey), String(liters));
 }
 
-function loadGoals() {
-  const raw = localStorage.getItem(goalsKey());
-  if (!raw) return { ...DEFAULT_GOALS };
-  try {
-    return { ...DEFAULT_GOALS, ...JSON.parse(raw) };
-  } catch {
-    return { ...DEFAULT_GOALS };
-  }
+/* ---------- DATE ---------- */
+function getTodayKey() {
+  const d = new Date();
+  return dateToKey(d);
 }
 
-function saveGoals(goals) {
-  localStorage.setItem(goalsKey(), JSON.stringify(goals));
+function dateToKey(d) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
-function loadProfile() {
-  const raw = localStorage.getItem(profileKey());
-  if (!raw) return null;
-  try {
-    return { ...DEFAULT_PROFILE, ...JSON.parse(raw) };
-  } catch {
-    return null;
-  }
+function keyToDate(key) {
+  const [y, m, d] = key.split("-").map(Number);
+  return new Date(y, m - 1, d);
 }
 
-function saveProfile(profile) {
-  localStorage.setItem(profileKey(), JSON.stringify(profile));
+function formatHeaderDate(key) {
+  const d = keyToDate(key);
+  return d.toLocaleDateString("uk-UA", { day: "2-digit", month: "2-digit" });
 }
 
-/* helpers */
-function formatNumber(value) {
-  return Number(value).toFixed(1).replace(".0", "");
+function formatLongDate(key) {
+  const d = keyToDate(key);
+  return d.toLocaleDateString("uk-UA", { day: "numeric", month: "long", year: "numeric" });
 }
 
-function percent(value, goal) {
-  if (!goal) return 0;
-  return Math.min((value / goal) * 100, 100);
+function shortWeekDay(date) {
+  const days = ["Пн","Вт","Ср","Чт","Пт","Сб","Нд"];
+  let idx = date.getDay() - 1;
+  if (idx < 0) idx = 6;
+  return days[idx];
 }
 
-function setRingProgress(calories, goal) {
-  const progress = Math.min(calories / goal, 1);
-  calorieRingEl.style.setProperty("--progress", `${progress}turn`);
+function monthTitle(month, year) {
+  const d = new Date(year, month, 1);
+  return d.toLocaleDateString("uk-UA", { month: "long", year: "numeric" });
 }
 
-function getProfileDistance(profile) {
-  const current = Number(profile.weight);
-  const target = Number(profile.targetWeight);
-  if (!current || !target) return "";
-  const diff = Math.abs(current - target);
-  if (diff === 0) return "Цільова вага досягнута";
-  return `До цілі: ${diff} кг`;
+/* ---------- CALCS ---------- */
+function getAge(profile) {
+  const year = new Date().getFullYear();
+  return year - Number(profile.birthYear || 1994);
 }
 
-function calculateGoalsFromProfile(profile) {
+function calculatePlan(profile) {
+  const age = getAge(profile);
   const weight = Number(profile.weight);
   const height = Number(profile.height);
-  const age = Number(profile.age);
-  const activity = Number(profile.activity);
 
   let bmr = 0;
   if (profile.gender === "female") {
@@ -329,716 +228,781 @@ function calculateGoalsFromProfile(profile) {
     bmr = 10 * weight + 6.25 * height - 5 * age + 5;
   }
 
-  let calories = Math.round(bmr * activity);
+  const maintain = Math.round(bmr * Number(profile.activity || 1.2));
+  let goalCalories = maintain;
 
-  if (profile.goal === "lose") calories -= 400;
-  if (profile.goal === "gain") calories += 300;
-  if (calories < 1200) calories = 1200;
+  if (profile.goal === "lose") goalCalories = maintain - 350;
+  if (profile.goal === "gain") goalCalories = maintain + 250;
+  if (goalCalories < 1200) goalCalories = 1200;
 
-  let protein = 0;
-  let fat = 0;
-
-  if (profile.goal === "lose") {
-    protein = Math.round(weight * 1.8);
-    fat = Math.round(weight * 0.8);
-  } else if (profile.goal === "gain") {
-    protein = Math.round(weight * 1.8);
-    fat = Math.round(weight * 1.0);
-  } else {
-    protein = Math.round(weight * 1.6);
-    fat = Math.round(weight * 0.9);
-  }
-
-  const proteinCalories = protein * 4;
-  const fatCalories = fat * 9;
-  const carbs = Math.max(0, Math.round((calories - proteinCalories - fatCalories) / 4));
+  const protein = Math.round(weight * (profile.goal === "gain" ? 1.9 : 1.7));
+  const fats = Math.round(weight * 0.8);
+  const carbs = Math.max(0, Math.round((goalCalories - protein * 4 - fats * 9) / 4));
+  const fiber = Math.round(goalCalories / 1000 * 14);
 
   return {
-    calories,
+    maintain,
+    goalCalories,
     protein,
-    fat,
+    fats,
     carbs,
-    water: DEFAULT_GOALS.water
+    fiber,
+    deficit: maintain - goalCalories,
   };
 }
 
-function prettyDate(dateKey) {
-  const [y, m, d] = dateKey.split("-");
-  const dt = new Date(Number(y), Number(m) - 1, Number(d));
-  return dt.toLocaleDateString("uk-UA", {
-    day: "numeric",
-    month: "long"
+function getEntriesTotals(dateKey = state.selectedDate) {
+  const entries = loadEntries(dateKey);
+  let kcal = 0;
+
+  const mealMap = {};
+  MEAL_CONFIG.forEach(m => mealMap[m.key] = []);
+
+  entries.forEach(item => {
+    kcal += Number(item.totalKcal);
+    if (!mealMap[item.meal]) mealMap[item.meal] = [];
+    mealMap[item.meal].push(item);
+  });
+
+  return { kcal, mealMap, entries };
+}
+
+function calculateMacrosFromEntries(entries) {
+  let protein = 0;
+  let carbs = 0;
+  let fats = 0;
+
+  entries.forEach(e => {
+    protein += Number(e.protein || 0);
+    carbs += Number(e.carbs || 0);
+    fats += Number(e.fats || 0);
+  });
+
+  return {
+    protein: round1(protein),
+    carbs: round1(carbs),
+    fats: round1(fats),
+  };
+}
+
+function round1(v) {
+  return Math.round(v * 10) / 10;
+}
+
+function getPercent(current, total) {
+  if (!total) return 0;
+  return Math.min(100, Math.round((current / total) * 100));
+}
+
+function getForecast(profile) {
+  const weight = Number(profile.weight);
+  const target = Number(profile.targetWeight || weight);
+  const diff = Math.abs(weight - target);
+
+  if (!diff) {
+    return {
+      weeks: 0,
+      endDate: formatLongDate(getTodayKey()),
+    };
+  }
+
+  const weekly = profile.goal === "lose" ? 0.5 : 0.35;
+  const weeks = Math.ceil(diff / weekly);
+  const d = new Date();
+  d.setDate(d.getDate() + weeks * 7);
+
+  return {
+    weeks,
+    endDate: d.toLocaleDateString("uk-UA", { day: "numeric", month: "long", year: "2-digit" }),
+  };
+}
+
+function getStreakData() {
+  let current = 0;
+  let best = 0;
+  let active = true;
+
+  for (let i = 0; i < 365; i++) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const key = dateToKey(d);
+    const entries = loadEntries(key);
+    const has = entries.length > 0;
+
+    if (has) {
+      if (active) current++;
+      best++;
+    } else {
+      if (i === 0) active = false;
+      if (active) active = false;
+    }
+  }
+
+  let bestRun = 0;
+  let temp = 0;
+  for (let i = 365; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const key = dateToKey(d);
+    const entries = loadEntries(key);
+    if (entries.length > 0) {
+      temp++;
+      if (temp > bestRun) bestRun = temp;
+    } else {
+      temp = 0;
+    }
+  }
+
+  return { current, best: bestRun };
+}
+
+/* ---------- UI NAV ---------- */
+function openRootScreen(screenId) {
+  $$(".tab-screen").forEach(s => s.classList.remove("active"));
+  $(screenId).classList.add("active");
+
+  $$(".dock-btn").forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.openScreen === screenId);
   });
 }
 
-function shortDay(dateKey) {
-  const [y, m, d] = dateKey.split("-");
-  const dt = new Date(Number(y), Number(m) - 1, Number(d));
-  return dt.toLocaleDateString("uk-UA", { weekday: "short" });
+function openMainApp() {
+  $("onboardingScreen").classList.remove("active");
+  $("mainAppScreen").classList.add("active");
+  renderAll();
 }
 
-/* onboarding */
-function showStep(step) {
-  stepEls.forEach(el => {
+function goToNested(screenId) {
+  openRootScreen(screenId);
+}
+
+function goBackTo(screenId) {
+  openRootScreen(screenId);
+}
+
+/* ---------- ONBOARDING ---------- */
+function setOnboardingStep(step) {
+  state.onboardingStep = step;
+  $$(".onboarding-step").forEach(el => {
     el.classList.toggle("active", Number(el.dataset.step) === step);
   });
-
-  const progressMap = { 1: 0, 2: 20, 3: 40, 4: 60, 5: 80, 6: 100 };
-  progressFillEl.style.width = `${progressMap[step] || 0}%`;
+  $("onboardingBackBtn").style.visibility = step === 1 ? "hidden" : "visible";
 }
 
-function selectChoiceGroup(buttons, activeBtn) {
-  buttons.forEach(btn => btn.classList.remove("active"));
-  activeBtn.classList.add("active");
-}
+function finishOnboarding() {
+  const profile = loadProfile();
 
-const activityButtons = document.querySelectorAll("[data-activity]");
-const goalButtons = document.querySelectorAll("[data-goal]");
-
-activityButtons.forEach(btn => {
-  btn.addEventListener("click", () => {
-    selectChoiceGroup(activityButtons, btn);
-    onboardingData.activity = Number(btn.dataset.activity);
-  });
-});
-
-goalButtons.forEach(btn => {
-  btn.addEventListener("click", () => {
-    selectChoiceGroup(goalButtons, btn);
-    onboardingData.goal = btn.dataset.goal;
-  });
-});
-
-function finishOnboardingFlow() {
-  const profile = {
-    name: onboardingData.name,
-    gender: onboardingData.gender,
-    age: Number(onboardingData.age),
-    height: Number(onboardingData.height),
-    weight: Number(onboardingData.weight),
-    targetWeight: Number(onboardingData.targetWeight || onboardingData.weight),
-    activity: Number(onboardingData.activity),
-    goal: onboardingData.goal,
-    autoGoals: true,
-    isOnboardingDone: true,
-    avatar: null
-  };
-
-  const goals = calculateGoalsFromProfile(profile);
+  profile.name = $("obName").value.trim() || profile.name || "Ед";
+  profile.gender = state.selectedGender;
+  profile.birthYear = Number($("obBirthYear").value) || profile.birthYear;
+  profile.height = Number($("obHeight").value) || profile.height;
+  profile.weight = Number($("obWeight").value) || profile.weight;
+  profile.targetWeight = Number($("obTargetWeight").value) || profile.targetWeight || profile.weight;
+  profile.goal = state.selectedGoal;
+  profile.activity = state.selectedActivity;
+  profile.onboarded = true;
 
   saveProfile(profile);
-  saveGoals(goals);
 
-  resultHelloText.textContent = `Готово, ${profile.name}`;
-  resultSummaryText.textContent = "Я підготував персональні цілі на день. Їх можна редагувати у профілі.";
-  resultCalories.textContent = goals.calories;
-  resultProtein.textContent = `${goals.protein} г`;
-  resultFat.textContent = `${goals.fat} г`;
-  resultCarbs.textContent = `${goals.carbs} г`;
+  const plan = calculatePlan(profile);
+  const forecast = getForecast(profile);
 
-  showStep(6);
+  $("forecastText").textContent = `${profile.targetWeight} кг досягнеш приблизно до ${forecast.endDate}.`;
+  $("forecastStartDate").textContent = "сьогодні";
+  $("forecastStartWeight").textContent = `${profile.weight} кг`;
+  $("forecastEndDate").textContent = forecast.endDate;
+  $("forecastTargetWeight").textContent = `${profile.targetWeight} кг`;
+
+  $("planCalories").textContent = `${plan.goalCalories} ккал`;
+  $("planProtein").textContent = `${plan.protein} г`;
+  $("planCarbs").textContent = `${plan.carbs} г`;
+  $("planFat").textContent = `${plan.fats} г`;
+  $("planFiber").textContent = `${plan.fiber} г`;
+
+  setOnboardingStep(9);
 }
 
-startOnboardingBtn.addEventListener("click", () => showStep(2));
+/* ---------- RENDER ---------- */
+function renderWeekStrip() {
+  const selected = keyToDate(state.selectedDate);
+  const monday = new Date(selected);
+  let day = monday.getDay() - 1;
+  if (day < 0) day = 6;
+  monday.setDate(selected.getDate() - day);
 
-toStep3Btn.addEventListener("click", () => {
-  const name = userNameInput.value.trim();
-  if (!name) return;
-  onboardingData.name = name;
-  showStep(3);
-});
+  const wrap = $("weekStrip");
+  wrap.innerHTML = "";
 
-toStep4Btn.addEventListener("click", () => {
-  const age = Number(userAgeInput.value);
-  const height = Number(userHeightInput.value);
-  const weight = Number(userWeightInput.value);
-  const gender = userGenderInput.value;
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    const key = dateToKey(d);
 
-  if (!age || !height || !weight) return;
+    const item = document.createElement("button");
+    item.className = `week-day ${key === state.selectedDate ? "active" : ""}`;
+    item.innerHTML = `
+      <span class="week-day-name">${shortWeekDay(d)}</span>
+      <span class="week-day-dot">${d.getDate()}</span>
+    `;
+    item.addEventListener("click", () => {
+      state.selectedDate = key;
+      renderAll();
+    });
+    wrap.appendChild(item);
+  }
+}
 
-  onboardingData.gender = gender;
-  onboardingData.age = age;
-  onboardingData.height = height;
-  onboardingData.weight = weight;
+function renderHeader() {
+  $("headerDateText").textContent = formatHeaderDate(state.selectedDate);
+}
 
-  showStep(4);
-});
+function renderView() {
+  const profile = loadProfile();
+  const plan = calculatePlan(profile);
+  const totals = getEntriesTotals(state.selectedDate);
+  const entries = totals.entries;
+  const macros = calculateMacrosFromEntries(entries);
+  const percent = getPercent(totals.kcal, plan.goalCalories);
 
-toStep5Btn.addEventListener("click", () => showStep(5));
+  $("consumedKcal").textContent = `${totals.kcal} ккал`;
+  $("activityBurn").textContent = `${DEMO_ACTIVITY_BURN} ккал`;
 
-finishOnboardingBtn.addEventListener("click", () => {
-  const targetWeight = Number(targetWeightInput.value);
-  onboardingData.targetWeight = targetWeight || onboardingData.weight;
-  finishOnboardingFlow();
-});
+  $("ringCurrent").textContent = totals.kcal;
+  $("ringGoal").textContent = plan.goalCalories;
+  $("ringPercent").textContent = `${percent} %`;
 
-openAppBtn.addEventListener("click", () => {
-  onboardingScreenEl.classList.add("hidden");
-  mainAppEl.classList.remove("hidden");
-  renderAll();
-});
+  const deg = Math.max(10, (percent / 100) * 360);
+  $("bigRing").style.background = `conic-gradient(var(--neon-orange) 0deg, var(--neon-blue) ${deg}deg, rgba(255,255,255,.08) ${deg}deg)`;
 
-/* app core */
-function openScreen(name) {
-  Object.values(screens).forEach(screen => screen.classList.remove("active"));
-  screens[name].classList.add("active");
+  $("viewProteinCurrent").textContent = `${macros.protein} г`;
+  $("viewCarbsCurrent").textContent = `${macros.carbs} г`;
+  $("viewFatsCurrent").textContent = `${macros.fats} г`;
+  $("viewProteinGoal").textContent = `${plan.protein} г`;
+  $("viewCarbsGoal").textContent = `${plan.carbs} г`;
+  $("viewFatsGoal").textContent = `${plan.fats} г`;
 
-  navButtons.forEach(btn => {
-    btn.classList.toggle("active", btn.dataset.screen === name);
+  renderMealCards(totals.mealMap);
+  renderWater();
+  renderWeightCard();
+
+  $("detailBurnToday").textContent = `${plan.maintain} ккал`;
+  $("detailMaintain").textContent = `${plan.maintain} ккал`;
+  $("detailDeficit").textContent = `-${plan.deficit} ккал`;
+  $("detailGoalCalories").textContent = `${plan.goalCalories} ккал`;
+  $("detailConsumed").textContent = `${totals.kcal} / ${plan.goalCalories}`;
+  $("detailLeft").textContent = `${Math.max(0, plan.goalCalories - totals.kcal)} / ${plan.goalCalories}`;
+}
+
+function renderMealCards(mealMap) {
+  const list = $("mealCardsList");
+  list.innerHTML = "";
+
+  MEAL_CONFIG.forEach(meal => {
+    const count = mealMap[meal.key]?.length || 0;
+    const row = document.createElement("div");
+    row.className = "meal-pill-card";
+    row.innerHTML = `
+      <div class="meal-pill-left">
+        <div class="meal-emoji">${meal.emoji}</div>
+        <div class="meal-name">${meal.key}</div>
+      </div>
+      <div class="meal-tools">
+        <button class="white-circle-btn meal-menu-btn" data-meal="${meal.key}">•••</button>
+        <button class="green-circle-btn meal-plus-btn" data-meal="${meal.key}">＋</button>
+      </div>
+    `;
+    list.appendChild(row);
   });
 
-  if (name === "stats") {
-    renderStats();
-  }
-}
-
-function getTotals(entries) {
-  const totals = {
-    calories: 0,
-    protein: 0,
-    fat: 0,
-    carbs: 0,
-    breakfast: 0,
-    lunch: 0,
-    dinner: 0,
-    snack: 0
-  };
-
-  for (const item of entries) {
-    totals.calories += item.totalCalories;
-    totals.protein += item.totalProtein;
-    totals.fat += item.totalFat;
-    totals.carbs += item.totalCarbs;
-    totals[item.mealType] += item.totalCalories;
-  }
-
-  return totals;
-}
-
-function addEntry({ mealType, foodName, grams, kcal100, protein, fat, carbs }) {
-  const totalCalories = Math.round((grams * kcal100) / 100);
-  const totalProtein = Number(((grams * protein) / 100).toFixed(1));
-  const totalFat = Number(((grams * fat) / 100).toFixed(1));
-  const totalCarbs = Number(((grams * carbs) / 100).toFixed(1));
-
-  const entries = loadEntries();
-  entries.push({
-    id: Date.now(),
-    mealType,
-    foodName,
-    grams,
-    kcal100,
-    protein,
-    fat,
-    carbs,
-    totalCalories,
-    totalProtein,
-    totalFat,
-    totalCarbs,
-    createdAt: Date.now()
+  $$(".meal-plus-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      state.recordMeal = btn.dataset.meal;
+      openRecordModalWithFood(FOOD_DB[0]);
+    });
   });
 
-  saveEntries(entries);
-  renderDiary();
-
-  try {
-    tg.sendData(JSON.stringify({
-      type: "meal_added",
-      mealType,
-      foodName,
-      grams,
-      kcal100,
-      totalCalories
-    }));
-  } catch (e) {}
-}
-
-function deleteEntry(id) {
-  const entries = loadEntries().filter(item => item.id !== id);
-  saveEntries(entries);
-  renderDiary();
-  renderStats();
-}
-
-function fillManualForm(product) {
-  foodNameEl.value = product.name;
-  gramsEl.value = product.defaultGrams || "";
-  kcal100El.value = product.kcal100 || "";
-  proteinEl.value = product.protein || "";
-  fatEl.value = product.fat || "";
-  carbsEl.value = product.carbs || "";
-}
-
-function renderMealList(container, entries, mealType) {
-  const list = entries.filter(item => item.mealType === mealType);
-
-  if (!list.length) {
-    container.innerHTML = `<div class="empty-box">Поки що нічого не додано</div>`;
-    return;
-  }
-
-  container.innerHTML = list.map(item => `
-    <div class="meal-item">
-      <div class="meal-item-top">
-        <div class="meal-item-name">${item.foodName}</div>
-        <div class="meal-item-kcal">${item.totalCalories} ккал</div>
-      </div>
-      <div class="meal-item-meta">${item.grams} г • ${item.kcal100} ккал/100г</div>
-      <div class="meal-item-macros">
-        Б: ${formatNumber(item.totalProtein)} • Ж: ${formatNumber(item.totalFat)} • В: ${formatNumber(item.totalCarbs)}
-      </div>
-      <div class="meal-item-actions">
-        <button class="delete-btn" data-id="${item.id}">Видалити</button>
-      </div>
-    </div>
-  `).join("");
+  $$(".meal-menu-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      state.recordMeal = btn.dataset.meal;
+      openOverlay();
+      $("mealActionMenu").classList.remove("hidden");
+    });
+  });
 }
 
 function renderWater() {
-  const goals = loadGoals();
-  const water = loadWater();
-
-  waterMlView.textContent = water;
-  waterGoalView.textContent = goals.water || DEFAULT_GOALS.water;
-  waterBarFill.style.width = `${percent(water, goals.water || DEFAULT_GOALS.water)}%`;
-}
-
-function renderDiary() {
-  const entries = loadEntries();
-  const totals = getTotals(entries);
-  const goals = loadGoals();
   const profile = loadProfile();
+  const water = loadWater(state.selectedDate);
+  const goal = Number(profile.waterGoalLiters || 3.5);
+  const percent = getPercent(water, goal);
 
-  todayDateEl.textContent = `Сьогодні, ${getTodayLabel()}`;
-  mainGreetingTitle.textContent = profile?.name ? `${profile.name}, щоденник` : "Щоденник";
-
-  dayCaloriesEl.textContent = totals.calories;
-  goalTextEl.textContent = `ціль ${goals.calories}`;
-
-  if (totals.calories <= goals.calories) {
-    remainingTextEl.textContent = `Залишилось ${goals.calories - totals.calories}`;
-    remainingTextEl.style.color = "#cdb8ff";
-  } else {
-    remainingTextEl.textContent = `Перебір ${totals.calories - goals.calories}`;
-    remainingTextEl.style.color = "#ff92ac";
-  }
-
-  proteinTotalEl.textContent = formatNumber(totals.protein);
-  fatTotalEl.textContent = formatNumber(totals.fat);
-  carbsTotalEl.textContent = formatNumber(totals.carbs);
-
-  proteinGoalViewEl.textContent = goals.protein;
-  fatGoalViewEl.textContent = goals.fat;
-  carbsGoalViewEl.textContent = goals.carbs;
-
-  proteinBarEl.style.width = `${percent(totals.protein, goals.protein)}%`;
-  fatBarEl.style.width = `${percent(totals.fat, goals.fat)}%`;
-  carbsBarEl.style.width = `${percent(totals.carbs, goals.carbs)}%`;
-
-  breakfastCaloriesEl.textContent = `${totals.breakfast} ккал`;
-  lunchCaloriesEl.textContent = `${totals.lunch} ккал`;
-  dinnerCaloriesEl.textContent = `${totals.dinner} ккал`;
-  snackCaloriesEl.textContent = `${totals.snack} ккал`;
-
-  setRingProgress(totals.calories, goals.calories);
-
-  renderMealList(breakfastListEl, entries, "breakfast");
-  renderMealList(lunchListEl, entries, "lunch");
-  renderMealList(dinnerListEl, entries, "dinner");
-  renderMealList(snackListEl, entries, "snack");
-
-  renderWater();
+  $("waterCurrent").textContent = `${water.toFixed(1).replace(".0","")} л`;
+  $("waterGoalText").textContent = goal;
+  $("waterFill").style.width = `${percent}%`;
 }
 
-function renderFoodCards() {
-  const search = foodSearchEl.value.trim().toLowerCase();
-  const list = foodDatabase[currentTab] || [];
-
-  const filtered = list.filter(item =>
-    item.name.toLowerCase().includes(search)
-  );
-
-  const titles = {
-    recent: "Недавні продукти",
-    favorites: "Обране",
-    myfoods: "Мої продукти",
-    recipes: "Рецепти"
-  };
-
-  tabTitleEl.textContent = titles[currentTab];
-
-  if (!filtered.length) {
-    foodListEl.innerHTML = `<div class="empty-box">Нічого не знайдено</div>`;
-    return;
-  }
-
-  foodListEl.innerHTML = filtered.map((item, index) => `
-    <div class="food-card">
-      <div class="food-card-top">
-        <div>
-          <div class="food-name">${item.name}</div>
-          <div class="food-meta">${item.kcal100} ккал • ${item.defaultGrams} г</div>
-          <div class="food-macros">
-            <span class="macro-pill">Б: ${item.protein}</span>
-            <span class="macro-pill">Ж: ${item.fat}</span>
-            <span class="macro-pill">В: ${item.carbs}</span>
-          </div>
-        </div>
-        <button class="plus-btn" data-tab="${currentTab}" data-index="${index}">+</button>
-      </div>
-    </div>
-  `).join("");
+function renderWeightCard() {
+  const profile = loadProfile();
+  $("profileWeightMain").textContent = `${profile.weight} кг`;
+  $("profileTargetMain").textContent = `${profile.targetWeight} кг`;
 }
 
-function renderRecipes() {
-  recipesListEl.innerHTML = recipesCollection.map(recipe => `
-    <div class="recipe-card">
-      <div class="recipe-card-top">
-        <div>
-          <div class="recipe-name">${recipe.name}</div>
-          <div class="recipe-meta">${recipe.text}</div>
-          <div class="food-macros" style="margin-top:12px;">
-            <span class="macro-pill">${recipe.kcal} ккал</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  `).join("");
-}
+function renderProgress() {
+  const chart = $("chartBars");
+  const history = $("historyList");
+  chart.innerHTML = "";
+  history.innerHTML = "";
 
-/* stats */
-function getLastDaysData(days = 7) {
-  const arr = [];
-  for (let i = days - 1; i >= 0; i--) {
+  const data = [];
+
+  for (let i = 6; i >= 0; i--) {
     const d = new Date();
     d.setDate(d.getDate() - i);
-    const key = dateKeyFromDate(d);
-    const entries = loadEntries(key);
-    const totals = getTotals(entries);
+    const key = dateToKey(d);
+    const totals = getEntriesTotals(key);
     const water = loadWater(key);
-    arr.push({
+    data.push({
       key,
-      calories: totals.calories,
+      kcal: totals.kcal,
       water
     });
   }
-  return arr;
-}
 
-function renderStats() {
-  const week = getLastDaysData(7);
-  const today = week[week.length - 1];
-  const totalDaysWithData = week.filter(x => x.calories > 0 || x.water > 0).length;
-  const avg = totalDaysWithData
-    ? Math.round(week.reduce((sum, x) => sum + x.calories, 0) / totalDaysWithData)
-    : 0;
+  const max = Math.max(1, ...data.map(x => x.kcal));
+  const avgKcal = Math.round(data.reduce((s, x) => s + x.kcal, 0) / data.length);
+  const avgWater = round1(data.reduce((s, x) => s + x.water, 0) / data.length);
 
-  statsTodayCalories.textContent = today.calories;
-  statsAverageCalories.textContent = avg;
-  statsDaysCount.textContent = totalDaysWithData;
-  statsWaterToday.textContent = today.water;
+  $("avgCalories7").textContent = avgKcal;
+  $("avgWater7").textContent = avgWater;
 
-  const maxCalories = Math.max(...week.map(x => x.calories), 1);
+  data.forEach(item => {
+    const d = keyToDate(item.key);
+    const height = Math.max(8, Math.round((item.kcal / max) * 140));
 
-  weekChart.innerHTML = week.map(day => {
-    const h = Math.max((day.calories / maxCalories) * 130, day.calories > 0 ? 8 : 4);
-    return `
-      <div class="chart-col">
-        <div class="chart-value">${day.calories}</div>
-        <div class="chart-bar-wrap">
-          <div class="chart-bar" style="height:${h}px"></div>
-        </div>
-        <div class="chart-day">${shortDay(day.key)}</div>
-      </div>
+    const col = document.createElement("div");
+    col.className = "bar-col";
+    col.innerHTML = `
+      <div class="bar-value">${item.kcal}</div>
+      <div class="bar-track"><div class="bar-fill" style="height:${height}px"></div></div>
+      <div class="bar-day">${shortWeekDay(d)}</div>
     `;
-  }).join("");
+    chart.appendChild(col);
+  });
 
-  const history = week.slice().reverse();
-
-  historyDaysList.innerHTML = history.map(day => `
-    <div class="history-day-card">
-      <div class="history-day-top">
-        <div class="history-day-date">${prettyDate(day.key)}</div>
-        <div class="history-day-kcal">${day.calories} ккал</div>
+  data.slice().reverse().forEach(item => {
+    const row = document.createElement("div");
+    row.className = "history-item";
+    row.innerHTML = `
+      <div class="history-item-top">
+        <div class="history-date">${formatLongDate(item.key)}</div>
+        <div class="history-value">${item.kcal} ккал</div>
       </div>
-      <div class="history-meta">Вода: ${day.water} мл</div>
-    </div>
-  `).join("");
+      <div class="history-meta">Вода: ${item.water.toFixed(1).replace(".0","")} л</div>
+    `;
+    history.appendChild(row);
+  });
+
+  const streak = getStreakData();
+  $("streakCount").textContent = streak.current;
+  $("streakBig").textContent = streak.current;
+  $("streakModalCount").textContent = streak.current;
+  $("streakBestCount").textContent = streak.best;
 }
 
-/* profile */
-function renderProfile() {
-  const profile = loadProfile() || { ...DEFAULT_PROFILE };
-  const goals = loadGoals();
+function renderMealsSearch() {
+  const list = $("searchResultsList");
+  const query = $("foodSearchInput").value.trim().toLowerCase();
+
+  const filtered = FOOD_DB.filter(item => item.name.toLowerCase().includes(query));
+
+  list.innerHTML = "";
+  filtered.forEach(item => {
+    const row = document.createElement("div");
+    row.className = "search-row";
+    row.innerHTML = `
+      <img src="${item.image}" alt="${item.name}">
+      <div>
+        <div class="search-row-title">${item.name} <span class="search-row-tag">${item.badge}</span></div>
+        <div class="search-row-sub">${item.kcal100} ккал / 100г</div>
+      </div>
+      <button class="search-plus" data-food-id="${item.id}">＋</button>
+    `;
+    list.appendChild(row);
+  });
+
+  $$(".search-plus").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const food = FOOD_DB.find(f => f.id === btn.dataset.foodId);
+      state.recordMeal = "Сніданок";
+      openRecordModalWithFood(food);
+    });
+  });
+}
+
+function renderProfileScreens() {
+  const profile = loadProfile();
+  const plan = calculatePlan(profile);
+  const forecast = getForecast(profile);
 
   if (profile.avatar) {
-    profileAvatar.innerHTML = `<img src="${profile.avatar}">`;
+    $("profileAvatar").innerHTML = `<img src="${profile.avatar}" alt="avatar">`;
   } else {
-    profileAvatar.textContent = (profile.name || "U").charAt(0).toUpperCase();
+    $("profileAvatar").textContent = (profile.name || "Е").slice(0, 1).toUpperCase();
   }
 
-  profileNameView.textContent = profile.name || "Користувач";
-  profileGoalBadge.textContent = GOAL_LABELS[profile.goal] || "Ціль";
-  profileActivityBadge.textContent = ACTIVITY_LABELS[String(profile.activity)] || "Активність";
+  $("profileNameInput").value = profile.name;
+  $("profileBirthYearInput").value = profile.birthYear;
+  $("profileHeightInput").value = profile.height;
+  $("profileWeightInput").value = profile.weight;
+  $("profileTargetWeightInput").value = profile.targetWeight;
+  $("profileWaterGoalInput").value = profile.waterGoalLiters;
 
-  profileNameInput.value = profile.name || "";
-  profileGenderInput.value = profile.gender || "male";
-  profileAgeInput.value = profile.age || "";
-  profileHeightInput.value = profile.height || "";
-  profileWeightInput.value = profile.weight || "";
-  profileTargetWeightInput.value = profile.targetWeight || "";
-  profileActivityInput.value = String(profile.activity || 1.2);
-  profileGoalInput.value = profile.goal || "lose";
+  $("goalForecastText").textContent = `${profile.targetWeight} кг приблизно до ${forecast.endDate}`;
+  $("goalScreenStartDate").textContent = "сьогодні";
+  $("goalScreenStartWeight").textContent = `${profile.weight} кг`;
+  $("goalScreenEndDate").textContent = forecast.endDate;
+  $("goalScreenEndWeight").textContent = `${profile.targetWeight} кг`;
 
-  goalCaloriesEl.value = goals.calories;
-  goalProteinEl.value = goals.protein;
-  goalFatEl.value = goals.fat;
-  goalCarbsEl.value = goals.carbs;
-  waterGoalInput.value = goals.water || DEFAULT_GOALS.water;
+  $("goalCaloriesValue").textContent = `${plan.goalCalories} ккал`;
+  $("goalProteinValue").textContent = `${plan.protein} г`;
+  $("goalCarbsValue").textContent = `${plan.carbs} г`;
+  $("goalFatsValue").textContent = `${plan.fats} г`;
+}
 
-  autoGoalsToggle.classList.toggle("active", !!profile.autoGoals);
-  autoGoalsToggle.textContent = profile.autoGoals ? "Увімкнено" : "Вимкнено";
+function renderCalendar() {
+  $("calendarTitle").textContent = monthTitle(state.currentMonth, state.currentYear);
+  const grid = $("calendarGrid");
+  grid.innerHTML = "";
 
-  profileUserInfo.textContent =
-    `${profile.name || "Користувач"} • ${profile.age} р. • ${profile.height} см • ${profile.weight} кг • ${getProfileDistance(profile)}`;
+  const first = new Date(state.currentYear, state.currentMonth, 1);
+  const startOffset = (first.getDay() + 6) % 7;
+  const daysInMonth = new Date(state.currentYear, state.currentMonth + 1, 0).getDate();
+
+  for (let i = 0; i < startOffset; i++) {
+    const span = document.createElement("span");
+    grid.appendChild(span);
+  }
+
+  for (let day = 1; day <= daysInMonth; day++) {
+    const date = new Date(state.currentYear, state.currentMonth, day);
+    const key = dateToKey(date);
+    const btn = document.createElement("button");
+    btn.textContent = day;
+    if (key === state.selectedDate) btn.classList.add("active");
+    btn.addEventListener("click", () => {
+      state.selectedDate = key;
+      closeModal("calendarModal");
+      renderAll();
+    });
+    grid.appendChild(btn);
+  }
 }
 
 function renderAll() {
-  renderRecipes();
-  renderFoodCards();
-  renderDiary();
-  renderProfile();
-  renderStats();
-  openScreen("diary");
+  renderHeader();
+  renderWeekStrip();
+  renderView();
+  renderProgress();
+  renderMealsSearch();
+  renderProfileScreens();
+  renderCalendar();
 }
 
-/* profile actions */
-function collectProfileFromInputs() {
-  const oldProfile = loadProfile() || { ...DEFAULT_PROFILE };
-
-  return {
-    ...oldProfile,
-    name: profileNameInput.value.trim() || oldProfile.name || "Користувач",
-    gender: profileGenderInput.value,
-    age: Number(profileAgeInput.value) || oldProfile.age,
-    height: Number(profileHeightInput.value) || oldProfile.height,
-    weight: Number(profileWeightInput.value) || oldProfile.weight,
-    targetWeight: Number(profileTargetWeightInput.value) || oldProfile.targetWeight,
-    activity: Number(profileActivityInput.value) || oldProfile.activity,
-    goal: profileGoalInput.value,
-    autoGoals: oldProfile.autoGoals !== false,
-    isOnboardingDone: true
-  };
+/* ---------- MODALS ---------- */
+function openOverlay() {
+  $("overlay").classList.remove("hidden");
 }
 
-function saveProfileAndMaybeGoals(recalc = false) {
-  const profile = collectProfileFromInputs();
-  saveProfile(profile);
-
-  if (profile.autoGoals || recalc) {
-    const goals = calculateGoalsFromProfile(profile);
-    goals.water = Number(waterGoalInput.value) || DEFAULT_GOALS.water;
-    saveGoals(goals);
-  } else {
-    saveGoals({
-      calories: Number(goalCaloriesEl.value) || DEFAULT_GOALS.calories,
-      protein: Number(goalProteinEl.value) || DEFAULT_GOALS.protein,
-      fat: Number(goalFatEl.value) || DEFAULT_GOALS.fat,
-      carbs: Number(goalCarbsEl.value) || DEFAULT_GOALS.carbs,
-      water: Number(waterGoalInput.value) || DEFAULT_GOALS.water
-    });
-  }
-
-  renderAll();
+function closeOverlay() {
+  $("overlay").classList.add("hidden");
 }
 
-/* events */
-navButtons.forEach(btn => {
-  btn.addEventListener("click", () => openScreen(btn.dataset.screen));
-});
+function closeAllFloating() {
+  closeOverlay();
+  ["addSheet","mealActionMenu","balanceModal","streakModal","calendarModal","recordModal"]
+    .forEach(id => $(id).classList.add("hidden"));
+}
 
-tabButtons.forEach(btn => {
-  btn.addEventListener("click", () => {
-    currentTab = btn.dataset.tab;
-    tabButtons.forEach(x => x.classList.remove("active"));
-    btn.classList.add("active");
-    renderFoodCards();
-  });
-});
+function closeModal(id) {
+  $(id).classList.add("hidden");
+  closeOverlay();
+}
 
-miniAddButtons.forEach(btn => {
-  btn.addEventListener("click", () => {
-    selectedMealTypeEl.value = btn.dataset.meal;
-    openScreen("add");
-  });
-});
+function openRecordModalWithFood(food) {
+  state.editingFood = food;
+  $("recordMealTitle").textContent = `${mealEmoji(state.recordMeal)} ${state.recordMeal}`;
+  $("recordDateValue").textContent = formatLongDate(state.selectedDate);
+  $("recordFoodName").textContent = food.name;
+  $("recordFoodKcal100").textContent = food.kcal100;
+  $("recordFoodImage").src = food.image;
+  $("recordCountInput").value = 1;
+  $("recordGramsInput").value = 120;
+  openOverlay();
+  $("recordModal").classList.remove("hidden");
+}
 
-foodSearchEl.addEventListener("input", renderFoodCards);
+function mealEmoji(name) {
+  return MEAL_CONFIG.find(x => x.key === name)?.emoji || "🍽";
+}
 
-foodListEl.addEventListener("click", (e) => {
-  const btn = e.target.closest(".plus-btn");
-  if (!btn) return;
+/* ---------- SAVE RECORD ---------- */
+function saveCurrentRecord() {
+  if (!state.editingFood) return;
 
-  const tab = btn.dataset.tab;
-  const index = Number(btn.dataset.index);
-  const item = foodDatabase[tab][index];
+  const grams = Number($("recordGramsInput").value) || 0;
+  const count = Number($("recordCountInput").value) || 1;
+  const totalGrams = grams * count;
+  const kcal100 = Number(state.editingFood.kcal100);
 
-  fillManualForm(item);
-  addResultEl.textContent = `Заповнено дані для: ${item.name}`;
-});
+  const totalKcal = Math.round((totalGrams * kcal100) / 100);
 
-document.addEventListener("click", (e) => {
-  const btn = e.target.closest(".delete-btn");
-  if (!btn) return;
+  const protein = round1(totalGrams * 0.22 / 1); // demo values
+  const carbs = round1(totalGrams * 0.12 / 1);
+  const fats = round1(totalGrams * 0.06 / 1);
 
-  const id = Number(btn.dataset.id);
-  deleteEntry(id);
-});
-
-addManualBtn.addEventListener("click", () => {
-  const mealType = selectedMealTypeEl.value;
-  const foodName = foodNameEl.value.trim();
-  const grams = Number(gramsEl.value);
-  const kcal100 = Number(kcal100El.value);
-  const protein = Number(proteinEl.value || 0);
-  const fat = Number(fatEl.value || 0);
-  const carbs = Number(carbsEl.value || 0);
-
-  if (!foodName || !grams || !kcal100) {
-    addResultEl.textContent = "Заповни назву, грами і ккал";
-    return;
-  }
-
-  addEntry({
-    mealType,
-    foodName,
-    grams,
-    kcal100,
+  const entries = loadEntries(state.selectedDate);
+  entries.push({
+    id: `e_${Date.now()}`,
+    meal: state.recordMeal,
+    foodId: state.editingFood.id,
+    name: state.editingFood.name,
+    grams: totalGrams,
+    totalKcal,
     protein,
-    fat,
-    carbs
+    carbs,
+    fats,
+    createdAt: Date.now(),
   });
+  saveEntries(entries, state.selectedDate);
 
-  addResultEl.textContent = `Додано: ${foodName}`;
-  foodNameEl.value = "";
-  gramsEl.value = "";
-  kcal100El.value = "";
-  proteinEl.value = "";
-  fatEl.value = "";
-  carbsEl.value = "";
-
-  openScreen("diary");
-});
-
-backToDiaryBtn.addEventListener("click", () => openScreen("diary"));
-closeAddBtn.addEventListener("click", () => openScreen("diary"));
-
-createFoodBtn.addEventListener("click", () => {
-  addResultEl.textContent = "Заповни форму нижче і додай свій продукт";
-});
-
-scanFoodBtn.addEventListener("click", () => {
-  addResultEl.textContent = "Скан їжі можна додати наступним етапом";
-});
-
-openSettingsBtn.addEventListener("click", () => {
-  openScreen("profile");
-});
-
-/* water events */
-waterButtons.forEach(btn => {
-  btn.addEventListener("click", () => {
-    const add = Number(btn.dataset.waterAdd);
-    const current = loadWater();
-    saveWater(current + add);
-    renderDiary();
-    renderStats();
-  });
-});
-
-resetWaterBtn.addEventListener("click", () => {
-  saveWater(0);
-  renderDiary();
-  renderStats();
-});
-
-/* avatar */
-changeAvatarBtn.addEventListener("click", () => {
-  avatarInput.click();
-});
-
-avatarInput.addEventListener("change", () => {
-  const file = avatarInput.files[0];
-  if (!file) return;
-
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    const profile = loadProfile() || { ...DEFAULT_PROFILE };
-    profile.avatar = e.target.result;
-    saveProfile(profile);
-    renderProfile();
-  };
-  reader.readAsDataURL(file);
-});
-
-/* profile buttons */
-autoGoalsToggle.addEventListener("click", () => {
-  const profile = loadProfile() || { ...DEFAULT_PROFILE };
-  profile.autoGoals = !profile.autoGoals;
-  saveProfile(profile);
-  renderProfile();
-});
-
-recalculateGoalsBtn.addEventListener("click", () => {
-  const profile = collectProfileFromInputs();
-  profile.autoGoals = true;
-  saveProfile(profile);
-  const goals = calculateGoalsFromProfile(profile);
-  goals.water = Number(waterGoalInput.value) || DEFAULT_GOALS.water;
-  saveGoals(goals);
+  closeModal("recordModal");
   renderAll();
-});
+}
 
-saveProfileBtn.addEventListener("click", () => {
-  saveProfileAndMaybeGoals(false);
-});
+/* ---------- EVENTS ---------- */
+function bindEvents() {
+  $("onboardingBackBtn").addEventListener("click", () => {
+    if (state.onboardingStep > 1) setOnboardingStep(state.onboardingStep - 1);
+  });
 
-clearDayBtn.addEventListener("click", () => {
-  localStorage.removeItem(entriesKey());
-  localStorage.removeItem(waterKey());
-  renderDiary();
-  renderStats();
-});
+  $$("[data-next-step]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      setOnboardingStep(Number(btn.dataset.nextStep));
+    });
+  });
 
-restartOnboardingBtn.addEventListener("click", () => {
-  localStorage.removeItem(profileKey());
-  localStorage.removeItem(goalsKey());
-  onboardingData = { ...DEFAULT_PROFILE };
-  mainAppEl.classList.add("hidden");
-  onboardingScreenEl.classList.remove("hidden");
-  userNameInput.value = "";
-  userAgeInput.value = "";
-  userHeightInput.value = "";
-  userWeightInput.value = "";
-  targetWeightInput.value = "";
-  showStep(1);
-});
+  $("#skipTargetBtn")?.addEventListener?.("click", () => {
+    $("obTargetWeight").value = $("obWeight").value || DEFAULT_PROFILE.targetWeight;
+    setOnboardingStep(8);
+  });
 
-/* init */
-function initApp() {
-  const savedProfile = loadProfile();
+  $$(".choice-card[data-gender]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      state.selectedGender = btn.dataset.gender;
+      $$(".choice-card[data-gender]").forEach(x => x.classList.remove("active"));
+      btn.classList.add("active");
+    });
+  });
 
-  if (!savedProfile || !savedProfile.isOnboardingDone) {
-    onboardingScreenEl.classList.remove("hidden");
-    mainAppEl.classList.add("hidden");
-    showStep(1);
-  } else {
-    onboardingScreenEl.classList.add("hidden");
-    mainAppEl.classList.remove("hidden");
+  $$(".choice-card[data-goal]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      state.selectedGoal = btn.dataset.goal;
+      $$(".choice-card[data-goal]").forEach(x => x.classList.remove("active"));
+      btn.classList.add("active");
+    });
+  });
+
+  $$(".choice-detail-card[data-activity]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      state.selectedActivity = Number(btn.dataset.activity);
+      $$(".choice-detail-card[data-activity]").forEach(x => x.classList.remove("active"));
+      btn.classList.add("active");
+    });
+  });
+
+  $("finishOnboardingBtn").addEventListener("click", finishOnboarding);
+  $("startAppBtn").addEventListener("click", openMainApp);
+
+  $$(".dock-btn").forEach(btn => {
+    btn.addEventListener("click", () => openRootScreen(btn.dataset.openScreen));
+  });
+
+  $("mainFabBtn").addEventListener("click", () => {
+    openOverlay();
+    $("addSheet").classList.remove("hidden");
+  });
+
+  $$("[data-close-sheet]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      $(btn.dataset.closeSheet).classList.add("hidden");
+      closeOverlay();
+    });
+  });
+
+  $$("[data-close-modal]").forEach(btn => {
+    btn.addEventListener("click", () => closeModal(btn.dataset.closeModal));
+  });
+
+  $("overlay").addEventListener("click", closeAllFloating);
+
+  $("openBalanceModalBtn").addEventListener("click", () => {
+    openOverlay();
+    $("balanceModal").classList.remove("hidden");
+  });
+
+  $("streakInfoBtn").addEventListener("click", () => {
+    openOverlay();
+    $("streakModal").classList.remove("hidden");
+  });
+
+  $("openStreakModalBtn").addEventListener("click", () => {
+    openOverlay();
+    $("streakModal").classList.remove("hidden");
+  });
+
+  $("openCalendarBtn").addEventListener("click", () => {
+    openOverlay();
+    $("calendarModal").classList.remove("hidden");
+  });
+
+  $("prevMonthBtn").addEventListener("click", () => {
+    state.currentMonth--;
+    if (state.currentMonth < 0) {
+      state.currentMonth = 11;
+      state.currentYear--;
+    }
+    renderCalendar();
+  });
+
+  $("nextMonthBtn").addEventListener("click", () => {
+    state.currentMonth++;
+    if (state.currentMonth > 11) {
+      state.currentMonth = 0;
+      state.currentYear++;
+    }
+    renderCalendar();
+  });
+
+  $("foodSearchInput").addEventListener("input", renderMealsSearch);
+
+  $("saveRecordBtn").addEventListener("click", saveCurrentRecord);
+
+  $("recordDeleteBtn").addEventListener("click", () => closeModal("recordModal"));
+
+  $("menuQuickAdd").addEventListener("click", () => {
+    $("mealActionMenu").classList.add("hidden");
+    openRecordModalWithFood(FOOD_DB[0]);
+  });
+
+  $$("[data-add-meal]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      state.recordMeal = btn.dataset.addMeal;
+      $("addSheet").classList.add("hidden");
+      openRecordModalWithFood(FOOD_DB[0]);
+    });
+  });
+
+  $$("[data-add-now]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      state.recordMeal = "Сніданок";
+      $("addSheet").classList.add("hidden");
+      openRecordModalWithFood(FOOD_DB[0]);
+    });
+  });
+
+  $("quickWaterChip").addEventListener("click", () => {
+    const current = loadWater(state.selectedDate);
+    saveWater(round1(current + 0.25), state.selectedDate);
+    closeModal("addSheet");
     renderAll();
+  });
+
+  $("quickWeightChip").addEventListener("click", () => {
+    goToNested("screenProfileDetail");
+    closeModal("addSheet");
+  });
+
+  $("waterPlusBtn").addEventListener("click", () => {
+    const current = loadWater(state.selectedDate);
+    saveWater(round1(current + 0.25), state.selectedDate);
+    renderWater();
+    renderProgress();
+  });
+
+  $("editProfileBtn").addEventListener("click", () => goToNested("screenProfileDetail"));
+  $("openProfileScreenBtn").addEventListener("click", () => goToNested("screenProfileDetail"));
+  $("openGoalScreenBtn").addEventListener("click", () => goToNested("screenGoalDetail"));
+  $("openPremiumBtn").addEventListener("click", () => goToNested("screenPremium"));
+  $("openPremiumScreenBtn").addEventListener("click", () => goToNested("screenPremium"));
+
+  $$("[data-back-to]").forEach(btn => {
+    btn.addEventListener("click", () => goBackTo(btn.dataset.backTo));
+  });
+
+  $("saveProfileBtn").addEventListener("click", () => {
+    const profile = loadProfile();
+    profile.name = $("profileNameInput").value.trim() || profile.name;
+    profile.birthYear = Number($("profileBirthYearInput").value) || profile.birthYear;
+    profile.height = Number($("profileHeightInput").value) || profile.height;
+    profile.weight = Number($("profileWeightInput").value) || profile.weight;
+    profile.targetWeight = Number($("profileTargetWeightInput").value) || profile.targetWeight;
+    profile.waterGoalLiters = Number($("profileWaterGoalInput").value) || profile.waterGoalLiters;
+    saveProfile(profile);
+    renderAll();
+    goBackTo("screenMore");
+  });
+
+  $("changeAvatarBtn").addEventListener("click", () => $("avatarInput").click());
+
+  $("avatarInput").addEventListener("change", () => {
+    const file = $("avatarInput").files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const profile = loadProfile();
+      profile.avatar = e.target.result;
+      saveProfile(profile);
+      renderProfileScreens();
+    };
+    reader.readAsDataURL(file);
+  });
+
+  $$(".demo-btn").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      if (btn.id === "changeAvatarBtn") return;
+      if (btn.dataset.demoBound) return;
+      btn.dataset.demoBound = "1";
+    });
+  });
+}
+
+/* ---------- INIT ---------- */
+function init() {
+  const profile = loadProfile();
+  state.selectedDate = getTodayKey();
+  state.currentMonth = new Date().getMonth();
+  state.currentYear = new Date().getFullYear();
+
+  $("obName").value = profile.name || "";
+  $("obBirthYear").value = profile.birthYear || "";
+  $("obHeight").value = profile.height || "";
+  $("obWeight").value = profile.weight || "";
+  $("obTargetWeight").value = profile.targetWeight || "";
+
+  state.selectedGender = profile.gender;
+  state.selectedGoal = profile.goal;
+  state.selectedActivity = profile.activity;
+
+  bindEvents();
+
+  if (profile.onboarded) {
+    $("onboardingScreen").classList.remove("active");
+    $("mainAppScreen").classList.add("active");
+    renderAll();
+    openRootScreen("screenView");
+  } else {
+    setOnboardingStep(1);
   }
 }
 
-renderRecipes();
-renderFoodCards();
-initApp();
+init();
