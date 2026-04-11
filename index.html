@@ -1,563 +1,888 @@
 <!doctype html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Calorie Mini App</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Calorie Neon App</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="app-shell">
+  <div class="app" id="app">
 
     <!-- ONBOARDING -->
-    <section id="onboardingScreen" class="onboarding-screen">
-      <div class="onboarding-card">
+    <section id="onboardingScreen" class="screen active onboarding-screen">
+      <div class="phone-top-space"></div>
 
-        <div class="onboarding-progress">
-          <div class="onboarding-progress-fill" id="onboardingProgressFill"></div>
+      <div class="onboarding-wrap">
+        <button class="circle-back-btn ghost" id="onboardingBackBtn">‹</button>
+
+        <div class="onboarding-progress-wrap">
+          <div class="progress-ring-mini">
+            <div class="progress-ring-mini-inner">✓</div>
+          </div>
         </div>
 
-        <div class="step active" data-step="1">
-          <div class="welcome-badge">CALORIE TRACKER</div>
-          <h1 class="onboarding-title">Привіт 👋</h1>
-          <p class="onboarding-text">
-            Я допоможу тобі рахувати калорії, тримати контроль харчування і бачити прогрес щодня.
-          </p>
-          <button class="primary-btn" id="startOnboardingBtn">Почати</button>
+        <div class="onboarding-step active" data-step="1">
+          <h1 class="hero-title">Як до тебе звертатись?</h1>
+          <p class="hero-subtitle">Ім’я буде видно в додатку і в персональних підказках.</p>
+
+          <div class="onboarding-card dark-panel">
+            <label class="field-label">Ім’я</label>
+            <input id="obName" class="neon-input" type="text" placeholder="Наприклад: Ед" />
+          </div>
+
+          <button class="primary-action" data-next-step="2">Продовжити</button>
         </div>
 
-        <div class="step" data-step="2">
-          <div class="step-label">Крок 1 з 5</div>
-          <h2 class="onboarding-title small">Як до вас звертатись?</h2>
-          <p class="onboarding-text">Вкажіть ім’я або нік</p>
-          <input id="userNameInput" type="text" placeholder="Наприклад: Ед">
-          <button class="primary-btn" id="toStep3Btn">Далі</button>
+        <div class="onboarding-step" data-step="2">
+          <h1 class="hero-title">Яка твоя стать?</h1>
+          <p class="hero-subtitle">Впливає на розрахунок добової норми калорій.</p>
+
+          <div class="choice-stack">
+            <button class="choice-card active" data-gender="male">Чоловік</button>
+            <button class="choice-card" data-gender="female">Жінка</button>
+          </div>
+
+          <button class="primary-action" data-next-step="3">Продовжити</button>
         </div>
 
-        <div class="step" data-step="3">
-          <div class="step-label">Крок 2 з 5</div>
-          <h2 class="onboarding-title small">Основні дані</h2>
+        <div class="onboarding-step" data-step="3">
+          <h1 class="hero-title">Коли ти народився?</h1>
+          <p class="hero-subtitle">Твій вік потрібен для точнішого плану.</p>
 
-          <label for="userGenderInput">Стать</label>
-          <select id="userGenderInput">
-            <option value="male">Чоловік</option>
-            <option value="female">Жінка</option>
-          </select>
+          <div class="onboarding-card dark-panel">
+            <label class="field-label">Рік народження</label>
+            <input id="obBirthYear" class="neon-input" type="number" placeholder="1994" />
+          </div>
 
-          <div class="row-3">
-            <div>
-              <label for="userAgeInput">Вік</label>
-              <input id="userAgeInput" type="number" placeholder="30">
-            </div>
-            <div>
-              <label for="userHeightInput">Ріст</label>
-              <input id="userHeightInput" type="number" placeholder="175">
-            </div>
-            <div>
-              <label for="userWeightInput">Вага</label>
-              <input id="userWeightInput" type="number" placeholder="80">
+          <button class="primary-action" data-next-step="4">Продовжити</button>
+        </div>
+
+        <div class="onboarding-step" data-step="4">
+          <h1 class="hero-title">Вкажи свій зріст</h1>
+          <p class="hero-subtitle">Ця інформація допоможе порахувати денну норму.</p>
+
+          <div class="onboarding-card dark-panel">
+            <label class="field-label">Зріст, см</label>
+            <input id="obHeight" class="neon-input" type="number" placeholder="174" />
+          </div>
+
+          <button class="primary-action" data-next-step="5">Продовжити</button>
+        </div>
+
+        <div class="onboarding-step" data-step="5">
+          <h1 class="hero-title">Яка твоя поточна вага?</h1>
+          <p class="hero-subtitle">Поточна вага є ключовим фактором для створення плану.</p>
+
+          <div class="onboarding-card dark-panel">
+            <label class="field-label">Вага, кг</label>
+            <input id="obWeight" class="neon-input" type="number" placeholder="110" />
+          </div>
+
+          <button class="primary-action" data-next-step="6">Продовжити</button>
+        </div>
+
+        <div class="onboarding-step" data-step="6">
+          <h1 class="hero-title">Яка твоя ціль?</h1>
+          <p class="hero-subtitle">Обери режим, який хочеш зараз.</p>
+
+          <div class="choice-stack">
+            <button class="choice-card active" data-goal="lose">Схуднути</button>
+            <button class="choice-card" data-goal="maintain">Бути у формі</button>
+            <button class="choice-card" data-goal="gain">Збільшити м'язи</button>
+          </div>
+
+          <button class="primary-action" data-next-step="7">Продовжити</button>
+        </div>
+
+        <div class="onboarding-step" data-step="7">
+          <h1 class="hero-title">Яка твоя цільова вага?</h1>
+          <p class="hero-subtitle">Цільову вагу можна буде змінити пізніше.</p>
+
+          <div class="onboarding-card dark-panel">
+            <label class="field-label">Цільова вага, кг</label>
+            <input id="obTargetWeight" class="neon-input" type="number" placeholder="85" />
+          </div>
+
+          <button class="primary-action" data-next-step="8">Створи мені план</button>
+          <button class="text-btn" id="skipTargetBtn">Пропустити цей крок</button>
+        </div>
+
+        <div class="onboarding-step" data-step="8">
+          <h1 class="hero-title">Активність зазвичай яка?</h1>
+          <p class="hero-subtitle">Обери варіант, який найкраще описує твій тиждень.</p>
+
+          <div class="choice-stack choice-stack-long">
+            <button class="choice-detail-card active" data-activity="1.2">
+              <span class="choice-detail-title">Сидячий спосіб життя</span>
+              <span class="choice-detail-text">Більшу частину часу сидиш, руху мало.</span>
+            </button>
+
+            <button class="choice-detail-card" data-activity="1.375">
+              <span class="choice-detail-title">Легка</span>
+              <span class="choice-detail-text">Іноді рухаєшся, є легка активність.</span>
+            </button>
+
+            <button class="choice-detail-card" data-activity="1.55">
+              <span class="choice-detail-title">Середня</span>
+              <span class="choice-detail-text">Регулярні тренування або активна робота.</span>
+            </button>
+
+            <button class="choice-detail-card" data-activity="1.725">
+              <span class="choice-detail-title">Висока</span>
+              <span class="choice-detail-text">Часті тренування або фізична праця.</span>
+            </button>
+          </div>
+
+          <button class="primary-action" id="finishOnboardingBtn">Продовжити</button>
+        </div>
+
+        <div class="onboarding-step" data-step="9">
+          <div class="goal-forecast-card">
+            <div class="forecast-icon">📅</div>
+            <h1 class="hero-title no-top">План готовий</h1>
+            <p class="hero-subtitle" id="forecastText">Розраховую...</p>
+
+            <button class="primary-action" id="startAppBtn">Розпочнемо</button>
+
+            <div class="forecast-line-wrap">
+              <div class="forecast-dot start"></div>
+              <div class="forecast-dot end"></div>
+              <div class="forecast-line"></div>
+              <div class="forecast-mark start-mark">
+                <span id="forecastStartDate">сьогодні</span>
+                <strong id="forecastStartWeight">0 кг</strong>
+              </div>
+              <div class="forecast-mark end-mark">
+                <span id="forecastEndDate">-</span>
+                <strong id="forecastTargetWeight">0 кг</strong>
+              </div>
             </div>
           </div>
 
-          <button class="primary-btn" id="toStep4Btn">Далі</button>
-        </div>
+          <div class="plan-card">
+            <h2 class="section-title big">Рекомендована добова норма</h2>
 
-        <div class="step" data-step="4">
-          <div class="step-label">Крок 3 з 5</div>
-          <h2 class="onboarding-title small">Активність</h2>
-
-          <div class="choice-list">
-            <button class="choice-btn active" data-activity="1.2">
-              Сидячий спосіб життя
-              <span>Мало руху, сидяча робота</span>
-            </button>
-
-            <button class="choice-btn" data-activity="1.375">
-              Легка активність
-              <span>Невелика активність, інколи тренування</span>
-            </button>
-
-            <button class="choice-btn" data-activity="1.55">
-              Середня активність
-              <span>Регулярні тренування або активна робота</span>
-            </button>
-
-            <button class="choice-btn" data-activity="1.725">
-              Висока активність
-              <span>Часті тренування або фізична праця</span>
-            </button>
-          </div>
-
-          <button class="primary-btn" id="toStep5Btn">Далі</button>
-        </div>
-
-        <div class="step" data-step="5">
-          <div class="step-label">Крок 4 з 5</div>
-          <h2 class="onboarding-title small">Яка ваша ціль?</h2>
-
-          <div class="choice-list">
-            <button class="choice-btn goal-btn active" data-goal="lose">
-              Схуднути
-              <span>Дефіцит калорій</span>
-            </button>
-
-            <button class="choice-btn goal-btn" data-goal="maintain">
-              Підтримувати вагу
-              <span>Баланс без змін</span>
-            </button>
-
-            <button class="choice-btn goal-btn" data-goal="gain">
-              Набрати вагу
-              <span>Профіцит калорій</span>
-            </button>
-          </div>
-
-          <label for="targetWeightInput">Бажана вага</label>
-          <input id="targetWeightInput" type="number" placeholder="Наприклад 75">
-
-          <button class="primary-btn" id="finishOnboardingBtn">Розрахувати</button>
-        </div>
-
-        <div class="step" data-step="6">
-          <div class="step-label">Готово</div>
-          <h2 class="onboarding-title small" id="resultHelloText">Готово</h2>
-          <p class="onboarding-text" id="resultSummaryText"></p>
-
-          <div class="result-box">
-            <div class="result-row">
-              <span>Калорії</span>
-              <strong id="resultCalories">0</strong>
+            <div class="energy-card">
+              <div class="energy-icon">⚡</div>
+              <div>
+                <div class="energy-label">Енергія</div>
+                <div class="energy-value" id="planCalories">0 ккал</div>
+              </div>
             </div>
-            <div class="result-row">
-              <span>Білки</span>
-              <strong id="resultProtein">0 г</strong>
-            </div>
-            <div class="result-row">
-              <span>Жири</span>
-              <strong id="resultFat">0 г</strong>
-            </div>
-            <div class="result-row">
-              <span>Вуглеводи</span>
-              <strong id="resultCarbs">0 г</strong>
+
+            <div class="macro-tiles">
+              <div class="macro-tile protein-tile">
+                <div class="macro-tile-label">Білки</div>
+                <div class="macro-tile-value" id="planProtein">0 г</div>
+              </div>
+              <div class="macro-tile carbs-tile">
+                <div class="macro-tile-label">Вуглеводи</div>
+                <div class="macro-tile-value" id="planCarbs">0 г</div>
+              </div>
+              <div class="macro-tile fats-tile">
+                <div class="macro-tile-label">Жири</div>
+                <div class="macro-tile-value" id="planFat">0 г</div>
+              </div>
+              <div class="macro-tile fiber-tile demo-badge-parent">
+                <div class="macro-tile-label">Клітковина</div>
+                <div class="macro-tile-value" id="planFiber">0 г</div>
+                <span class="demo-chip">demo</span>
+              </div>
             </div>
           </div>
-
-          <button class="primary-btn" id="openAppBtn">Відкрити щоденник</button>
         </div>
-
       </div>
     </section>
 
     <!-- MAIN APP -->
-    <div id="mainApp" class="main-app hidden">
+    <section id="mainAppScreen" class="screen">
+      <div class="main-layout">
+        <header class="top-premium-bar">
+          <button class="pill round small-pill" id="streakInfoBtn">
+            <span class="pill-icon">🏅</span>
+            <span id="streakCount">0</span>
+          </button>
 
-      <section id="screenDiary" class="screen active">
-        <div class="top-gradient">
-          <div class="top-bar">
-            <div class="top-title-block">
-              <h1 id="mainGreetingTitle">Щоденник</h1>
-              <div class="top-date" id="todayDate">Сьогодні</div>
+          <button class="premium-pill" id="openPremiumBtn">👑 PREMIUM</button>
+
+          <button class="pill date-pill" id="openCalendarBtn">
+            <span class="pill-icon">🗓</span>
+            <span id="headerDateText">09.04</span>
+          </button>
+        </header>
+
+        <!-- VIEW -->
+        <section id="screenView" class="tab-screen active">
+          <div class="week-strip" id="weekStrip"></div>
+
+          <div class="hero-ring-area">
+            <div class="side-stat left">
+              <div class="side-stat-icon">🍽</div>
+              <div class="side-stat-value" id="consumedKcal">0 ккал</div>
+              <div class="side-stat-label">Споживання</div>
             </div>
-            <button class="icon-btn" id="openSettingsBtn">⚙</button>
-          </div>
-        </div>
 
-        <div class="content diary-content">
-          <div class="summary-card">
-            <div class="ring-wrap">
-              <div class="ring" id="calorieRing">
-                <div class="ring-inner">
-                  <div class="ring-main" id="dayCalories">0</div>
-                  <div class="ring-unit">ккал</div>
-                  <div class="ring-sub" id="goalText">ціль 2200</div>
-                  <div class="ring-extra" id="remainingText">Залишилось 2200</div>
+            <div class="big-ring" id="bigRing">
+              <div class="big-ring-inner">
+                <div class="big-ring-main" id="ringCurrent">0</div>
+                <div class="big-ring-sub">/ <span id="ringGoal">1971</span> ккал</div>
+                <div class="big-ring-percent" id="ringPercent">0 %</div>
+              </div>
+            </div>
+
+            <div class="side-stat right">
+              <div class="side-stat-icon">🏃</div>
+              <div class="side-stat-value demo-color" id="activityBurn">387 ккал</div>
+              <div class="side-stat-label">Активність</div>
+            </div>
+          </div>
+
+          <button class="info-floating-btn" id="openBalanceModalBtn">i</button>
+
+          <div class="quick-action-row">
+            <button class="quick-mini-btn" id="quickAddBtn">＋</button>
+            <button class="quick-mini-btn demo-btn">▥</button>
+            <button class="quick-mini-btn demo-btn">🎤</button>
+            <button class="quick-mini-btn demo-btn">📷</button>
+            <button class="quick-mini-btn demo-btn">🏃</button>
+          </div>
+
+          <div class="hint-pill demo-pill">Запиши їжу за допомогою фото <span>×</span></div>
+
+          <div class="card nutrients-card">
+            <div class="card-header">
+              <h3>Поживні речовини</h3>
+              <button class="collapse-btn" data-collapse-target="nutrientsBody">⌃</button>
+            </div>
+
+            <div id="nutrientsBody" class="card-body expanded">
+              <div class="nutrients-grid">
+                <div class="nutrient-box">
+                  <div class="mini-progress protein"></div>
+                  <div class="nutrient-name">Білки</div>
+                  <div class="nutrient-current" id="viewProteinCurrent">0 г</div>
+                  <div class="nutrient-target" id="viewProteinGoal">0 г</div>
+                </div>
+
+                <div class="nutrient-box">
+                  <div class="mini-progress carbs"></div>
+                  <div class="nutrient-name">Вуглеводи</div>
+                  <div class="nutrient-current" id="viewCarbsCurrent">0 г</div>
+                  <div class="nutrient-target" id="viewCarbsGoal">0 г</div>
+                </div>
+
+                <div class="nutrient-box">
+                  <div class="mini-progress fats"></div>
+                  <div class="nutrient-name">Жири</div>
+                  <div class="nutrient-current" id="viewFatsCurrent">0 г</div>
+                  <div class="nutrient-target" id="viewFatsGoal">0 г</div>
+                </div>
+
+                <div class="nutrient-box">
+                  <div class="mini-progress fiber"></div>
+                  <div class="nutrient-name">Волокна</div>
+                  <div class="nutrient-current demo-value">0 г</div>
+                  <div class="nutrient-target">27,5 г</div>
+                </div>
+
+                <div class="nutrient-box premium-locked">
+                  <div class="mini-progress locked"></div>
+                  <div class="nutrient-name">Сіль</div>
+                  <div class="premium-mini">👑 PREMIUM</div>
+                </div>
+
+                <div class="nutrient-box premium-locked">
+                  <div class="mini-progress locked"></div>
+                  <div class="nutrient-name">Цукор</div>
+                  <div class="premium-mini">👑 PREMIUM</div>
                 </div>
               </div>
             </div>
+          </div>
 
-            <div class="macros-grid">
-              <div class="macro-card protein">
-                <div class="macro-title">Білки</div>
-                <div class="macro-value"><span id="proteinTotal">0</span> / <span id="proteinGoalView">140</span> г</div>
-                <div class="macro-bar"><div id="proteinBar" class="macro-fill protein-fill"></div></div>
-              </div>
+          <div class="section-head">
+            <h2>Раціон</h2>
+            <button class="section-link demo-btn">Аналіз</button>
+          </div>
 
-              <div class="macro-card fat">
-                <div class="macro-title">Жири</div>
-                <div class="macro-value"><span id="fatTotal">0</span> / <span id="fatGoalView">70</span> г</div>
-                <div class="macro-bar"><div id="fatBar" class="macro-fill fat-fill"></div></div>
-              </div>
+          <div class="meal-cards-list" id="mealCardsList"></div>
 
-              <div class="macro-card carbs">
-                <div class="macro-title">Вуглеводи</div>
-                <div class="macro-value"><span id="carbsTotal">0</span> / <span id="carbsGoalView">230</span> г</div>
-                <div class="macro-bar"><div id="carbsBar" class="macro-fill carbs-fill"></div></div>
-              </div>
+          <div class="card water-card-blue">
+            <div class="water-card-top">
+              <div class="water-card-title">💧 Питний режим</div>
+              <button class="small-plus-btn" id="waterPlusBtn">＋</button>
+            </div>
+
+            <div class="water-line">
+              <div class="water-big" id="waterCurrent">0 л</div>
+              <div class="water-small">з <span id="waterGoalText">3.5</span> л</div>
+            </div>
+
+            <div class="water-track">
+              <div class="water-fill" id="waterFill"></div>
             </div>
           </div>
 
-          <div class="water-card">
-            <div class="water-top">
-              <div>
-                <div class="water-title">Вода</div>
-                <div class="water-sub">Щоденний трекер води</div>
-              </div>
-              <div class="water-total"><span id="waterMlView">0</span> / <span id="waterGoalView">2000</span> мл</div>
+          <div class="card weight-card-orange">
+            <div class="weight-card-head">
+              <div class="weight-card-title">⚖ Вага</div>
+              <button class="icon-ghost-btn" id="editProfileBtn">✎</button>
+            </div>
+            <div class="weight-big" id="profileWeightMain">0 кг</div>
+            <div class="weight-small">ціль <span id="profileTargetMain">0 кг</span></div>
+          </div>
+
+          <div class="section-head">
+            <h2>Енерговитрати</h2>
+          </div>
+
+          <div class="card demo-card">
+            <div class="demo-card-title">Активність <span class="demo-tag">demo</span></div>
+            <div class="demo-card-text">Підключення годинника, Garmin, Apple Health та активності зробимо пізніше.</div>
+            <button class="secondary-action demo-btn">Підключити пристрій</button>
+          </div>
+        </section>
+
+        <!-- PROGRESS -->
+        <section id="screenProgress" class="tab-screen">
+          <div class="page-heading">
+            <h1>Прогрес</h1>
+            <p>Твоя динаміка та історія по днях</p>
+          </div>
+
+          <div class="stats-grid-2">
+            <div class="card stat-box">
+              <div class="stat-label">Середнє</div>
+              <div class="stat-big" id="avgCalories7">0</div>
+              <div class="stat-note">ккал / 7 днів</div>
             </div>
 
-            <div class="water-bar">
-              <div id="waterBarFill" class="water-bar-fill"></div>
-            </div>
-
-            <div class="water-actions">
-              <button class="water-btn" data-water-add="250">+250 мл</button>
-              <button class="water-btn" data-water-add="500">+500 мл</button>
-              <button class="water-btn water-btn-reset" id="resetWaterBtn">Скинути</button>
+            <div class="card stat-box">
+              <div class="stat-label">Вода</div>
+              <div class="stat-big" id="avgWater7">0</div>
+              <div class="stat-note">л / 7 днів</div>
             </div>
           </div>
 
-          <div class="meal-sections">
-            <div class="meal-section">
-              <div class="meal-section-top">
+          <div class="card chart-card">
+            <div class="card-header">
+              <h3>Останні 7 днів</h3>
+            </div>
+            <div id="chartBars" class="chart-bars"></div>
+          </div>
+
+          <div class="card streak-card">
+            <div class="card-header">
+              <h3>Записано днів поспіль</h3>
+              <button class="ghost-link-btn" id="openStreakModalBtn">деталі</button>
+            </div>
+
+            <div class="streak-center">
+              <div class="streak-icon-big">🏅</div>
+              <div class="streak-big" id="streakBig">0</div>
+            </div>
+          </div>
+
+          <div class="card history-card">
+            <div class="card-header">
+              <h3>Історія по днях</h3>
+            </div>
+            <div id="historyList" class="history-list"></div>
+          </div>
+        </section>
+
+        <!-- MEALS -->
+        <section id="screenMeals" class="tab-screen">
+          <div class="page-heading">
+            <h1>Страви</h1>
+            <p>Твої записи, продукти та швидке додавання</p>
+          </div>
+
+          <div class="tab-pills">
+            <button class="tab-pill active" data-search-tab="my">Мої страви</button>
+            <button class="tab-pill" data-search-tab="recipes">Рецепти</button>
+            <button class="tab-pill" data-search-tab="foodcourt">Фуд-корт</button>
+          </div>
+
+          <div class="card empty-meal-builder">
+            <div class="builder-emoji">🧑‍🍳</div>
+            <div class="builder-title">Створи свою страву</div>
+            <div class="builder-text">Збережи свої улюблені комбінації продуктів. Це прискорить запис у раціон.</div>
+            <button class="primary-action demo-btn">Створи першу страву</button>
+          </div>
+
+          <div class="card meal-shortcut-card">
+            <div class="meal-shortcut-left">
+              <div class="meal-shortcut-emoji">🥗</div>
+              <div class="meal-shortcut-text">Додати Мою страву</div>
+            </div>
+            <button class="small-plus-btn" id="openAddSheetBtn">＋</button>
+          </div>
+
+          <div class="card search-shell">
+            <div class="search-top-row">
+              <button class="ghost-link-btn" id="cancelSearchBtn">Скасувати</button>
+
+              <div class="search-input-wrap">
+                <span class="search-icon">⌕</span>
+                <input id="foodSearchInput" type="text" placeholder="Пошук" />
+              </div>
+
+              <button class="mini-icon-btn demo-btn">📷</button>
+              <button class="mini-icon-btn demo-btn">▥</button>
+              <button class="mini-icon-btn demo-btn">•••</button>
+            </div>
+
+            <div class="search-filters">
+              <button class="filter-chip active">Все</button>
+              <button class="filter-chip">Продукти</button>
+              <button class="filter-chip">Страви</button>
+              <button class="filter-chip">Рецепти</button>
+            </div>
+
+            <h3 class="search-title">Найчастіші запити</h3>
+            <div id="searchResultsList" class="search-results-list"></div>
+          </div>
+        </section>
+
+        <!-- MORE -->
+        <section id="screenMore" class="tab-screen">
+          <div class="page-heading">
+            <h1>Більше</h1>
+            <p>Налаштування, преміум і додаткові розділи</p>
+          </div>
+
+          <div class="card premium-banner-card">
+            <div class="premium-banner-sub">Преміум версія</div>
+            <div class="premium-banner-title">У тебе немає підписки</div>
+            <div class="premium-banner-emojis">😔 😢 🥺</div>
+            <button class="primary-action" id="openPremiumScreenBtn">Активувати безкоштовний тиждень</button>
+          </div>
+
+          <div class="list-card">
+            <button class="list-item" id="openProfileScreenBtn">
+              <span class="list-icon">◯</span>
+              <span class="list-content">
+                <span class="list-title">Профіль</span>
+                <span class="list-sub">Ім’я, фото, дані профілю</span>
+              </span>
+              <span class="list-arrow">›</span>
+            </button>
+
+            <button class="list-item" id="openGoalScreenBtn">
+              <span class="list-icon">🔥</span>
+              <span class="list-content">
+                <span class="list-title">Ціль і параметри</span>
+                <span class="list-sub">Стать, рік народження, ціль, вага</span>
+              </span>
+              <span class="list-arrow">›</span>
+            </button>
+
+            <button class="list-item demo-btn">
+              <span class="list-icon">📱</span>
+              <span class="list-content">
+                <span class="list-title">Підключені додатки</span>
+                <span class="list-sub">Apple Health, Garmin</span>
+              </span>
+              <span class="list-arrow">›</span>
+            </button>
+
+            <button class="list-item demo-btn">
+              <span class="list-icon">✎</span>
+              <span class="list-content">
+                <span class="list-title">Налаштування записів</span>
+                <span class="list-sub">Одиниця енергії, запис точного часу</span>
+              </span>
+              <span class="list-arrow">›</span>
+            </button>
+
+            <button class="list-item demo-btn">
+              <span class="list-icon">🔔</span>
+              <span class="list-content">
+                <span class="list-title">Поради та сповіщення</span>
+                <span class="list-sub">Поради в раціоні, сповіщення</span>
+              </span>
+              <span class="list-arrow">›</span>
+            </button>
+
+            <button class="list-item demo-btn">
+              <span class="list-icon">⚙</span>
+              <span class="list-content">
+                <span class="list-title">Власні налаштування</span>
+                <span class="list-sub">Калорії, вода, базал і параметри</span>
+              </span>
+              <span class="list-arrow">›</span>
+            </button>
+
+            <button class="list-item demo-btn">
+              <span class="list-icon">☀</span>
+              <span class="list-content">
+                <span class="list-title">Застосунок</span>
+                <span class="list-sub">Вигляд і мова</span>
+              </span>
+              <span class="list-arrow">›</span>
+            </button>
+          </div>
+
+          <div class="section-head mt-32">
+            <h2>Спільнота</h2>
+          </div>
+
+          <div class="list-card">
+            <button class="list-item demo-btn">
+              <span class="list-icon">🍽</span>
+              <span class="list-content">
+                <span class="list-title">Про Таблицю Калорійності</span>
+              </span>
+              <span class="list-arrow">›</span>
+            </button>
+
+            <button class="list-item demo-btn">
+              <span class="list-icon">f</span>
+              <span class="list-content">
+                <span class="list-title">Сторінка у Facebook</span>
+              </span>
+              <span class="list-arrow">›</span>
+            </button>
+
+            <button class="list-item demo-btn">
+              <span class="list-icon">◎</span>
+              <span class="list-content">
+                <span class="list-title">Instagram</span>
+              </span>
+              <span class="list-arrow">›</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- PROFILE DETAIL -->
+        <section id="screenProfileDetail" class="tab-screen nested-screen">
+          <div class="nested-top">
+            <button class="circle-back-btn" data-back-to="screenMore">‹</button>
+          </div>
+
+          <div class="profile-panel card">
+            <div class="avatar-wrap">
+              <div class="avatar-circle" id="profileAvatar">Е</div>
+              <input type="file" id="avatarInput" accept="image/*" hidden />
+              <button class="avatar-edit-btn" id="changeAvatarBtn">✎</button>
+            </div>
+
+            <h1 class="nested-title">Профіль</h1>
+
+            <div class="form-stack">
+              <div class="field-group">
+                <label>Ім’я</label>
+                <input id="profileNameInput" class="neon-input" type="text" placeholder="Ед" />
+              </div>
+
+              <div class="field-group">
+                <label>Рік народження</label>
+                <input id="profileBirthYearInput" class="neon-input" type="number" placeholder="1994" />
+              </div>
+
+              <div class="field-group two-cols">
                 <div>
-                  <div class="meal-section-title">Сніданок</div>
-                  <div class="meal-section-total" id="breakfastCalories">0 ккал</div>
+                  <label>Зріст</label>
+                  <input id="profileHeightInput" class="neon-input" type="number" placeholder="174" />
                 </div>
-                <button class="mini-add-btn" data-meal="breakfast">＋</button>
-              </div>
-              <div id="breakfastList" class="meal-items"></div>
-            </div>
-
-            <div class="meal-section">
-              <div class="meal-section-top">
                 <div>
-                  <div class="meal-section-title">Обід</div>
-                  <div class="meal-section-total" id="lunchCalories">0 ккал</div>
+                  <label>Вага</label>
+                  <input id="profileWeightInput" class="neon-input" type="number" placeholder="110" />
                 </div>
-                <button class="mini-add-btn" data-meal="lunch">＋</button>
               </div>
-              <div id="lunchList" class="meal-items"></div>
-            </div>
 
-            <div class="meal-section">
-              <div class="meal-section-top">
+              <div class="field-group two-cols">
                 <div>
-                  <div class="meal-section-title">Вечеря</div>
-                  <div class="meal-section-total" id="dinnerCalories">0 ккал</div>
+                  <label>Цільова вага</label>
+                  <input id="profileTargetWeightInput" class="neon-input" type="number" placeholder="85" />
                 </div>
-                <button class="mini-add-btn" data-meal="dinner">＋</button>
-              </div>
-              <div id="dinnerList" class="meal-items"></div>
-            </div>
-
-            <div class="meal-section">
-              <div class="meal-section-top">
                 <div>
-                  <div class="meal-section-title">Перекус</div>
-                  <div class="meal-section-total" id="snackCalories">0 ккал</div>
+                  <label>Вода, л</label>
+                  <input id="profileWaterGoalInput" class="neon-input" type="number" step="0.1" placeholder="3.5" />
                 </div>
-                <button class="mini-add-btn" data-meal="snack">＋</button>
               </div>
-              <div id="snackList" class="meal-items"></div>
+            </div>
+
+            <button class="primary-action" id="saveProfileBtn">Зберегти</button>
+          </div>
+        </section>
+
+        <!-- GOAL DETAIL -->
+        <section id="screenGoalDetail" class="tab-screen nested-screen">
+          <div class="nested-top">
+            <button class="circle-back-btn" data-back-to="screenMore">‹</button>
+          </div>
+
+          <div class="card goal-detail-card">
+            <div class="goal-detail-icon">📅</div>
+            <h1 class="nested-title">Твій план</h1>
+            <div class="goal-detail-sub" id="goalForecastText">Досягнеш цілі за планом</div>
+
+            <div class="forecast-line-wrap inside">
+              <div class="forecast-dot start"></div>
+              <div class="forecast-dot end"></div>
+              <div class="forecast-line"></div>
+              <div class="forecast-mark start-mark">
+                <span id="goalScreenStartDate">сьогодні</span>
+                <strong id="goalScreenStartWeight">0 кг</strong>
+              </div>
+              <div class="forecast-mark end-mark">
+                <span id="goalScreenEndDate">-</span>
+                <strong id="goalScreenEndWeight">0 кг</strong>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
 
-      <section id="screenAdd" class="screen">
-        <div class="top-gradient add-top">
-          <div class="top-bar">
-            <button class="icon-btn" id="backToDiaryBtn">‹</button>
-            <h1 class="center-title">Додати їжу</h1>
-            <button class="icon-btn" id="closeAddBtn">✕</button>
-          </div>
+          <div class="card plan-card nested-plan">
+            <h2 class="section-title big">Рекомендована добова норма споживання</h2>
 
-          <div class="search-block">
-            <input id="foodSearch" class="search-input" type="text" placeholder="Пошук їжі">
-          </div>
-
-          <div class="quick-actions">
-            <button class="quick-btn" id="createFoodBtn">＋ Створити</button>
-            <button class="quick-btn" id="scanFoodBtn">📷 Скан їжі</button>
-          </div>
-        </div>
-
-        <div class="content add-content">
-          <div class="tabs">
-            <button class="tab-btn active" data-tab="recent">Недавні</button>
-            <button class="tab-btn" data-tab="favorites">Обране</button>
-            <button class="tab-btn" data-tab="myfoods">Мої продукти</button>
-            <button class="tab-btn" data-tab="recipes">Рецепти</button>
-          </div>
-
-          <div id="tabTitle" class="section-title">Недавні продукти</div>
-          <div id="foodList" class="food-list"></div>
-
-          <div class="manual-form-card">
-            <h3>Швидке додавання</h3>
-
-            <label for="selectedMealType">Прийом їжі</label>
-            <select id="selectedMealType">
-              <option value="breakfast">Сніданок</option>
-              <option value="lunch">Обід</option>
-              <option value="dinner">Вечеря</option>
-              <option value="snack">Перекус</option>
-            </select>
-
-            <label for="foodName">Назва продукту</label>
-            <input id="foodName" type="text" placeholder="Наприклад: банан">
-
-            <div class="row-2">
+            <div class="energy-card">
+              <div class="energy-icon">⚡</div>
               <div>
-                <label for="grams">Грами</label>
-                <input id="grams" type="number" placeholder="150">
-              </div>
-              <div>
-                <label for="kcal100">Ккал / 100 г</label>
-                <input id="kcal100" type="number" placeholder="89">
+                <div class="energy-label">Енергія</div>
+                <div class="energy-value" id="goalCaloriesValue">0 ккал</div>
               </div>
             </div>
 
-            <div class="row-3">
-              <div>
-                <label for="protein">Білки</label>
-                <input id="protein" type="number" step="0.1" placeholder="1.1">
+            <div class="macro-tiles">
+              <div class="macro-tile protein-tile">
+                <div class="macro-tile-label">Білки</div>
+                <div class="macro-tile-value" id="goalProteinValue">0 г</div>
               </div>
-              <div>
-                <label for="fat">Жири</label>
-                <input id="fat" type="number" step="0.1" placeholder="0.3">
+              <div class="macro-tile carbs-tile">
+                <div class="macro-tile-label">Вуглеводи</div>
+                <div class="macro-tile-value" id="goalCarbsValue">0 г</div>
               </div>
-              <div>
-                <label for="carbs">Вуглеводи</label>
-                <input id="carbs" type="number" step="0.1" placeholder="22.8">
+              <div class="macro-tile fats-tile">
+                <div class="macro-tile-label">Жири</div>
+                <div class="macro-tile-value" id="goalFatsValue">0 г</div>
+              </div>
+              <div class="macro-tile fiber-tile demo-badge-parent">
+                <div class="macro-tile-label">Волокна</div>
+                <div class="macro-tile-value">27,5 г</div>
+                <span class="demo-chip">demo</span>
               </div>
             </div>
-
-            <button id="addManualBtn" class="primary-btn">Додати в щоденник</button>
-            <p id="addResult" class="add-result"></p>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section id="screenStats" class="screen">
-        <div class="top-gradient">
-          <div class="top-bar">
-            <div class="top-title-block">
-              <h1>Статистика</h1>
-              <div class="top-date">Огляд по днях</div>
-            </div>
+        <!-- PREMIUM SCREEN -->
+        <section id="screenPremium" class="tab-screen nested-screen">
+          <div class="premium-top-hero">
+            <button class="promo-chip">ПРОМОКОД</button>
+            <button class="premium-close-btn" data-back-to="screenMore">✕</button>
+            <div class="premium-hero-overlay"></div>
+            <h1>Преміум-користувачі досягають своїх цілей у 2,5 раза частіше</h1>
           </div>
-        </div>
 
-        <div class="content">
-          <div class="stats-grid">
-            <div class="stats-card">
-              <div class="stats-label">Сьогодні</div>
-              <div class="stats-value" id="statsTodayCalories">0</div>
-              <div class="stats-sub">ккал</div>
+          <div class="premium-plans">
+            <div class="premium-option active demo-btn">
+              <div class="premium-option-main">
+                <div class="premium-option-title">Щорічно</div>
+                <div class="premium-option-price">23,49 USD • безкоштовний тиждень</div>
+              </div>
+              <div class="premium-radio active"></div>
             </div>
 
-            <div class="stats-card">
-              <div class="stats-label">Середнє</div>
-              <div class="stats-value" id="statsAverageCalories">0</div>
-              <div class="stats-sub">ккал / день</div>
+            <div class="premium-option demo-btn">
+              <div class="premium-option-main">
+                <div class="premium-option-title">Щомісячно</div>
+                <div class="premium-option-price">4,79 USD</div>
+              </div>
+              <div class="premium-radio"></div>
             </div>
 
-            <div class="stats-card">
-              <div class="stats-label">Днів з історією</div>
-              <div class="stats-value" id="statsDaysCount">0</div>
-              <div class="stats-sub">днів</div>
-            </div>
-
-            <div class="stats-card">
-              <div class="stats-label">Вода сьогодні</div>
-              <div class="stats-value" id="statsWaterToday">0</div>
-              <div class="stats-sub">мл</div>
+            <div class="premium-option demo-btn">
+              <div class="premium-option-main">
+                <div class="premium-option-title">Щорічно (Сімейна)</div>
+                <div class="premium-option-price">34,99 USD</div>
+                <div class="premium-option-note">Сімейна підписка для 6 членів твоєї родини</div>
+              </div>
+              <div class="premium-radio"></div>
             </div>
           </div>
 
-          <div class="chart-card">
-            <div class="chart-title">Останні 7 днів</div>
-            <div id="weekChart" class="week-chart"></div>
+          <div class="premium-bottom">
+            <button class="primary-action demo-btn">Активувати безкоштовний тиждень</button>
+            <p class="premium-footnote">Потім 23,49 USD щорічно • Скасувати в будь-який час</p>
+            <button class="text-btn demo-btn">Оновити попередні покупки</button>
           </div>
+        </section>
+      </div>
 
-          <div class="history-card">
-            <div class="chart-title">Історія по днях</div>
-            <div id="historyDaysList" class="history-days-list"></div>
-          </div>
-        </div>
-      </section>
+      <!-- BOTTOM NAV -->
+      <nav class="bottom-dock">
+        <div class="bottom-dock-pill">
+          <button class="dock-btn active" data-open-screen="screenView">
+            <span class="dock-icon">▦</span>
+            <span class="dock-label">Перегляд</span>
+          </button>
 
-      <section id="screenRecipes" class="screen">
-        <div class="top-gradient">
-          <div class="top-bar">
-            <div class="top-title-block">
-              <h1>Рецепти</h1>
-              <div class="top-date">Добірка ідей</div>
-            </div>
-          </div>
+          <button class="dock-btn" data-open-screen="screenProgress">
+            <span class="dock-icon">▥</span>
+            <span class="dock-label">Прогрес</span>
+          </button>
+
+          <button class="dock-btn" data-open-screen="screenMeals">
+            <span class="dock-icon">🍴</span>
+            <span class="dock-label">Страви</span>
+          </button>
+
+          <button class="dock-btn" data-open-screen="screenMore">
+            <span class="dock-icon">☰</span>
+            <span class="dock-label">Більше</span>
+          </button>
         </div>
 
-        <div class="content">
-          <div class="recipes-list" id="recipesList"></div>
-        </div>
-      </section>
-
-      <section id="screenProfile" class="screen">
-        <div class="top-gradient">
-          <div class="top-bar">
-            <div class="top-title-block">
-              <h1>Профіль</h1>
-              <div class="top-date">Твої дані та цілі</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="content">
-
-          <div class="profile-hero-card">
-            <div class="profile-avatar-wrap">
-              <div class="profile-avatar" id="profileAvatar">E</div>
-              <input type="file" id="avatarInput" accept="image/*" hidden>
-              <button id="changeAvatarBtn" class="avatar-btn">✎</button>
-            </div>
-
-            <div class="profile-hero-info">
-              <div class="profile-name" id="profileNameView">Користувач</div>
-              <div class="profile-badges">
-                <span class="profile-badge" id="profileGoalBadge">Схуднення</span>
-                <span class="profile-badge" id="profileActivityBadge">Сидяча активність</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="profile-card">
-            <h3 class="card-title">Основні дані</h3>
-
-            <label for="profileNameInput">Ім’я</label>
-            <input id="profileNameInput" type="text" placeholder="Ім’я">
-
-            <label for="profileGenderInput">Стать</label>
-            <select id="profileGenderInput">
-              <option value="male">Чоловік</option>
-              <option value="female">Жінка</option>
-            </select>
-
-            <div class="row-2">
-              <div>
-                <label for="profileAgeInput">Вік</label>
-                <input id="profileAgeInput" type="number" placeholder="30">
-              </div>
-              <div>
-                <label for="profileHeightInput">Ріст</label>
-                <input id="profileHeightInput" type="number" placeholder="175">
-              </div>
-            </div>
-
-            <div class="row-2">
-              <div>
-                <label for="profileWeightInput">Поточна вага</label>
-                <input id="profileWeightInput" type="number" placeholder="80">
-              </div>
-              <div>
-                <label for="profileTargetWeightInput">Бажана вага</label>
-                <input id="profileTargetWeightInput" type="number" placeholder="75">
-              </div>
-            </div>
-
-            <label for="profileActivityInput">Активність</label>
-            <select id="profileActivityInput">
-              <option value="1.2">Сидячий спосіб життя</option>
-              <option value="1.375">Легка активність</option>
-              <option value="1.55">Середня активність</option>
-              <option value="1.725">Висока активність</option>
-            </select>
-
-            <label for="profileGoalInput">Ціль</label>
-            <select id="profileGoalInput">
-              <option value="lose">Схуднути</option>
-              <option value="maintain">Підтримувати вагу</option>
-              <option value="gain">Набрати вагу</option>
-            </select>
-          </div>
-
-          <div class="profile-card">
-            <h3 class="card-title">Цілі на день</h3>
-
-            <div class="toggle-row">
-              <div>
-                <div class="toggle-title">Авто-розрахунок</div>
-                <div class="toggle-sub">Рахувати цілі з урахуванням даних профілю</div>
-              </div>
-              <button id="autoGoalsToggle" class="toggle-btn active">Увімкнено</button>
-            </div>
-
-            <label for="goalCalories">Калорії</label>
-            <input id="goalCalories" type="number" placeholder="2200">
-
-            <div class="row-3">
-              <div>
-                <label for="goalProtein">Білки</label>
-                <input id="goalProtein" type="number" placeholder="140">
-              </div>
-              <div>
-                <label for="goalFat">Жири</label>
-                <input id="goalFat" type="number" placeholder="70">
-              </div>
-              <div>
-                <label for="goalCarbs">Вуглеводи</label>
-                <input id="goalCarbs" type="number" placeholder="230">
-              </div>
-            </div>
-
-            <label for="waterGoalInput">Ціль води на день, мл</label>
-            <input id="waterGoalInput" type="number" placeholder="2000">
-
-            <button id="recalculateGoalsBtn" class="secondary-btn">Перерахувати автоматично</button>
-            <button id="saveProfileBtn" class="primary-btn">Зберегти профіль і цілі</button>
-
-            <div class="profile-note" id="profileUserInfo">
-              Тут можна редагувати профіль і цілі.
-            </div>
-          </div>
-
-          <div class="profile-card">
-            <h3 class="card-title">Керування</h3>
-            <button id="clearDayBtn" class="secondary-btn">Очистити сьогодні</button>
-            <button id="restartOnboardingBtn" class="danger-btn">Пройти знайомство заново</button>
-          </div>
-
-        </div>
-      </section>
-
-      <nav class="bottom-nav nav-5">
-        <button class="nav-btn active" data-screen="diary">
-          <span class="nav-icon">◉</span>
-          <span class="nav-text">Щоденник</span>
-        </button>
-
-        <button class="nav-btn" data-screen="add">
-          <span class="nav-icon">＋</span>
-          <span class="nav-text">Додати</span>
-        </button>
-
-        <button class="nav-btn" data-screen="stats">
-          <span class="nav-icon">📊</span>
-          <span class="nav-text">Статистика</span>
-        </button>
-
-        <button class="nav-btn" data-screen="recipes">
-          <span class="nav-icon">🍽</span>
-          <span class="nav-text">Рецепти</span>
-        </button>
-
-        <button class="nav-btn" data-screen="profile">
-          <span class="nav-icon">👤</span>
-          <span class="nav-text">Профіль</span>
-        </button>
+        <button class="fab-btn" id="mainFabBtn">＋</button>
       </nav>
-    </div>
+    </section>
+
+    <!-- MODALS -->
+    <div class="overlay hidden" id="overlay"></div>
+
+    <section class="modal-sheet hidden" id="addSheet">
+      <div class="sheet-handle"></div>
+      <div class="sheet-title">Записати</div>
+
+      <div class="sheet-grid">
+        <button class="sheet-chip" data-add-now>🍴 Зараз</button>
+        <button class="sheet-chip" data-add-meal="Сніданок">🍴 Сніданок</button>
+        <button class="sheet-chip" data-add-meal="Перекус">🍴 Перекус</button>
+        <button class="sheet-chip" data-add-meal="Обід">🍴 Обід</button>
+        <button class="sheet-chip" data-add-meal="Вечеря">🍴 Вечеря</button>
+        <button class="sheet-chip demo-btn">🏃 Активність</button>
+        <button class="sheet-chip" id="quickWaterChip">💧 Напій</button>
+        <button class="sheet-chip" id="quickWeightChip">⚖ Вага</button>
+        <button class="sheet-chip demo-btn">📝 Замітка</button>
+        <button class="sheet-chip demo-btn">🕒 Аналіз</button>
+        <button class="sheet-chip demo-btn">🏪 Фуд-корт</button>
+        <button class="sheet-chip demo-btn">📋 Записати від...</button>
+      </div>
+
+      <button class="sheet-close-btn" data-close-sheet="addSheet">✕</button>
+    </section>
+
+    <section class="modal-panel hidden" id="mealActionMenu">
+      <button class="menu-item" id="menuQuickAdd">＋ Записати</button>
+      <button class="menu-item demo-btn">🎤 Голосовий запис</button>
+      <button class="menu-item demo-btn">▥ Сканер штрих-коду</button>
+      <button class="menu-item demo-btn">📷 ШІ-запис із фото</button>
+      <button class="menu-item demo-btn">📝 Додати замітку</button>
+    </section>
+
+    <section class="modal-card hidden" id="balanceModal">
+      <div class="modal-card-header">
+        <button class="ghost-link-btn" data-close-modal="balanceModal">Скасувати</button>
+        <h3>Деталі</h3>
+      </div>
+
+      <div class="card modal-content-card">
+        <div class="detail-row"><span>Твої енерговитрати за сьогодні</span><strong id="detailBurnToday">0 ккал</strong></div>
+        <div class="detail-row"><span>Добова норма калорій для підтримки</span><strong id="detailMaintain">0 ккал</strong></div>
+        <div class="detail-row"><span>Дефіцит калорій</span><strong id="detailDeficit">0 ккал</strong></div>
+        <div class="detail-row"><span>Добова норма калорій для цілі</span><strong id="detailGoalCalories">0 ккал</strong></div>
+        <div class="detail-row"><span>Сьогодні вже спожито</span><strong id="detailConsumed">0 / 0</strong></div>
+        <div class="detail-row"><span>Залишилося спожити</span><strong id="detailLeft">0 / 0</strong></div>
+      </div>
+    </section>
+
+    <section class="modal-card hidden" id="streakModal">
+      <div class="modal-card-header">
+        <button class="ghost-link-btn" data-close-modal="streakModal">Скасувати</button>
+      </div>
+
+      <div class="card modal-content-card center-card">
+        <div class="streak-title">Записано днів поспіль</div>
+        <div class="streak-huge">🏅 <span id="streakModalCount">0</span></div>
+        <div class="streak-detail-line">
+          <span>Найдовший період</span>
+          <strong id="streakBestCount">0</strong>
+        </div>
+      </div>
+
+      <div class="modal-text-block">
+        Кількість днів збільшується після першого запису продукту, напою або страви в поточний день.
+        <br /><br />
+        Стрік обнуляється, якщо сьогодні не зробити жодного запису.
+      </div>
+    </section>
+
+    <section class="modal-calendar hidden" id="calendarModal">
+      <div class="calendar-sheet">
+        <div class="sheet-handle"></div>
+        <div class="calendar-head">
+          <button class="ghost-link-btn" id="prevMonthBtn">‹</button>
+          <div class="calendar-title" id="calendarTitle">Квітень 2026</div>
+          <button class="ghost-link-btn" id="nextMonthBtn">›</button>
+        </div>
+        <div class="calendar-grid-head">
+          <span>ПН</span><span>ВТ</span><span>СР</span><span>ЧТ</span><span>ПТ</span><span>СБ</span><span>НД</span>
+        </div>
+        <div id="calendarGrid" class="calendar-grid"></div>
+      </div>
+    </section>
+
+    <section class="modal-record hidden" id="recordModal">
+      <div class="record-shell">
+        <div class="record-top">
+          <button class="pill ghost-link-btn" data-close-modal="recordModal">Скасувати</button>
+          <div class="record-meal-select">
+            <span id="recordMealTitle">🥣 Сніданок</span>
+          </div>
+          <button class="pill ghost-link-btn" id="saveRecordBtn">Записати</button>
+        </div>
+
+        <div class="record-date-card">
+          <span>🗓 Дата та час</span>
+          <strong id="recordDateValue">сьогодні</strong>
+        </div>
+
+        <div class="record-shortcuts">
+          <button class="record-shortcut active">＋</button>
+          <button class="record-shortcut demo-btn">▥</button>
+          <button class="record-shortcut demo-btn">🎤</button>
+          <button class="record-shortcut demo-btn">📷</button>
+        </div>
+
+        <div class="record-food-card">
+          <div class="record-food-top">
+            <img id="recordFoodImage" src="" alt="" />
+            <div class="record-food-info">
+              <div class="record-food-name" id="recordFoodName">Куряче філе</div>
+              <div class="record-food-sub">ккал на 100 г: <span id="recordFoodKcal100">165</span></div>
+            </div>
+            <div class="record-food-actions">
+              <button class="small-icon-circle demo-btn">i</button>
+              <button class="small-icon-circle danger" id="recordDeleteBtn">🗑</button>
+            </div>
+          </div>
+
+          <div class="record-food-inputs">
+            <input id="recordCountInput" class="small-dark-input" type="number" value="1" />
+            <input id="recordGramsInput" class="small-dark-input" type="number" value="120" />
+          </div>
+        </div>
+
+        <div class="card impact-card">
+          <div class="card-header">
+            <h3>Вплив на споживання</h3>
+            <button class="collapse-btn">⌃</button>
+          </div>
+          <div class="impact-rings">
+            <div class="impact-ring white"></div>
+            <div class="impact-ring orange"></div>
+            <div class="impact-ring green"></div>
+            <div class="impact-ring blue"></div>
+          </div>
+          <div class="impact-text">Контролюй діаграми безпосередньо під час запису.</div>
+          <button class="premium-orange-btn demo-btn">👑 ОТРИМАЙ ПРЕМІУМ ПЕРЕВАГИ</button>
+        </div>
+      </div>
+    </section>
   </div>
 
   <script src="app.js"></script>
