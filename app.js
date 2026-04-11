@@ -11,6 +11,7 @@ const state = {
   selectedActivity: 1.2,
   recordMeal: "Сніданок",
   editingFood: null,
+  editingEntryId: null,
   birthYearValue: 1994,
   heightValue: 174,
   weightValue: 110,
@@ -31,19 +32,17 @@ const DEFAULT_PROFILE = {
   onboarded: false,
 };
 
-const DEMO_ACTIVITY_BURN = 387;
-
 const FOOD_DB = [
-  { id: "banana", name: "Банан", kcal100: 94, type: "Продукт", image: "https://images.unsplash.com/photo-1574226516831-e1dff420e38e?auto=format&fit=crop&w=300&q=80", badge: "🌿" },
-  { id: "water", name: "Вода питна", kcal100: 0, type: "Напій", image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=300&q=80", badge: "🌿" },
-  { id: "coffee", name: "Кава з молоком без цукру", kcal100: 12, type: "Напій", image: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=300&q=80", badge: "🍲" },
-  { id: "egg", name: "Яйце куряче сире", kcal100: 151, type: "Продукт", image: "https://images.unsplash.com/photo-1518569656558-1f25e69d93d7?auto=format&fit=crop&w=300&q=80", badge: "🌿" },
-  { id: "cucumber", name: "Огірок свіжий", kcal100: 16, type: "Продукт", image: "https://images.unsplash.com/photo-1604977042946-1eecc30f269e?auto=format&fit=crop&w=300&q=80", badge: "🌿" },
-  { id: "oats", name: "Вівсяні пластівці", kcal100: 400, type: "Продукт", image: "https://images.unsplash.com/photo-1517673400267-0251440c45dc?auto=format&fit=crop&w=300&q=80", badge: "🌿" },
-  { id: "rice", name: "Рис білий варений", kcal100: 126, type: "Продукт", image: "https://images.unsplash.com/photo-1516684732162-798a0062be99?auto=format&fit=crop&w=300&q=80", badge: "🍲" },
-  { id: "olive", name: "Оливкова олія", kcal100: 819, type: "Продукт", image: "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=300&q=80", badge: "🌿" },
-  { id: "chicken", name: "Куряче філе", kcal100: 165, type: "Продукт", image: "https://images.unsplash.com/photo-1604503468506-a8da13d82791?auto=format&fit=crop&w=300&q=80", badge: "🌿" },
-  { id: "salad", name: "Салат латук", kcal100: 16, type: "Продукт", image: "https://images.unsplash.com/photo-1622206151246-4f5f734abf17?auto=format&fit=crop&w=300&q=80", badge: "🌿" }
+  { id: "banana", name: "Банан", kcal100: 94, protein100: 1.1, carbs100: 22.8, fats100: 0.3, fiber100: 2.6, type: "Продукт", image: "https://images.unsplash.com/photo-1574226516831-e1dff420e38e?auto=format&fit=crop&w=300&q=80", badge: "🌿" },
+  { id: "water", name: "Вода питна", kcal100: 0, protein100: 0, carbs100: 0, fats100: 0, fiber100: 0, type: "Напій", image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=300&q=80", badge: "💧" },
+  { id: "coffee", name: "Кава з молоком без цукру", kcal100: 12, protein100: 0.6, carbs100: 1.4, fats100: 0.5, fiber100: 0, type: "Напій", image: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=300&q=80", badge: "☕" },
+  { id: "egg", name: "Яйце куряче сире", kcal100: 151, protein100: 12.6, carbs100: 0.7, fats100: 10.6, fiber100: 0, type: "Продукт", image: "https://images.unsplash.com/photo-1518569656558-1f25e69d93d7?auto=format&fit=crop&w=300&q=80", badge: "🥚" },
+  { id: "cucumber", name: "Огірок свіжий", kcal100: 16, protein100: 0.7, carbs100: 3.6, fats100: 0.1, fiber100: 0.5, type: "Продукт", image: "https://images.unsplash.com/photo-1604977042946-1eecc30f269e?auto=format&fit=crop&w=300&q=80", badge: "🌿" },
+  { id: "oats", name: "Вівсяні пластівці", kcal100: 400, protein100: 13.2, carbs100: 67.7, fats100: 6.5, fiber100: 10.1, type: "Продукт", image: "https://images.unsplash.com/photo-1517673400267-0251440c45dc?auto=format&fit=crop&w=300&q=80", badge: "🥣" },
+  { id: "rice", name: "Рис білий варений", kcal100: 126, protein100: 2.4, carbs100: 28.7, fats100: 0.3, fiber100: 0.4, type: "Продукт", image: "https://images.unsplash.com/photo-1516684732162-798a0062be99?auto=format&fit=crop&w=300&q=80", badge: "🍚" },
+  { id: "olive", name: "Оливкова олія", kcal100: 819, protein100: 0, carbs100: 0, fats100: 91, fiber100: 0, type: "Продукт", image: "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=300&q=80", badge: "🫒" },
+  { id: "chicken", name: "Куряче філе", kcal100: 165, protein100: 31, carbs100: 0, fats100: 3.6, fiber100: 0, type: "Продукт", image: "https://images.unsplash.com/photo-1604503468506-a8da13d82791?auto=format&fit=crop&w=300&q=80", badge: "🍗" },
+  { id: "salad", name: "Салат латук", kcal100: 16, protein100: 1.4, carbs100: 2.9, fats100: 0.2, fiber100: 1.3, type: "Продукт", image: "https://images.unsplash.com/photo-1622206151246-4f5f734abf17?auto=format&fit=crop&w=300&q=80", badge: "🥬" }
 ];
 
 const MEAL_CONFIG = [
@@ -64,10 +63,12 @@ const birthYearPicker = $("birthYearPicker");
 const heightPicker = $("heightPicker");
 const weightPicker = $("weightPicker");
 const targetWeightPicker = $("targetWeightPicker");
+const WHEEL_PICKERS = [birthYearPicker, heightPicker, weightPicker, targetWeightPicker].filter(Boolean);
 
 function profileKey() { return "neon_calorie_profile"; }
 function entriesKey(dateKey = state.selectedDate) { return `neon_calorie_entries_${dateKey}`; }
 function waterKey(dateKey = state.selectedDate) { return `neon_calorie_water_${dateKey}`; }
+function hintKey() { return "neon_calorie_hint_hidden"; }
 
 function loadProfile() {
   const raw = localStorage.getItem(profileKey());
@@ -88,6 +89,8 @@ function loadEntries(dateKey = state.selectedDate) {
 function saveEntries(entries, dateKey = state.selectedDate) { localStorage.setItem(entriesKey(dateKey), JSON.stringify(entries)); }
 function loadWater(dateKey = state.selectedDate) { return Number(localStorage.getItem(waterKey(dateKey))) || 0; }
 function saveWater(liters, dateKey = state.selectedDate) { localStorage.setItem(waterKey(dateKey), String(liters)); }
+function isHintHidden() { return localStorage.getItem(hintKey()) === "1"; }
+function setHintHidden(hidden) { localStorage.setItem(hintKey(), hidden ? "1" : "0"); }
 
 function getTodayKey() { return dateToKey(new Date()); }
 function dateToKey(d) { return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; }
@@ -104,6 +107,54 @@ function shortWeekDay(date) {
   return days[idx];
 }
 function monthTitle(month, year) { return new Date(year, month, 1).toLocaleDateString("uk-UA", { month: "long", year: "numeric" }); }
+function activityLabel(multiplier) {
+  if (multiplier <= 1.2) return "сидячий";
+  if (multiplier <= 1.375) return "легкий";
+  if (multiplier <= 1.55) return "середній";
+  return "високий";
+}
+function round1(v) { return Math.round(v * 10) / 10; }
+function formatNumber(value) {
+  const rounded = round1(Number(value) || 0);
+  return Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(1).replace(/\.0$/, "");
+}
+function formatMetric(value, unit) { return `${formatNumber(value)} ${unit}`; }
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+function getFoodById(id) { return FOOD_DB.find(food => food.id === id) || null; }
+function getFoodFromEntry(entry) {
+  return getFoodById(entry.foodId) || {
+    id: entry.foodId || entry.id,
+    name: entry.name,
+    kcal100: Number(entry.kcal100 || 0),
+    protein100: Number(entry.protein100 || 0),
+    carbs100: Number(entry.carbs100 || 0),
+    fats100: Number(entry.fats100 || 0),
+    fiber100: Number(entry.fiber100 || 0),
+    type: entry.type || "Продукт",
+    image: entry.image || "",
+    badge: entry.badge || "🍽"
+  };
+}
+function calculateEntryNutrition(food, totalGrams) {
+  const factor = Math.max(0, Number(totalGrams) || 0) / 100;
+  return {
+    totalKcal: Math.round(Number(food.kcal100 || 0) * factor),
+    protein: round1(Number(food.protein100 || 0) * factor),
+    carbs: round1(Number(food.carbs100 || 0) * factor),
+    fats: round1(Number(food.fats100 || 0) * factor),
+    fiber: round1(Number(food.fiber100 || 0) * factor)
+  };
+}
+function findEntry(entryId, dateKey = state.selectedDate) {
+  return loadEntries(dateKey).find(entry => entry.id === entryId) || null;
+}
 
 function getAge(profile) { return new Date().getFullYear() - Number(profile.birthYear || 1994); }
 
@@ -111,10 +162,12 @@ function calculatePlan(profile) {
   const age = getAge(profile);
   const weight = Number(profile.weight);
   const height = Number(profile.height);
-  let bmr = profile.gender === "female"
+  const bmr = profile.gender === "female"
     ? 10 * weight + 6.25 * height - 5 * age - 161
     : 10 * weight + 6.25 * height - 5 * age + 5;
   const maintain = Math.round(bmr * Number(profile.activity || 1.2));
+  const bmrRounded = Math.round(bmr);
+  const activityCalories = Math.max(0, maintain - bmrRounded);
   let goalCalories = maintain;
   if (profile.goal === "lose") goalCalories = maintain - 350;
   if (profile.goal === "gain") goalCalories = maintain + 250;
@@ -123,7 +176,7 @@ function calculatePlan(profile) {
   const fats = Math.round(weight * 0.8);
   const carbs = Math.max(0, Math.round((goalCalories - protein * 4 - fats * 9) / 4));
   const fiber = Math.round(goalCalories / 1000 * 14);
-  return { maintain, goalCalories, protein, fats, carbs, fiber, deficit: maintain - goalCalories };
+  return { bmr: bmrRounded, activityCalories, maintain, goalCalories, protein, fats, carbs, fiber, deficit: maintain - goalCalories };
 }
 
 function getEntriesTotals(dateKey = state.selectedDate) {
@@ -140,16 +193,15 @@ function getEntriesTotals(dateKey = state.selectedDate) {
 }
 
 function calculateMacrosFromEntries(entries) {
-  let protein = 0, carbs = 0, fats = 0;
+  let protein = 0, carbs = 0, fats = 0, fiber = 0;
   entries.forEach(e => {
     protein += Number(e.protein || 0);
     carbs += Number(e.carbs || 0);
     fats += Number(e.fats || 0);
+    fiber += Number(e.fiber || 0);
   });
-  return { protein: round1(protein), carbs: round1(carbs), fats: round1(fats) };
+  return { protein: round1(protein), carbs: round1(carbs), fats: round1(fats), fiber: round1(fiber) };
 }
-
-function round1(v) { return Math.round(v * 10) / 10; }
 function getPercent(current, total) { return total ? Math.min(100, Math.round((current / total) * 100)) : 0; }
 
 function getForecast(profile) {
@@ -219,11 +271,25 @@ function setOnboardingStep(step) {
   $$(".onboarding-step").forEach(el => el.classList.toggle("active", Number(el.dataset.step) === step));
   $("onboardingBackBtn").style.visibility = step === 1 ? "hidden" : "visible";
   updateOnboardingProgress(step);
+  requestAnimationFrame(() => requestAnimationFrame(refreshVisibleWheelPickers));
+}
+
+function setWheelPosition(container, value, behavior = "auto") {
+  if (!container || !container.clientHeight) return;
+  const target = [...container.querySelectorAll(".wheel-item")].find(item => Number(item.dataset.value) === Number(value));
+  if (!target) return;
+  const targetTop = Math.max(0, target.offsetTop - (container.clientHeight / 2) + (target.offsetHeight / 2));
+  if (behavior === "smooth") {
+    container.scrollTo({ top: targetTop, behavior });
+    return;
+  }
+  container.scrollTop = targetTop;
 }
 
 function createWheelPicker(container, values, initialValue, onChange) {
   if (!container) return;
   container.innerHTML = "";
+  container.dataset.initialValue = initialValue;
   values.forEach(value => {
     const item = document.createElement("div");
     item.className = "wheel-item";
@@ -234,6 +300,7 @@ function createWheelPicker(container, values, initialValue, onChange) {
 
   function updateActive() {
     const items = [...container.querySelectorAll(".wheel-item")];
+    if (!items.length || !container.clientHeight) return;
     const center = container.scrollTop + container.clientHeight / 2;
     let closest = null;
     let minDistance = Infinity;
@@ -248,6 +315,7 @@ function createWheelPicker(container, values, initialValue, onChange) {
     items.forEach(item => item.classList.remove("active"));
     if (closest) {
       closest.classList.add("active");
+      container.dataset.currentValue = closest.dataset.value;
       onChange(Number(closest.dataset.value));
     }
   }
@@ -259,18 +327,23 @@ function createWheelPicker(container, values, initialValue, onChange) {
     scrollTimeout = setTimeout(() => {
       const active = container.querySelector(".wheel-item.active");
       if (!active) return;
-      const targetTop = active.offsetTop - (container.clientHeight / 2) + (active.offsetHeight / 2);
-      container.scrollTo({ top: targetTop, behavior: "smooth" });
+      setWheelPosition(container, Number(active.dataset.value), "smooth");
     }, 80);
   });
 
+  container.__updateWheelActive = updateActive;
   requestAnimationFrame(() => {
-    const target = [...container.querySelectorAll(".wheel-item")].find(item => Number(item.dataset.value) === Number(initialValue));
-    if (target) {
-      const top = target.offsetTop - (container.clientHeight / 2) + (target.offsetHeight / 2);
-      container.scrollTop = top;
-      updateActive();
-    }
+    setWheelPosition(container, initialValue);
+    updateActive();
+  });
+}
+
+function refreshVisibleWheelPickers() {
+  WHEEL_PICKERS.forEach(container => {
+    if (!container || !container.offsetParent) return;
+    const value = Number(container.dataset.currentValue || container.dataset.initialValue);
+    setWheelPosition(container, value);
+    container.__updateWheelActive?.();
   });
 }
 
@@ -338,24 +411,34 @@ function renderView() {
   const macros = calculateMacrosFromEntries(totals.entries);
   const percent = getPercent(totals.kcal, plan.goalCalories);
   $("consumedKcal").textContent = `${totals.kcal} ккал`;
-  $("activityBurn").textContent = `${DEMO_ACTIVITY_BURN} ккал`;
+  $("activityBurn").textContent = `${plan.activityCalories} ккал`;
   $("ringCurrent").textContent = totals.kcal;
   $("ringGoal").textContent = plan.goalCalories;
   $("ringPercent").textContent = `${percent} %`;
   const deg = Math.max(10, (percent / 100) * 360);
   $("bigRing").style.background = `conic-gradient(var(--neon-orange) 0deg, var(--neon-blue) ${deg}deg, rgba(255,255,255,.08) ${deg}deg)`;
-  $("viewProteinCurrent").textContent = `${macros.protein} г`;
-  $("viewCarbsCurrent").textContent = `${macros.carbs} г`;
-  $("viewFatsCurrent").textContent = `${macros.fats} г`;
+  $("viewProteinCurrent").textContent = `${formatNumber(macros.protein)} г`;
+  $("viewCarbsCurrent").textContent = `${formatNumber(macros.carbs)} г`;
+  $("viewFatsCurrent").textContent = `${formatNumber(macros.fats)} г`;
+  $("viewFiberCurrent").textContent = `${formatNumber(macros.fiber)} г`;
   $("viewProteinGoal").textContent = `${plan.protein} г`;
   $("viewCarbsGoal").textContent = `${plan.carbs} г`;
   $("viewFatsGoal").textContent = `${plan.fats} г`;
+  $("viewFiberGoal").textContent = `${plan.fiber} г`;
   renderMealCards(totals.mealMap);
   renderWater();
   renderWeightCard();
-  $("detailBurnToday").textContent = `${plan.maintain} ккал`;
+  $("viewHintPill").classList.toggle("hidden", isHintHidden() || totals.entries.length > 0);
+  $("activityCardText").textContent = `Зараз обрано ${activityLabel(Number(profile.activity || 1.2))} рівень активності (${formatNumber(profile.activity || 1.2)}). Це додає приблизно ${plan.activityCalories} ккал до добових витрат.`;
+  $("detailBmr").textContent = `${plan.bmr} ккал`;
+  $("detailActivity").textContent = `${plan.activityCalories} ккал`;
   $("detailMaintain").textContent = `${plan.maintain} ккал`;
-  $("detailDeficit").textContent = `-${plan.deficit} ккал`;
+  $("detailGoalDeltaLabel").textContent = profile.goal === "gain"
+    ? "Профіцит калорій"
+    : profile.goal === "maintain"
+      ? "Різниця до підтримки"
+      : "Дефіцит калорій";
+  $("detailDeficit").textContent = `${Math.abs(plan.goalCalories - plan.maintain)} ккал`;
   $("detailGoalCalories").textContent = `${plan.goalCalories} ккал`;
   $("detailConsumed").textContent = `${totals.kcal} / ${plan.goalCalories}`;
   $("detailLeft").textContent = `${Math.max(0, plan.goalCalories - totals.kcal)} / ${plan.goalCalories}`;
@@ -365,21 +448,50 @@ function renderMealCards(mealMap) {
   const list = $("mealCardsList");
   list.innerHTML = "";
   MEAL_CONFIG.forEach(meal => {
+    const entries = [...(mealMap[meal.key] || [])].sort((a, b) => Number(b.createdAt || 0) - Number(a.createdAt || 0));
+    const mealKcal = entries.reduce((sum, entry) => sum + Number(entry.totalKcal || 0), 0);
     const row = document.createElement("div");
     row.className = "meal-pill-card";
     row.innerHTML = `
-      <div class="meal-pill-left">
-        <div class="meal-emoji">${meal.emoji}</div>
-        <div class="meal-name">${meal.key}</div>
+      <div class="meal-card-head">
+        <div class="meal-pill-left">
+          <div class="meal-emoji">${meal.emoji}</div>
+          <div class="meal-title-wrap">
+            <div class="meal-name">${meal.key}</div>
+            <div class="meal-summary">${entries.length ? `${entries.length} записів • ${mealKcal} ккал` : "Ще немає записів"}</div>
+          </div>
+        </div>
+        <div class="meal-tools">
+          <button class="white-circle-btn meal-menu-btn" data-meal="${meal.key}">•••</button>
+          <button class="green-circle-btn meal-plus-btn" data-meal="${meal.key}">＋</button>
+        </div>
       </div>
-      <div class="meal-tools">
-        <button class="white-circle-btn meal-menu-btn" data-meal="${meal.key}">•••</button>
-        <button class="green-circle-btn meal-plus-btn" data-meal="${meal.key}">＋</button>
-      </div>`;
+      ${entries.length ? `
+        <div class="meal-entry-list">
+          ${entries.map(entry => {
+            const totalGrams = Number(entry.totalGrams || entry.grams || 0);
+            return `
+              <button class="meal-entry-row" data-entry-id="${entry.id}">
+                <div class="meal-entry-main">
+                  <div class="meal-entry-name">${escapeHtml(entry.name)}</div>
+                  <div class="meal-entry-meta">${formatMetric(totalGrams, "г")} • ${entry.totalKcal} ккал</div>
+                  <div class="meal-entry-macros">Б ${formatNumber(entry.protein)} • Ж ${formatNumber(entry.fats)} • В ${formatNumber(entry.carbs)} • Кл ${formatNumber(entry.fiber)}</div>
+                </div>
+                <span class="meal-entry-edit">✎</span>
+              </button>
+            `;
+          }).join("")}
+        </div>
+      ` : `<div class="meal-empty">Додай перший продукт до цього прийому їжі.</div>`}`;
     list.appendChild(row);
   });
   $$(".meal-plus-btn").forEach(btn => btn.addEventListener("click", () => { state.recordMeal = btn.dataset.meal; openRecordModalWithFood(FOOD_DB[0]); }));
   $$(".meal-menu-btn").forEach(btn => btn.addEventListener("click", () => { state.recordMeal = btn.dataset.meal; openOverlay(); $("mealActionMenu").classList.remove("hidden"); }));
+  $$(".meal-entry-row").forEach(btn => btn.addEventListener("click", () => {
+    const entry = findEntry(btn.dataset.entryId);
+    if (!entry) return;
+    openRecordModalWithFood(getFoodFromEntry(entry), { entry });
+  }));
 }
 
 function renderWater() {
@@ -446,12 +558,12 @@ function renderMealsSearch() {
   filtered.forEach(item => {
     const row = document.createElement("div");
     row.className = "search-row";
-    row.innerHTML = `<img src="${item.image}" alt="${item.name}"><div><div class="search-row-title">${item.name} <span class="search-row-tag">${item.badge}</span></div><div class="search-row-sub">${item.kcal100} ккал / 100г</div></div><button class="search-plus" data-food-id="${item.id}">＋</button>`;
+    row.innerHTML = `<img src="${item.image}" alt="${item.name}"><div><div class="search-row-title">${item.name} <span class="search-row-tag">${item.badge}</span></div><div class="search-row-sub">${item.kcal100} ккал / 100г • Б ${formatNumber(item.protein100)} • Ж ${formatNumber(item.fats100)} • В ${formatNumber(item.carbs100)}</div></div><button class="search-plus" data-food-id="${item.id}">＋</button>`;
     list.appendChild(row);
   });
   $$(".search-plus").forEach(btn => btn.addEventListener("click", () => {
-    const food = FOOD_DB.find(f => f.id === btn.dataset.foodId);
-    state.recordMeal = "Сніданок";
+    const food = getFoodById(btn.dataset.foodId);
+    state.recordMeal = state.recordMeal || "Сніданок";
     openRecordModalWithFood(food);
   }));
 }
@@ -480,6 +592,7 @@ function renderProfileScreens() {
   $("goalProteinValue").textContent = `${plan.protein} г`;
   $("goalCarbsValue").textContent = `${plan.carbs} г`;
   $("goalFatsValue").textContent = `${plan.fats} г`;
+  $("goalFiberValue").textContent = `${plan.fiber} г`;
 }
 
 function renderCalendar() {
@@ -515,40 +628,135 @@ function openOverlay() { $("overlay").classList.remove("hidden"); }
 function closeOverlay() { $("overlay").classList.add("hidden"); }
 function closeAllFloating() {
   closeOverlay();
+  resetRecordModal();
   ["addSheet","mealActionMenu","balanceModal","streakModal","calendarModal","recordModal"].forEach(id => $(id).classList.add("hidden"));
 }
-function closeModal(id) { $(id).classList.add("hidden"); closeOverlay(); }
+function closeModal(id) {
+  $(id).classList.add("hidden");
+  if (id === "recordModal") resetRecordModal();
+  closeOverlay();
+}
 
 function mealEmoji(name) { return MEAL_CONFIG.find(x => x.key === name)?.emoji || "🍽"; }
 
-function openRecordModalWithFood(food) {
+function resetRecordModal() {
+  state.editingFood = null;
+  state.editingEntryId = null;
+  $("saveRecordBtn").textContent = "Записати";
+  $("recordDeleteBtn").hidden = true;
+}
+
+function renderRecordPreview() {
+  if (!state.editingFood) return;
+  const gramsPerUnit = Math.max(1, Number($("recordGramsInput").value) || 0);
+  const count = Math.max(1, Number($("recordCountInput").value) || 1);
+  const totalGrams = round1(gramsPerUnit * count);
+  const nutrition = calculateEntryNutrition(state.editingFood, totalGrams);
+  const existingEntry = state.editingEntryId ? findEntry(state.editingEntryId) : null;
+  let projectedDayCalories = getEntriesTotals(state.selectedDate).kcal;
+  if (existingEntry) projectedDayCalories -= Number(existingEntry.totalKcal || 0);
+  projectedDayCalories += nutrition.totalKcal;
+
+  $("recordPreviewCalories").textContent = `${nutrition.totalKcal} ккал`;
+  $("recordPreviewProtein").textContent = `${formatNumber(nutrition.protein)} г`;
+  $("recordPreviewFats").textContent = `${formatNumber(nutrition.fats)} г`;
+  $("recordPreviewCarbs").textContent = `${formatNumber(nutrition.carbs)} г`;
+  $("recordPreviewFiber").textContent = `${formatNumber(nutrition.fiber)} г`;
+  $("recordPreviewGrams").textContent = `${formatNumber(totalGrams)} г`;
+  $("recordImpactText").textContent = `Після збереження в "${state.recordMeal}" буде додано ${formatMetric(totalGrams, "г")}, а денна сума складе ${projectedDayCalories} ккал.`;
+}
+
+function openRecordModalWithFood(food, options = {}) {
+  if (!food) return;
+  const entry = options.entry || null;
   state.editingFood = food;
+  state.editingEntryId = entry?.id || null;
+  state.recordMeal = entry?.meal || options.meal || state.recordMeal;
   $("recordMealTitle").textContent = `${mealEmoji(state.recordMeal)} ${state.recordMeal}`;
   $("recordDateValue").textContent = formatLongDate(state.selectedDate);
   $("recordFoodName").textContent = food.name;
-  $("recordFoodKcal100").textContent = food.kcal100;
+  $("recordFoodMeta").textContent = `${food.kcal100} ккал / 100 г • Б ${formatNumber(food.protein100)} • Ж ${formatNumber(food.fats100)} • В ${formatNumber(food.carbs100)} • Кл ${formatNumber(food.fiber100)}`;
   $("recordFoodImage").src = food.image;
-  $("recordCountInput").value = 1;
-  $("recordGramsInput").value = 120;
+  $("recordFoodImage").alt = food.name;
+  $("recordCountInput").value = entry?.count || 1;
+  $("recordGramsInput").value = Math.round(Number(entry?.gramsPerUnit || entry?.totalGrams || entry?.grams || 120));
+  $("saveRecordBtn").textContent = state.editingEntryId ? "Зберегти" : "Записати";
+  $("recordDeleteBtn").hidden = !state.editingEntryId;
+  renderRecordPreview();
   openOverlay();
   $("recordModal").classList.remove("hidden");
 }
 
 function saveCurrentRecord() {
   if (!state.editingFood) return;
-  const grams = Number($("recordGramsInput").value) || 0;
-  const count = Number($("recordCountInput").value) || 1;
-  const totalGrams = grams * count;
-  const kcal100 = Number(state.editingFood.kcal100);
-  const totalKcal = Math.round((totalGrams * kcal100) / 100);
-  const protein = round1(totalGrams * 0.22);
-  const carbs = round1(totalGrams * 0.12);
-  const fats = round1(totalGrams * 0.06);
+  const gramsPerUnit = Math.max(1, Number($("recordGramsInput").value) || 0);
+  const count = Math.max(1, Number($("recordCountInput").value) || 1);
+  const totalGrams = round1(gramsPerUnit * count);
+  const nutrition = calculateEntryNutrition(state.editingFood, totalGrams);
   const entries = loadEntries(state.selectedDate);
-  entries.push({ id: `e_${Date.now()}`, meal: state.recordMeal, foodId: state.editingFood.id, name: state.editingFood.name, grams: totalGrams, totalKcal, protein, carbs, fats, createdAt: Date.now() });
+  const payload = {
+    id: state.editingEntryId || `e_${Date.now()}`,
+    meal: state.recordMeal,
+    foodId: state.editingFood.id,
+    name: state.editingFood.name,
+    image: state.editingFood.image,
+    badge: state.editingFood.badge,
+    type: state.editingFood.type,
+    count,
+    gramsPerUnit,
+    totalGrams,
+    kcal100: state.editingFood.kcal100,
+    protein100: state.editingFood.protein100,
+    carbs100: state.editingFood.carbs100,
+    fats100: state.editingFood.fats100,
+    fiber100: state.editingFood.fiber100,
+    totalKcal: nutrition.totalKcal,
+    protein: nutrition.protein,
+    carbs: nutrition.carbs,
+    fats: nutrition.fats,
+    fiber: nutrition.fiber,
+    createdAt: Date.now()
+  };
+  if (state.editingEntryId) {
+    const index = entries.findIndex(entry => entry.id === state.editingEntryId);
+    if (index >= 0) {
+      payload.createdAt = entries[index].createdAt || payload.createdAt;
+      entries[index] = payload;
+    } else {
+      entries.unshift(payload);
+    }
+  } else {
+    entries.unshift(payload);
+  }
   saveEntries(entries, state.selectedDate);
   closeModal("recordModal");
   renderAll();
+}
+
+function deleteCurrentRecord() {
+  if (!state.editingEntryId) {
+    closeModal("recordModal");
+    return;
+  }
+  const entries = loadEntries(state.selectedDate).filter(entry => entry.id !== state.editingEntryId);
+  saveEntries(entries, state.selectedDate);
+  closeModal("recordModal");
+  renderAll();
+}
+
+function openAddSheet() {
+  openOverlay();
+  $("addSheet").classList.remove("hidden");
+}
+
+function openBalanceModal() {
+  openOverlay();
+  $("balanceModal").classList.remove("hidden");
+}
+
+function openSearchScreen() {
+  openRootScreen("screenMeals");
+  requestAnimationFrame(() => $("foodSearchInput").focus());
 }
 
 function bindEvents() {
@@ -573,28 +781,47 @@ function bindEvents() {
   $("finishOnboardingBtn").addEventListener("click", finishOnboarding);
   $("startAppBtn").addEventListener("click", openMainApp);
   $$('.dock-btn').forEach(btn => btn.addEventListener('click', () => openRootScreen(btn.dataset.openScreen)));
-  $("mainFabBtn").addEventListener("click", () => { openOverlay(); $("addSheet").classList.remove("hidden"); });
+  $("mainFabBtn").addEventListener("click", openAddSheet);
+  $("quickAddBtn").addEventListener("click", openAddSheet);
+  $("openAddSheetBtn").addEventListener("click", openAddSheet);
+  $("quickSearchBtn").addEventListener("click", openSearchScreen);
+  $("quickProgressBtn").addEventListener("click", () => openRootScreen("screenProgress"));
+  $("openProgressScreenBtn").addEventListener("click", () => openRootScreen("screenProgress"));
+  $("quickBalanceBtn").addEventListener("click", openBalanceModal);
   $$('[data-close-sheet]').forEach(btn => btn.addEventListener('click', () => { $(btn.dataset.closeSheet).classList.add('hidden'); closeOverlay(); }));
   $$('[data-close-modal]').forEach(btn => btn.addEventListener('click', () => closeModal(btn.dataset.closeModal)));
   $("overlay").addEventListener("click", closeAllFloating);
-  $("openBalanceModalBtn").addEventListener("click", () => { openOverlay(); $("balanceModal").classList.remove("hidden"); });
+  $("openBalanceModalBtn").addEventListener("click", openBalanceModal);
   $("streakInfoBtn").addEventListener("click", () => { openOverlay(); $("streakModal").classList.remove("hidden"); });
   $("openStreakModalBtn").addEventListener("click", () => { openOverlay(); $("streakModal").classList.remove("hidden"); });
   $("openCalendarBtn").addEventListener("click", () => { openOverlay(); $("calendarModal").classList.remove("hidden"); });
   $("prevMonthBtn").addEventListener("click", () => { state.currentMonth--; if (state.currentMonth < 0) { state.currentMonth = 11; state.currentYear--; } renderCalendar(); });
   $("nextMonthBtn").addEventListener("click", () => { state.currentMonth++; if (state.currentMonth > 11) { state.currentMonth = 0; state.currentYear++; } renderCalendar(); });
   $("foodSearchInput").addEventListener("input", renderMealsSearch);
+  $("cancelSearchBtn").addEventListener("click", () => {
+    $("foodSearchInput").value = "";
+    renderMealsSearch();
+    $("foodSearchInput").blur();
+  });
+  $("hideHintBtn").addEventListener("click", () => {
+    setHintHidden(true);
+    $("viewHintPill").classList.add("hidden");
+  });
   $("saveRecordBtn").addEventListener("click", saveCurrentRecord);
-  $("recordDeleteBtn").addEventListener("click", () => closeModal("recordModal"));
+  $("recordDeleteBtn").addEventListener("click", deleteCurrentRecord);
+  $("recordCountInput").addEventListener("input", renderRecordPreview);
+  $("recordGramsInput").addEventListener("input", renderRecordPreview);
   $("menuQuickAdd").addEventListener("click", () => { $("mealActionMenu").classList.add("hidden"); openRecordModalWithFood(FOOD_DB[0]); });
   $$('[data-add-meal]').forEach(btn => btn.addEventListener('click', () => { state.recordMeal = btn.dataset.addMeal; $("addSheet").classList.add("hidden"); openRecordModalWithFood(FOOD_DB[0]); }));
   $$('[data-add-now]').forEach(btn => btn.addEventListener('click', () => { state.recordMeal = 'Сніданок'; $("addSheet").classList.add("hidden"); openRecordModalWithFood(FOOD_DB[0]); }));
   $("quickWaterChip").addEventListener("click", () => { const current = loadWater(state.selectedDate); saveWater(round1(current + 0.25), state.selectedDate); closeModal("addSheet"); renderAll(); });
+  $("quickWaterBtn").addEventListener("click", () => { const current = loadWater(state.selectedDate); saveWater(round1(current + 0.25), state.selectedDate); renderAll(); });
   $("quickWeightChip").addEventListener("click", () => { goToNested("screenProfileDetail"); closeModal("addSheet"); });
-  $("waterPlusBtn").addEventListener("click", () => { const current = loadWater(state.selectedDate); saveWater(round1(current + 0.25), state.selectedDate); renderWater(); renderProgress(); });
+  $("waterPlusBtn").addEventListener("click", () => { const current = loadWater(state.selectedDate); saveWater(round1(current + 0.25), state.selectedDate); renderAll(); });
   $("editProfileBtn").addEventListener("click", () => goToNested("screenProfileDetail"));
   $("openProfileScreenBtn").addEventListener("click", () => goToNested("screenProfileDetail"));
   $("openGoalScreenBtn").addEventListener("click", () => goToNested("screenGoalDetail"));
+  $("openGoalFromActivityBtn").addEventListener("click", () => goToNested("screenGoalDetail"));
   $("openPremiumBtn").addEventListener("click", () => goToNested("screenPremium"));
   $("openPremiumScreenBtn").addEventListener("click", () => goToNested("screenPremium"));
   $$('[data-back-to]').forEach(btn => btn.addEventListener('click', () => goBackTo(btn.dataset.backTo)));
