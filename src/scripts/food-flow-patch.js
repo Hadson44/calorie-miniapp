@@ -133,6 +133,12 @@
       .map(({ food }) => food);
   }
 
+  function openFoodRecordById(foodId) {
+    const food = normalizeFood(findCatalogFood(foodId));
+    if (!food || typeof window.openRecordModalWithFood !== "function") return;
+    window.openRecordModalWithFood(food);
+  }
+
   const originalGetFoodById = typeof window.getFoodById === "function" ? window.getFoodById : null;
   window.getFoodById = function (id) {
     return normalizeFood(findCatalogFood(id) || (originalGetFoodById ? originalGetFoodById(id) : null));
@@ -236,7 +242,7 @@
     list.innerHTML = results.map((food) => {
       const fallback = getFallbackImage(food);
       return `
-        <div class="search-row">
+        <div class="search-row search-row-action" data-food-id="${escapeHtmlLocal(food.id)}">
           <img src="${escapeHtmlLocal(food.image)}" alt="${escapeHtmlLocal(food.name)}" loading="lazy" data-fallback-src="${fallback}">
           <div class="search-row-body">
             <div class="search-row-top">
@@ -245,16 +251,22 @@
             </div>
             <div class="search-row-sub">${food.kcal100} ккал / 100 г • Б ${formatNumberLocal(food.protein100)} • Ж ${formatNumberLocal(food.fats100)} • В ${formatNumberLocal(food.carbs100)}</div>
           </div>
-          <button class="search-plus" type="button" data-food-id="${escapeHtmlLocal(food.id)}">＋</button>
+          <button class="search-plus" type="button" data-food-id="${escapeHtmlLocal(food.id)}" aria-label="Додати ${escapeHtmlLocal(food.name)}">＋</button>
         </div>`;
     }).join("");
 
+    list.querySelectorAll(".search-row-action").forEach((row) => {
+      row.addEventListener("click", (event) => {
+        if (event.target.closest(".search-plus")) return;
+        openFoodRecordById(row.dataset.foodId);
+      });
+    });
+
     list.querySelectorAll(".search-plus").forEach((button) => {
-      button.addEventListener("click", () => {
-        const food = normalizeFood(findCatalogFood(button.dataset.foodId));
-        if (food && typeof window.openRecordModalWithFood === "function") {
-          window.openRecordModalWithFood(food);
-        }
+      button.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        openFoodRecordById(button.dataset.foodId);
       });
     });
 
@@ -356,6 +368,36 @@
     });
   }
 
+  function bindGlobalTapDelegates() {
+    if (document.body.dataset.foodFlowTapDelegates === "1") return;
+    document.body.dataset.foodFlowTapDelegates = "1";
+
+    document.addEventListener("click", (event) => {
+      const searchPlus = event.target.closest(".search-plus");
+      if (searchPlus && searchPlus.closest("#searchResultsList")) {
+        event.preventDefault();
+        event.stopPropagation();
+        openFoodRecordById(searchPlus.dataset.foodId);
+        return;
+      }
+
+      const searchRow = event.target.closest(".search-row[data-food-id]");
+      if (searchRow && searchRow.closest("#searchResultsList")) {
+        event.preventDefault();
+        event.stopPropagation();
+        openFoodRecordById(searchRow.dataset.foodId);
+        return;
+      }
+
+      const addLauncher = event.target.closest("#mainFabBtn, #quickAddBtn, #openAddSheetBtn");
+      if (addLauncher && typeof window.openAddSheet === "function") {
+        event.preventDefault();
+        event.stopPropagation();
+        window.openAddSheet();
+      }
+    }, true);
+  }
+
   function enhanceInteractiveZones() {
     document.querySelectorAll(".meal-plus-btn, [data-add-meal], [data-add-now]").forEach(bindDelayedSearchRedirect);
     bindDelayedSearchRedirect(document.getElementById("menuQuickAdd"));
@@ -364,6 +406,7 @@
     bindSearchRefresh(document.getElementById("cancelSearchBtn"));
     bindPostRecordSync(document.getElementById("saveRecordBtn"));
     bindPostRecordSync(document.getElementById("recordDeleteBtn"));
+    bindGlobalTapDelegates();
 
     const searchInput = document.getElementById("foodSearchInput");
     if (searchInput && searchInput.dataset.foodFlowInput !== "1") {
