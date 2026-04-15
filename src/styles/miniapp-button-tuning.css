@@ -1,0 +1,232 @@
+/* Button sizing and alignment tuning for compact mini app layouts */
+:root {
+  --btn-height-lg: 58px;
+  --btn-height-md: 54px;
+  --btn-height-sm: 46px;
+  --btn-height-xs: 42px;
+}
+
+button {
+  font-family: inherit;
+}
+
+.primary-action,
+.secondary-action,
+.premium-orange-btn,
+.promo-chip {
+  min-height: var(--btn-height-lg);
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  line-height: 1.14;
+}
+
+.text-btn,
+.section-link,
+.ghost-link-btn {
+  line-height: 1.2;
+}
+
+.text-btn {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.choice-card {
+  min-height: 108px;
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  line-height: 1.08;
+}
+
+.choice-detail-card {
+  min-height: 132px;
+  padding: 20px 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.top-premium-bar {
+  grid-template-columns: 84px minmax(0, 1fr) 84px;
+  gap: 12px;
+}
+
+.pill,
+.premium-pill {
+  min-height: var(--btn-height-md);
+  padding: 0 14px;
+}
+
+.small-pill,
+.date-pill,
+.premium-pill {
+  font-size: 17px;
+}
+
+.week-day-dot,
+.tab-pill,
+.filter-chip,
+.sheet-chip,
+.menu-item,
+.dock-btn,
+.quick-mini-btn,
+.pill,
+.premium-pill,
+.primary-action,
+.secondary-action,
+.premium-orange-btn,
+.promo-chip {
+  -webkit-font-smoothing: antialiased;
+}
+
+.quick-action-row {
+  min-height: 70px;
+}
+
+.quick-mini-btn {
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.tab-pill,
+.filter-chip {
+  min-height: 52px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  line-height: 1.1;
+}
+
+.sheet-chip {
+  min-height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  line-height: 1.18;
+}
+
+.menu-item {
+  min-height: 54px;
+  padding: 0 14px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  line-height: 1.15;
+}
+
+.circle-back-btn {
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
+}
+
+.white-circle-btn,
+.green-circle-btn,
+.small-plus-btn,
+.small-icon-circle,
+.info-floating-btn {
+  width: 46px;
+  height: 46px;
+  flex-shrink: 0;
+}
+
+.hint-pill-close,
+.icon-ghost-btn,
+.avatar-edit-btn,
+.mini-icon-btn,
+.search-plus {
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+}
+
+.premium-close-btn {
+  width: 54px;
+  height: 54px;
+}
+
+.sheet-close-btn {
+  width: 56px;
+  height: 56px;
+}
+
+.info-floating-btn {
+  left: calc(100% - 56px);
+}
+
+.record-top .pill,
+.modal-card-header .ghost-link-btn {
+  min-height: var(--btn-height-xs);
+}
+
+.bottom-dock-pill {
+  min-height: 78px;
+}
+
+.dock-btn {
+  min-height: 70px;
+}
+
+.dock-icon,
+.quick-mini-btn,
+.circle-back-btn,
+.sheet-close-btn,
+.premium-close-btn {
+  line-height: 1;
+}
+
+@media (max-width: 390px) {
+  .top-premium-bar {
+    grid-template-columns: 78px minmax(0, 1fr) 78px;
+    gap: 10px;
+  }
+
+  .pill,
+  .premium-pill {
+    min-height: 52px;
+    padding: 0 12px;
+  }
+
+  .small-pill,
+  .date-pill,
+  .premium-pill {
+    font-size: 15px;
+  }
+
+  .primary-action,
+  .secondary-action,
+  .premium-orange-btn,
+  .promo-chip {
+    min-height: 56px;
+    font-size: 20px;
+  }
+
+  .choice-card {
+    min-height: 100px;
+    font-size: 26px;
+  }
+
+  .choice-detail-card {
+    min-height: 124px;
+  }
+
+  .quick-mini-btn {
+    height: 66px;
+    font-size: 28px;
+  }
+}
