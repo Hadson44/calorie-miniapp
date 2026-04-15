@@ -1,0 +1,122 @@
+window.FOOD_DB = [
+  {
+    id: "banana",
+    name: "Банан",
+    kcal100: 94,
+    protein100: 1.1,
+    carbs100: 22.8,
+    fats100: 0.3,
+    fiber100: 2.6,
+    type: "Продукт",
+    image: "https://images.unsplash.com/photo-1574226516831-e1dff420e38e?auto=format&fit=crop&w=300&q=80",
+    badge: "🌿"
+  },
+  {
+    id: "water",
+    name: "Вода питна",
+    kcal100: 0,
+    protein100: 0,
+    carbs100: 0,
+    fats100: 0,
+    fiber100: 0,
+    type: "Напій",
+    image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=300&q=80",
+    badge: "💧"
+  },
+  {
+    id: "coffee",
+    name: "Кава з молоком без цукру",
+    kcal100: 12,
+    protein100: 0.6,
+    carbs100: 1.4,
+    fats100: 0.5,
+    fiber100: 0,
+    type: "Напій",
+    image: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=300&q=80",
+    badge: "☕"
+  },
+  {
+    id: "egg",
+    name: "Яйце куряче сире",
+    kcal100: 151,
+    protein100: 12.6,
+    carbs100: 0.7,
+    fats100: 10.6,
+    fiber100: 0,
+    type: "Продукт",
+    image: "https://images.unsplash.com/photo-1518569656558-1f25e69d93d7?auto=format&fit=crop&w=300&q=80",
+    badge: "🥚"
+  },
+  {
+    id: "cucumber",
+    name: "Огірок свіжий",
+    kcal100: 16,
+    protein100: 0.7,
+    carbs100: 3.6,
+    fats100: 0.1,
+    fiber100: 0.5,
+    type: "Продукт",
+    image: "https://images.unsplash.com/photo-1604977042946-1eecc30f269e?auto=format&fit=crop&w=300&q=80",
+    badge: "🌿"
+  },
+  {
+    id: "oats",
+    name: "Вівсяні пластівці",
+    kcal100: 400,
+    protein100: 13.2,
+    carbs100: 67.7,
+    fats100: 6.5,
+    fiber100: 10.1,
+    type: "Продукт",
+    image: "https://images.unsplash.com/photo-1517673400267-0251440c45dc?auto=format&fit=crop&w=300&q=80",
+    badge: "🥣"
+  },
+  {
+    id: "rice",
+    name: "Рис білий варений",
+    kcal100: 126,
+    protein100: 2.4,
+    carbs100: 28.7,
+    fats100: 0.3,
+    fiber100: 0.4,
+    type: "Продукт",
+    image: "https://images.unsplash.com/photo-1516684732162-798a0062be99?auto=format&fit=crop&w=300&q=80",
+    badge: "🍚"
+  },
+  {
+    id: "olive",
+    name: "Оливкова олія",
+    kcal100: 819,
+    protein100: 0,
+    carbs100: 0,
+    fats100: 91,
+    fiber100: 0,
+    type: "Продукт",
+    image: "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=300&q=80",
+    badge: "🫒"
+  },
+  {
+    id: "chicken",
+    name: "Куряче філе",
+    kcal100: 165,
+    protein100: 31,
+    carbs100: 0,
+    fats100: 3.6,
+    fiber100: 0,
+    type: "Продукт",
+    image: "https://images.unsplash.com/photo-1604503468506-a8da13d82791?auto=format&fit=crop&w=300&q=80",
+    badge: "🍗"
+  },
+  {
+    id: "salad",
+    name: "Салат латук",
+    kcal100: 16,
+    protein100: 1.4,
+    carbs100: 2.9,
+    fats100: 0.2,
+    fiber100: 1.3,
+    type: "Продукт",
+    image: "https://images.unsplash.com/photo-1622206151246-4f5f734abf17?auto=format&fit=crop&w=300&q=80",
+    badge: "🥬"
+  }
+];
