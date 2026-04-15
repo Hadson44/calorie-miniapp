@@ -23,7 +23,7 @@
       .replace(/&/g, "&amp;")
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;")
-      .replace(/\"/g, "&quot;")
+      .replace(/"/g, "&quot;")
       .replace(/'/g, "&#39;");
   }
 
@@ -140,7 +140,8 @@
 
   const originalGetFoodFromEntry = typeof window.getFoodFromEntry === "function" ? window.getFoodFromEntry : null;
   window.getFoodFromEntry = function (entry) {
-    return normalizeFood(enrichEntry(originalGetFoodFromEntry ? originalGetFoodFromEntry(entry) : entry));
+    const baseFood = originalGetFoodFromEntry ? originalGetFoodFromEntry(entry) : entry;
+    return normalizeFood({ ...(baseFood || {}), ...(entry || {}) });
   };
 
   const originalFindEntry = typeof window.findEntry === "function" ? window.findEntry : null;
@@ -342,12 +343,27 @@
     });
   }
 
+  function bindPostRecordSync(element) {
+    if (!element || element.dataset.foodFlowPostSync === "1") return;
+    element.dataset.foodFlowPostSync = "1";
+    element.addEventListener("click", () => {
+      window.setTimeout(() => {
+        if (typeof window.renderMealsSearch === "function") {
+          window.renderMealsSearch();
+        }
+        renderOverviewSummary();
+      }, 0);
+    });
+  }
+
   function enhanceInteractiveZones() {
     document.querySelectorAll(".meal-plus-btn, [data-add-meal], [data-add-now]").forEach(bindDelayedSearchRedirect);
     bindDelayedSearchRedirect(document.getElementById("menuQuickAdd"));
     bindSearchRefresh(document.getElementById("quickSearchBtn"));
     bindSearchRefresh(document.getElementById("openMealsScreenBtn"));
     bindSearchRefresh(document.getElementById("cancelSearchBtn"));
+    bindPostRecordSync(document.getElementById("saveRecordBtn"));
+    bindPostRecordSync(document.getElementById("recordDeleteBtn"));
 
     const searchInput = document.getElementById("foodSearchInput");
     if (searchInput && searchInput.dataset.foodFlowInput !== "1") {
