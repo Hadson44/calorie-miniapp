@@ -1,0 +1,207 @@
+/* Final typography alignment layer for the Telegram mini app */
+:root {
+  --type-hero: 32px;
+  --type-screen-title: 30px;
+  --type-section-title: 24px;
+  --type-card-title: 20px;
+  --type-item-title: 17px;
+  --type-body: 14px;
+  --type-meta: 13px;
+  --type-micro: 12px;
+  --type-pill: 14px;
+  --type-button: 16px;
+}
+
+.hero-title,
+.premium-top-hero h1 {
+  font-size: var(--type-hero);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+}
+
+.page-heading h1,
+.nested-title,
+.search-title,
+.builder-title {
+  font-size: var(--type-screen-title);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+}
+
+.section-title.big,
+.premium-banner-title {
+  font-size: var(--type-section-title);
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+}
+
+.card-header h3,
+.section-head h2,
+.demo-card-title,
+.record-food-name,
+.premium-option-title,
+.goal-forecast-card .section-title,
+.modal-card-header h3 {
+  font-size: var(--type-card-title);
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+}
+
+.meal-name,
+.list-title,
+.search-row-title,
+.choice-detail-title,
+.water-card-title,
+.weight-card-title,
+.record-meal-select,
+.sheet-title,
+.calendar-title,
+.history-date,
+.history-value,
+.energy-value,
+.goal-forecast-card strong {
+  font-size: var(--type-item-title);
+  line-height: 1.16;
+}
+
+.primary-action,
+.secondary-action,
+.premium-orange-btn {
+  font-size: var(--type-button);
+  line-height: 1.14;
+}
+
+.small-pill,
+.date-pill,
+.premium-pill,
+.tab-pill,
+.filter-chip,
+.sheet-chip,
+.menu-item,
+.promo-chip,
+.dock-label,
+.section-link,
+.ghost-link-btn,
+.text-btn,
+.field-label,
+.field-group label,
+.record-input-group,
+.stat-label,
+.energy-label,
+.water-small,
+.weight-small,
+.nutrient-current,
+.impact-metric strong,
+.record-date-card,
+.search-input-wrap input {
+  font-size: var(--type-body);
+  line-height: 1.3;
+}
+
+.page-heading p,
+.hero-subtitle,
+.goal-detail-sub,
+.overview-text,
+.demo-card-text,
+.modal-text-block,
+.impact-text,
+.premium-banner-sub,
+.premium-footnote,
+.premium-option-price,
+.meal-empty,
+.stat-note,
+.detail-row,
+.streak-detail-line,
+.history-item-top,
+.choice-detail-text,
+.forecast-mark strong,
+.forecast-mark span {
+  font-size: var(--type-body);
+  line-height: 1.38;
+}
+
+.meal-summary,
+.meal-entry-meta,
+.list-sub,
+.search-row-sub,
+.history-meta,
+.record-food-sub,
+.impact-metric span,
+.nutrient-target,
+.premium-option-note,
+.big-ring-sub,
+.side-stat-label,
+.water-card .water-small,
+.weight-card-orange .weight-small {
+  font-size: var(--type-meta);
+  line-height: 1.32;
+}
+
+.meal-entry-name,
+.nutrient-name,
+.water-big,
+.weight-big,
+.big-ring-percent {
+  font-size: 15px;
+  line-height: 1.2;
+}
+
+.meal-entry-macros,
+.demo-btn::after,
+.week-day-name,
+.bar-day,
+.bar-value,
+.nutrient-target,
+.premium-mini,
+.side-stat-value {
+  font-size: var(--type-micro);
+  line-height: 1.2;
+}
+
+.meal-name,
+.list-title,
+.search-row-title,
+.card-header h3,
+.section-head h2,
+.record-food-name,
+.premium-option-title,
+.page-heading h1,
+.nested-title,
+.search-title,
+.builder-title,
+.hero-title,
+.premium-top-hero h1,
+.section-title.big,
+.premium-banner-title {
+  text-wrap: balance;
+}
+
+@media (max-width: 390px) {
+  :root {
+    --type-hero: 30px;
+    --type-screen-title: 28px;
+    --type-section-title: 22px;
+    --type-card-title: 18px;
+    --type-item-title: 16px;
+    --type-body: 13px;
+    --type-meta: 12px;
+    --type-micro: 11px;
+    --type-pill: 13px;
+    --type-button: 15px;
+  }
+
+  .primary-action,
+  .secondary-action,
+  .premium-orange-btn,
+  .promo-chip,
+  .small-pill,
+  .date-pill,
+  .premium-pill,
+  .tab-pill,
+  .filter-chip,
+  .sheet-chip,
+  .menu-item,
+  .dock-label {
+    font-size: var(--type-pill);
+  }
+}

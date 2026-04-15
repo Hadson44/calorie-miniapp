@@ -1,5 +1,5 @@
 // Keep the deployment entrypoint in the repository root while the main source lives in src/.
-const APP_VERSION = "20260415-food-flow-3";
+const APP_VERSION = "20260415-ui-type-1";
 const scriptQueue = [
   `./data/foods.js?v=${APP_VERSION}`,
   `./src/scripts/app.js?v=${APP_VERSION}`,
