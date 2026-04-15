@@ -1,0 +1,14 @@
+.meal-plus-btn,
+.meal-menu-btn,
+#menuQuickAdd,
+[data-add-meal],
+[data-add-now] {
+  touch-action: manipulation;
+}
+
+.meal-plus-btn,
+.meal-menu-btn {
+  position: relative;
+  z-index: 2;
+  pointer-events: auto;
+}
