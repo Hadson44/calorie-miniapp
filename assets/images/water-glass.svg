@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="20" y1="12" x2="140" y2="150" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F5D5E0"/>
+      <stop offset="0.55" stop-color="#A9B6FF"/>
+      <stop offset="1" stop-color="#7B337E"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="55" y1="28" x2="105" y2="128" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF" stop-opacity="0.92"/>
+      <stop offset="1" stop-color="#F4F8FF" stop-opacity="0.38"/>
+    </linearGradient>
+    <linearGradient id="water" x1="80" y1="54" x2="80" y2="122" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#A9E8FF"/>
+      <stop offset="1" stop-color="#4CA6FF"/>
+    </linearGradient>
+  </defs>
+  <rect width="160" height="160" rx="32" fill="url(#bg)"/>
+  <circle cx="42" cy="40" r="10" fill="#FFFFFF" fill-opacity="0.16"/>
+  <circle cx="118" cy="46" r="6" fill="#FFFFFF" fill-opacity="0.14"/>
+  <circle cx="122" cy="118" r="8" fill="#FFFFFF" fill-opacity="0.12"/>
+  <path d="M58 28H102L97 128H63L58 28Z" fill="url(#glass)"/>
+  <path d="M66 78C76 72 85 74 94 70L91 120H69L66 78Z" fill="url(#water)"/>
+  <path d="M63 28H97" stroke="#FFFFFF" stroke-opacity="0.8" stroke-width="5" stroke-linecap="round"/>
+  <path d="M67 52C72 48 77 50 83 47C89 44 93 45 96 43" stroke="#FFFFFF" stroke-opacity="0.5" stroke-width="3" stroke-linecap="round"/>
+  <path d="M114 28C114 21 119 16 124 12C129 16 134 21 134 28C134 34 129 39 124 39C119 39 114 34 114 28Z" fill="#6ED3FF"/>
+</svg>
