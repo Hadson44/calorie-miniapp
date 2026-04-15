@@ -1,4 +1,4 @@
-/* Hotfix for the calorie ring layout inside Telegram mini app webview */
+/* Stable hero layout for the calorie ring inside Telegram mini app */
 .main-layout {
   padding-top: max(18px, calc(env(safe-area-inset-top) + 14px));
 }
@@ -8,23 +8,26 @@
 }
 
 .hero-ring-area {
+  display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-areas:
+    "ring ring"
+    "consumed activity";
   align-items: stretch;
-  justify-items: stretch;
   gap: 12px;
   margin-bottom: 18px;
 }
 
 .big-ring {
-  grid-column: 1 / -1;
-  width: min(100%, 232px);
-  max-width: 232px;
+  grid-area: ring;
+  width: min(100%, 228px);
+  max-width: 228px;
   justify-self: center;
 }
 
 .big-ring-inner {
-  width: 72%;
-  height: 72%;
+  width: 70%;
+  height: 70%;
   padding: 14px 12px;
   text-align: center;
 }
@@ -46,20 +49,24 @@
   margin-top: 6px;
   font-size: 14px;
   line-height: 1.15;
+  white-space: nowrap;
 }
 
 .big-ring-percent {
-  margin-top: 10px;
+  margin-top: 12px;
+  display: inline-flex;
+  align-items: center;
   justify-content: center;
   align-self: center;
 }
 
 .side-stat {
-  min-height: 68px;
-  padding: 10px 12px;
-  border-radius: 20px;
+  min-height: 76px;
+  padding: 12px 14px;
+  border-radius: 22px;
   background: rgba(33, 6, 53, 0.46);
   border: 1px solid rgba(245, 213, 224, 0.10);
+  box-shadow: 0 12px 28px rgba(11, 2, 24, 0.18);
   display: grid;
   grid-template-columns: 24px 1fr;
   align-items: center;
@@ -67,6 +74,14 @@
   row-gap: 2px;
   text-align: left;
   overflow: hidden;
+}
+
+.side-stat.left {
+  grid-area: consumed;
+}
+
+.side-stat.right {
+  grid-area: activity;
 }
 
 .side-stat-icon {
@@ -81,7 +96,7 @@
   min-width: 0;
   margin: 0;
   font-size: 15px;
-  line-height: 1.05;
+  line-height: 1.08;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -110,18 +125,22 @@
   }
 
   .big-ring {
-    width: min(100%, 220px);
-    max-width: 220px;
+    width: min(100%, 214px);
+    max-width: 214px;
   }
 
   .big-ring-main {
     font-size: clamp(38px, 10vw, 48px);
   }
 
+  .big-ring-sub {
+    font-size: 13px;
+  }
+
   .side-stat {
-    min-height: 62px;
-    padding: 9px 10px;
-    border-radius: 18px;
+    min-height: 70px;
+    padding: 10px 12px;
+    border-radius: 20px;
     grid-template-columns: 22px 1fr;
     column-gap: 8px;
   }
