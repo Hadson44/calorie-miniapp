@@ -1,0 +1,11 @@
+/* Make unfinished demo controls visibly inactive and non-interactive. */
+.demo-btn {
+  opacity: 0.58;
+  pointer-events: none;
+  cursor: not-allowed;
+  filter: saturate(0.72);
+}
+
+.demo-btn::after {
+  letter-spacing: 0.08em;
+}

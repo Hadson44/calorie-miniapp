@@ -1,2 +1,3 @@
 /* Keep the deployment entrypoint in the repository root while the main styles live in src/. */
 @import url("./src/styles/style.css");
+@import url("./src/styles/demo-state.css");
