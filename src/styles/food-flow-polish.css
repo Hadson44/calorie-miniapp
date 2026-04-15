@@ -1,0 +1,144 @@
+#todayMealsSummary.food-overview-host {
+  max-width: none;
+}
+
+.food-overview-board {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.food-overview-head {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: #fdf4f7;
+}
+
+.food-overview-caption {
+  font-size: 13px;
+  line-height: 1.35;
+  color: rgba(245, 213, 224, 0.76);
+}
+
+.food-overview-strip {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+}
+
+.food-overview-strip::-webkit-scrollbar {
+  display: none;
+}
+
+.food-overview-item {
+  appearance: none;
+  min-width: 136px;
+  width: 136px;
+  padding: 10px;
+  border: 1px solid rgba(245, 213, 224, 0.1);
+  border-radius: 18px;
+  background: rgba(33, 6, 53, 0.34);
+  color: inherit;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 0 12px 24px rgba(11, 2, 24, 0.16);
+}
+
+.food-overview-item img {
+  width: 100%;
+  height: 84px;
+  object-fit: cover;
+  border-radius: 14px;
+}
+
+.food-overview-item-name {
+  font-size: 14px;
+  line-height: 1.15;
+  font-weight: 700;
+  color: #fff7fa;
+}
+
+.food-overview-item-meta,
+.food-overview-item-kcal {
+  font-size: 12px;
+  line-height: 1.25;
+  color: rgba(245, 213, 224, 0.76);
+}
+
+.food-overview-item-kcal {
+  color: #f5d5e0;
+  font-weight: 700;
+}
+
+.food-overview-empty {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: rgba(245, 213, 224, 0.8);
+}
+
+.food-overview-empty strong {
+  color: #fff7fa;
+}
+
+.search-row-body {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.search-row-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.search-row-serving {
+  font-size: 12px;
+  line-height: 1.2;
+  color: rgba(245, 213, 224, 0.72);
+  white-space: nowrap;
+}
+
+.search-empty-state {
+  padding: 16px;
+  border-radius: 18px;
+  border: 1px solid rgba(245, 213, 224, 0.08);
+  background: rgba(33, 6, 53, 0.3);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: rgba(245, 213, 224, 0.82);
+}
+
+.search-empty-state strong {
+  color: #fff7fa;
+}
+
+@media (max-width: 390px) {
+  .food-overview-item {
+    min-width: 124px;
+    width: 124px;
+  }
+
+  .food-overview-item img {
+    height: 78px;
+  }
+
+  .search-row-top {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .search-row-serving {
+    white-space: normal;
+  }
+}

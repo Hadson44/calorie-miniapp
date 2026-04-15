@@ -1,9 +1,10 @@
 /* Keep the deployment entrypoint in the repository root while the main styles live in src/. */
-@import url("./src/styles/style.css?v=20260415-ui-pass-3");
-@import url("./src/styles/demo-state.css?v=20260415-ui-pass-3");
-@import url("./src/styles/moon-theme.css?v=20260415-ui-pass-3");
-@import url("./src/styles/miniapp-button-tuning.css?v=20260415-ui-pass-3");
-@import url("./src/styles/mobile-screen-polish.css?v=20260415-ui-pass-3");
-@import url("./src/styles/app-finish-polish.css?v=20260415-ui-pass-3");
-@import url("./src/styles/view-ring-hotfix.css?v=20260415-ui-pass-3");
-@import url("./src/styles/mobile-ui-system.css?v=20260415-ui-pass-3");
+@import url("./src/styles/style.css?v=20260415-food-flow-1");
+@import url("./src/styles/demo-state.css?v=20260415-food-flow-1");
+@import url("./src/styles/moon-theme.css?v=20260415-food-flow-1");
+@import url("./src/styles/miniapp-button-tuning.css?v=20260415-food-flow-1");
+@import url("./src/styles/mobile-screen-polish.css?v=20260415-food-flow-1");
+@import url("./src/styles/app-finish-polish.css?v=20260415-food-flow-1");
+@import url("./src/styles/view-ring-hotfix.css?v=20260415-food-flow-1");
+@import url("./src/styles/mobile-ui-system.css?v=20260415-food-flow-1");
+@import url("./src/styles/food-flow-polish.css?v=20260415-food-flow-1");
