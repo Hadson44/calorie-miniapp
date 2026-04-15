@@ -1,0 +1,828 @@
+/* Final geometry and typography polish across the mini app */
+:root {
+  --ui-space-1: 10px;
+  --ui-space-2: 14px;
+  --ui-space-3: 18px;
+  --ui-space-4: 22px;
+  --ui-radius-card: 22px;
+  --ui-radius-pill: 20px;
+}
+
+html {
+  font-size: 16px;
+}
+
+body {
+  text-rendering: optimizeLegibility;
+}
+
+.app {
+  max-width: 430px;
+}
+
+.main-layout {
+  padding: 14px 14px 132px;
+}
+
+.onboarding-screen {
+  padding: 16px 16px 34px;
+}
+
+.onboarding-wrap {
+  min-height: calc(100vh - 32px);
+}
+
+.nested-screen {
+  padding-bottom: 128px;
+}
+
+.card,
+.onboarding-card,
+.list-card,
+.goal-forecast-card,
+.plan-card,
+.profile-panel,
+.modal-content-card,
+.record-shell,
+.calendar-sheet,
+.goal-detail-card,
+.premium-banner-card {
+  border-radius: var(--ui-radius-card);
+}
+
+.card,
+.dark-panel,
+.profile-panel,
+.modal-content-card {
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.hero-title {
+  font-size: 40px;
+  line-height: 0.98;
+  letter-spacing: -0.05em;
+  margin-bottom: 10px;
+}
+
+.hero-subtitle {
+  max-width: 320px;
+  margin-bottom: 20px;
+  font-size: 15px;
+  line-height: 1.35;
+}
+
+.section-title,
+.card-header h3,
+.section-head h2,
+.demo-card-title,
+.premium-banner-title,
+.sheet-title,
+.calendar-title,
+.modal-card-header h3 {
+  letter-spacing: -0.03em;
+}
+
+.section-title.big {
+  font-size: 28px;
+  line-height: 1.08;
+  margin-bottom: 16px;
+}
+
+.card-header {
+  margin-bottom: 12px;
+}
+
+.card-header h3 {
+  font-size: 20px;
+}
+
+.section-head {
+  margin: 8px 0 12px;
+}
+
+.section-head h2 {
+  font-size: 22px;
+}
+
+.field-label,
+.field-group label,
+.record-input-group,
+.stat-label {
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+
+.neon-input,
+.small-dark-input {
+  border-radius: 18px;
+  font-size: 16px;
+  padding: 0 16px;
+}
+
+.neon-input {
+  height: 54px;
+}
+
+.small-dark-input {
+  height: 56px;
+}
+
+.choice-stack {
+  gap: 14px;
+}
+
+.choice-stack-long {
+  gap: 12px;
+}
+
+.choice-card {
+  min-height: 96px;
+  border-radius: 24px;
+  font-size: 25px;
+}
+
+.choice-detail-card {
+  min-height: 116px;
+  border-radius: 24px;
+}
+
+.choice-detail-title {
+  font-size: 22px;
+  margin-bottom: 8px;
+}
+
+.choice-detail-text {
+  font-size: 15px;
+  line-height: 1.34;
+}
+
+.circle-back-btn {
+  margin-bottom: 16px;
+}
+
+.progress-ring-mini {
+  width: 84px;
+  height: 84px;
+}
+
+.progress-ring-mini-inner {
+  width: 58px;
+  height: 58px;
+  font-size: 22px;
+}
+
+.wheel-picker-card {
+  height: 224px;
+  margin-bottom: 20px;
+  border-radius: 24px;
+}
+
+.wheel-picker {
+  padding: 84px 0;
+}
+
+.wheel-item {
+  height: 56px;
+  font-size: 26px;
+}
+
+.wheel-item.active {
+  font-size: 30px;
+}
+
+.wheel-highlight {
+  height: 56px;
+  border-radius: 18px;
+}
+
+.wheel-highlight span {
+  font-size: 22px;
+}
+
+.goal-forecast-card {
+  padding: 18px 16px 22px;
+}
+
+.forecast-icon,
+.energy-icon,
+.week-day-dot,
+.premium-radio,
+.forecast-dot,
+.white-circle-btn,
+.green-circle-btn,
+.small-plus-btn,
+.small-icon-circle,
+.info-floating-btn,
+.hint-pill-close,
+.search-plus,
+.mini-icon-btn,
+.icon-ghost-btn,
+.avatar-edit-btn,
+.sheet-close-btn,
+.premium-close-btn {
+  aspect-ratio: 1 / 1;
+}
+
+.forecast-icon {
+  width: 78px;
+  height: 78px;
+  font-size: 36px;
+  margin-bottom: 10px;
+}
+
+.forecast-line-wrap {
+  height: 130px;
+  margin-top: 18px;
+}
+
+.forecast-line {
+  left: 24px;
+  right: 24px;
+  top: 64px;
+  height: 5px;
+}
+
+.forecast-dot {
+  width: 22px;
+  height: 22px;
+  top: 56px;
+}
+
+.forecast-dot.start {
+  left: 16px;
+}
+
+.forecast-dot.end {
+  right: 16px;
+}
+
+.forecast-mark strong {
+  font-size: 16px;
+}
+
+.forecast-mark span {
+  font-size: 12px;
+}
+
+.energy-card {
+  gap: 12px;
+  border-radius: 20px;
+  padding: 14px;
+  margin-bottom: 14px;
+}
+
+.energy-icon {
+  width: 60px;
+  height: 60px;
+  font-size: 28px;
+}
+
+.energy-label {
+  font-size: 15px;
+}
+
+.energy-value {
+  font-size: 22px;
+}
+
+.macro-tiles {
+  gap: 10px;
+}
+
+.macro-tile {
+  min-height: 108px;
+  border-radius: 20px;
+  padding: 16px;
+}
+
+.macro-tile-label {
+  font-size: 15px;
+  margin-bottom: 8px;
+}
+
+.macro-tile-value {
+  font-size: 21px;
+}
+
+.week-strip {
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.week-day-name,
+.bar-day,
+.bar-value {
+  font-size: 12px;
+}
+
+.week-day-dot {
+  width: 44px;
+  height: 44px;
+  font-size: 15px;
+}
+
+.hero-ring-area {
+  grid-template-columns: 74px 1fr 74px;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.side-stat-icon {
+  font-size: 34px;
+  margin-bottom: 8px;
+}
+
+.side-stat-value {
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.side-stat-label {
+  font-size: 12px;
+  line-height: 1.2;
+}
+
+.big-ring {
+  max-width: 214px;
+}
+
+.big-ring-main {
+  font-size: 46px;
+}
+
+.big-ring-sub {
+  margin-top: 6px;
+  font-size: 15px;
+}
+
+.big-ring-percent {
+  min-width: 68px;
+  padding: 5px 10px;
+  font-size: 15px;
+}
+
+.quick-action-row {
+  margin-bottom: 12px;
+}
+
+.hint-pill {
+  min-height: 52px;
+  padding: 10px 12px 10px 16px;
+  font-size: 15px;
+}
+
+.hint-pill-close {
+  font-size: 22px;
+}
+
+.nutrients-grid {
+  gap: 12px 8px;
+}
+
+.mini-progress {
+  width: 70px;
+  height: 70px;
+  margin-bottom: 10px;
+}
+
+.nutrient-name {
+  font-size: 15px;
+  margin-bottom: 6px;
+}
+
+.nutrient-current {
+  font-size: 15px;
+}
+
+.nutrient-target,
+.premium-mini {
+  font-size: 12px;
+}
+
+.meal-cards-list,
+.history-list {
+  gap: 12px;
+}
+
+.meal-pill-card {
+  border-radius: 24px;
+  padding: 14px;
+  gap: 12px;
+}
+
+.meal-card-head,
+.meal-pill-left,
+.meal-tools {
+  gap: 10px;
+}
+
+.meal-emoji {
+  font-size: 24px;
+}
+
+.meal-name {
+  font-size: 20px;
+}
+
+.meal-summary,
+.meal-entry-meta,
+.record-food-sub,
+.search-row-sub,
+.stat-note,
+.history-meta,
+.impact-metric span {
+  font-size: 13px;
+  line-height: 1.32;
+}
+
+.meal-entry-row {
+  border-radius: 18px;
+  padding: 12px 14px;
+  gap: 12px;
+}
+
+.meal-entry-name {
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+
+.meal-entry-macros {
+  font-size: 12px;
+}
+
+.meal-entry-edit {
+  font-size: 18px;
+}
+
+.meal-empty {
+  border-radius: 18px;
+  padding: 14px;
+  font-size: 14px;
+}
+
+.water-card-title,
+.weight-card-title {
+  font-size: 18px;
+}
+
+.water-line {
+  margin: 14px 0 14px;
+}
+
+.water-big,
+.weight-big {
+  font-size: 24px;
+}
+
+.water-small,
+.weight-small {
+  font-size: 15px;
+}
+
+.page-heading h1,
+.builder-title,
+.search-title {
+  font-size: 32px;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.builder-emoji {
+  font-size: 96px;
+}
+
+.builder-text,
+.overview-text,
+.demo-card-text,
+.impact-text,
+.modal-text-block {
+  font-size: 15px;
+  line-height: 1.42;
+}
+
+.stats-grid-2 {
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.stat-box {
+  min-height: 112px;
+}
+
+.stat-big {
+  font-size: 32px;
+}
+
+.chart-bars {
+  height: 180px;
+}
+
+.bar-track {
+  height: 118px;
+}
+
+.history-item {
+  border-radius: 16px;
+  padding: 12px;
+}
+
+.history-date,
+.history-value {
+  font-size: 15px;
+}
+
+.search-shell {
+  padding: 14px 0 0;
+}
+
+.search-top-row {
+  gap: 8px;
+  padding: 0 14px 12px;
+}
+
+.search-input-wrap {
+  height: 52px;
+  border-radius: 16px;
+}
+
+.search-icon {
+  font-size: 24px;
+}
+
+.search-input-wrap input {
+  font-size: 16px;
+}
+
+.search-filters {
+  gap: 10px;
+  padding: 0 14px 14px;
+}
+
+.search-title {
+  padding: 0 14px 14px;
+}
+
+.search-row {
+  grid-template-columns: 72px 1fr 40px;
+  gap: 12px;
+  padding: 14px;
+}
+
+.search-row img {
+  width: 72px;
+  height: 72px;
+  border-radius: 16px;
+}
+
+.search-row-title {
+  font-size: 18px;
+  margin-bottom: 6px;
+}
+
+.search-row-tag {
+  font-size: 15px;
+}
+
+.list-item {
+  align-items: center;
+}
+
+.avatar-wrap {
+  margin-bottom: 14px;
+}
+
+.avatar-circle {
+  width: 92px;
+  height: 92px;
+  font-size: 34px;
+}
+
+.form-stack,
+.two-cols {
+  gap: 12px;
+}
+
+.bottom-dock {
+  gap: 10px;
+  padding: 0 8px calc(env(safe-area-inset-bottom) + 6px);
+}
+
+.bottom-dock-pill {
+  min-height: 74px;
+}
+
+.dock-icon {
+  font-size: 24px;
+}
+
+.dock-label {
+  font-size: 12px;
+}
+
+.fab-btn {
+  width: 72px;
+  height: 72px;
+  font-size: 34px;
+}
+
+.modal-sheet,
+.modal-card,
+.modal-panel {
+  border-radius: 24px;
+}
+
+.modal-sheet {
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  padding: 12px 12px 16px;
+}
+
+.sheet-grid {
+  gap: 10px;
+}
+
+.sheet-chip {
+  border-radius: 18px;
+  font-size: 15px;
+}
+
+.modal-panel {
+  width: calc(100% - 56px);
+  max-width: 272px;
+  bottom: 154px;
+}
+
+.menu-item {
+  border-radius: 14px;
+  font-size: 16px;
+}
+
+.modal-card {
+  left: 12px;
+  right: 12px;
+  top: 72px;
+  padding: 14px;
+}
+
+.modal-card-header {
+  margin-bottom: 10px;
+}
+
+.detail-row,
+.streak-detail-line {
+  padding: 12px 0;
+  font-size: 14px;
+}
+
+.streak-title {
+  font-size: 18px;
+}
+
+.streak-huge,
+.streak-big {
+  font-size: 52px;
+}
+
+.calendar-head {
+  margin-bottom: 12px;
+}
+
+.calendar-grid-head,
+.calendar-grid {
+  gap: 8px;
+}
+
+.calendar-grid button {
+  font-size: 18px;
+}
+
+.record-shell {
+  padding: 14px;
+}
+
+.record-top {
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.record-meal-select {
+  font-size: 18px;
+}
+
+.record-date-card {
+  min-height: 62px;
+  border-radius: 20px;
+  padding: 0 16px;
+  margin-bottom: 14px;
+  font-size: 15px;
+}
+
+.record-food-card {
+  border-radius: 22px;
+  padding: 14px;
+  margin-bottom: 14px;
+}
+
+.record-food-top {
+  grid-template-columns: 84px 1fr auto;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.record-food-top img {
+  width: 84px;
+  height: 84px;
+  border-radius: 16px;
+}
+
+.record-food-name {
+  font-size: 22px;
+  margin-bottom: 6px;
+}
+
+.record-food-inputs,
+.impact-metrics {
+  gap: 10px;
+}
+
+.impact-metric {
+  border-radius: 18px;
+  padding: 12px 14px;
+}
+
+.impact-metric strong {
+  font-size: 18px;
+}
+
+.demo-btn::after {
+  font-size: 8px;
+  letter-spacing: 0.1em;
+}
+
+@media (max-width: 390px) {
+  .main-layout {
+    padding: 12px 12px 126px;
+  }
+
+  .onboarding-screen {
+    padding: 14px 14px 30px;
+  }
+
+  .hero-title {
+    font-size: 36px;
+  }
+
+  .hero-subtitle {
+    font-size: 14px;
+  }
+
+  .choice-card {
+    min-height: 90px;
+    font-size: 22px;
+  }
+
+  .choice-detail-title {
+    font-size: 20px;
+  }
+
+  .section-title.big {
+    font-size: 26px;
+  }
+
+  .big-ring {
+    max-width: 200px;
+  }
+
+  .big-ring-main {
+    font-size: 42px;
+  }
+
+  .hero-ring-area {
+    grid-template-columns: 64px 1fr 64px;
+  }
+
+  .search-row {
+    grid-template-columns: 64px 1fr 38px;
+    padding: 12px;
+  }
+
+  .search-row img {
+    width: 64px;
+    height: 64px;
+  }
+
+  .record-food-top {
+    grid-template-columns: 74px 1fr;
+  }
+
+  .record-food-top img {
+    width: 74px;
+    height: 74px;
+  }
+
+  .record-food-actions {
+    grid-column: 1 / -1;
+  }
+}
