@@ -1,0 +1,350 @@
+/* Final mobile system layer for rhythm, spacing and dock safety */
+:root {
+  --mobile-inline-pad: 14px;
+  --mobile-block-gap: 16px;
+  --mobile-card-radius: 22px;
+  --mobile-bottom-clear: calc(env(safe-area-inset-bottom) + 170px);
+}
+
+.main-layout {
+  padding-top: max(18px, calc(env(safe-area-inset-top) + 14px));
+  padding-inline: var(--mobile-inline-pad);
+  padding-bottom: var(--mobile-bottom-clear);
+}
+
+.nested-screen {
+  padding-bottom: calc(env(safe-area-inset-bottom) + 166px);
+}
+
+.onboarding-screen {
+  padding-top: max(16px, calc(env(safe-area-inset-top) + 12px));
+}
+
+.card,
+.list-card,
+.meal-pill-card,
+.history-item,
+.premium-option,
+.premium-banner-card,
+.record-food-card,
+.record-date-card,
+.search-row,
+.side-stat,
+.sheet-chip,
+.impact-metric {
+  box-shadow: 0 14px 30px rgba(11, 2, 24, 0.18);
+}
+
+.page-heading {
+  margin-bottom: 16px;
+  padding-inline: 2px;
+}
+
+.page-heading h1,
+.search-title,
+.nested-title {
+  max-width: 290px;
+  font-size: 30px;
+  line-height: 0.98;
+  letter-spacing: -0.04em;
+}
+
+.page-heading p,
+.hero-subtitle,
+.goal-detail-sub,
+.overview-text,
+.demo-card-text,
+.modal-text-block,
+.impact-text {
+  max-width: 320px;
+  font-size: 14px;
+  line-height: 1.38;
+}
+
+.top-premium-bar,
+.week-strip,
+.hero-ring-area,
+.quick-action-row,
+.hint-pill,
+.card,
+.list-card,
+.premium-plans,
+.premium-bottom,
+.search-filters,
+.search-title,
+.search-results-list,
+.stats-grid-2,
+.tab-pills,
+.section-head,
+.page-heading,
+.nested-top,
+.profile-panel,
+.goal-detail-card,
+.nested-plan,
+.record-date-card,
+.record-food-card {
+  margin-bottom: var(--mobile-block-gap);
+}
+
+.info-floating-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 0 16px auto;
+  left: auto;
+}
+
+.week-day {
+  gap: 6px;
+}
+
+.quick-action-row {
+  border-radius: 28px;
+  overflow: hidden;
+}
+
+.quick-mini-btn {
+  font-size: 30px;
+}
+
+.hint-pill {
+  align-items: center;
+}
+
+.nutrients-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 10px;
+}
+
+.nutrient-box,
+.stat-box,
+.impact-metric,
+.history-item,
+.search-row,
+.list-item {
+  min-width: 0;
+}
+
+.stats-grid-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.chart-bars {
+  height: 172px;
+}
+
+.bar-track {
+  height: 112px;
+}
+
+.search-shell {
+  padding-top: 10px;
+}
+
+.search-results-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0 14px 6px;
+  border-top: none;
+}
+
+.search-row {
+  border: 1px solid rgba(245, 213, 224, 0.08);
+  border-radius: 20px;
+  border-bottom-width: 1px;
+  background: rgba(33, 6, 53, 0.34);
+}
+
+.search-row img {
+  width: 68px;
+  height: 68px;
+}
+
+.search-row-title {
+  font-size: 17px;
+  line-height: 1.2;
+}
+
+.search-row-sub {
+  font-size: 13px;
+}
+
+.meal-card-head {
+  align-items: flex-start;
+}
+
+.meal-tools {
+  flex-shrink: 0;
+}
+
+.meal-entry-list {
+  gap: 8px;
+}
+
+.meal-entry-row {
+  padding: 12px;
+}
+
+.meal-entry-meta,
+.meal-summary,
+.history-meta,
+.list-sub {
+  font-size: 13px;
+  line-height: 1.28;
+}
+
+.list-item {
+  min-height: 72px;
+}
+
+.list-title {
+  font-size: 16px;
+}
+
+.profile-panel,
+.goal-detail-card,
+.plan-card,
+.record-shell {
+  padding: 16px;
+}
+
+.form-stack,
+.two-cols,
+.record-food-inputs,
+.impact-metrics {
+  gap: 10px;
+}
+
+.record-food-inputs,
+.impact-metrics {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.record-top .pill,
+.modal-card-header .ghost-link-btn {
+  min-height: 40px;
+  padding-inline: 12px;
+}
+
+.premium-plans {
+  gap: 12px;
+}
+
+.premium-bottom {
+  padding-bottom: 30px;
+}
+
+.bottom-dock {
+  width: min(100%, 430px);
+  gap: 10px;
+  bottom: 0;
+  padding: 0 10px calc(env(safe-area-inset-bottom) + 10px);
+}
+
+.bottom-dock-pill {
+  min-height: 78px;
+}
+
+.dock-btn {
+  min-height: 70px;
+}
+
+.dock-label {
+  line-height: 1.05;
+  text-align: center;
+}
+
+.fab-btn {
+  width: 76px;
+  height: 76px;
+}
+
+.modal-sheet {
+  left: 10px;
+  right: 10px;
+  bottom: max(10px, calc(env(safe-area-inset-bottom) + 4px));
+  padding-bottom: calc(16px + env(safe-area-inset-bottom));
+}
+
+.modal-panel {
+  bottom: calc(env(safe-area-inset-bottom) + 154px);
+}
+
+.modal-card {
+  top: max(72px, calc(env(safe-area-inset-top) + 54px));
+}
+
+.modal-record {
+  left: 10px;
+  right: 10px;
+  top: max(12px, calc(env(safe-area-inset-top) + 8px));
+  bottom: max(12px, calc(env(safe-area-inset-bottom) + 8px));
+}
+
+@media (max-width: 390px) {
+  :root {
+    --mobile-inline-pad: 12px;
+    --mobile-block-gap: 14px;
+    --mobile-bottom-clear: calc(env(safe-area-inset-bottom) + 166px);
+  }
+
+  .page-heading h1,
+  .search-title,
+  .nested-title {
+    font-size: 28px;
+  }
+
+  .page-heading p,
+  .hero-subtitle,
+  .goal-detail-sub,
+  .overview-text,
+  .demo-card-text,
+  .modal-text-block,
+  .impact-text {
+    font-size: 13px;
+  }
+
+  .quick-mini-btn {
+    font-size: 28px;
+  }
+
+  .search-results-list {
+    padding: 0 12px 4px;
+  }
+
+  .search-row {
+    grid-template-columns: 64px 1fr 38px;
+    gap: 10px;
+    padding: 12px;
+  }
+
+  .search-row img {
+    width: 64px;
+    height: 64px;
+  }
+
+  .list-item {
+    min-height: 68px;
+    padding: 0 14px;
+  }
+
+  .record-food-inputs,
+  .impact-metrics {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .bottom-dock {
+    gap: 8px;
+    padding: 0 8px calc(env(safe-area-inset-bottom) + 8px);
+  }
+
+  .fab-btn {
+    width: 72px;
+    height: 72px;
+  }
+
+  .modal-panel {
+    width: calc(100% - 48px);
+  }
+}
