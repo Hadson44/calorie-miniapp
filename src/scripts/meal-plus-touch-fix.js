@@ -1,12 +1,12 @@
 (function () {
-  const DEFAULT_MEAL = "Сніданок";
+  const DEFAULT_MEAL = "\u0421\u043d\u0456\u0434\u0430\u043d\u043e\u043a";
   const MEAL_NAMES = [
-    "Сніданок",
-    "Перекус",
-    "Обід",
-    "Другий перекус",
-    "Вечеря",
-    "Третій перекус"
+    "\u0421\u043d\u0456\u0434\u0430\u043d\u043e\u043a",
+    "\u041f\u0435\u0440\u0435\u043a\u0443\u0441",
+    "\u041e\u0431\u0456\u0434",
+    "\u0414\u0440\u0443\u0433\u0438\u0439 \u043f\u0435\u0440\u0435\u043a\u0443\u0441",
+    "\u0412\u0435\u0447\u0435\u0440\u044f",
+    "\u0422\u0440\u0435\u0442\u0456\u0439 \u043f\u0435\u0440\u0435\u043a\u0443\u0441"
   ];
   const SUPPRESS_MS = 650;
   let suppressUntil = 0;
@@ -69,7 +69,7 @@
     if (button.matches(".meal-plus-btn")) return button;
 
     const label = normalizeText(button.textContent).replace(/\s+/g, "");
-    if (label !== "+" && label !== "＋") return null;
+    if (label !== "+" && label !== "\uff0b") return null;
 
     const mealCard = button.closest(".meal-card, .meal-card-shell, .meal-block, .meal-section, .meal-row, .card");
     if (!mealCard) return null;
@@ -109,20 +109,37 @@
     }
   }
 
+  function focusSearchInputFallback() {
+    const input = document.getElementById("foodSearchInput");
+    if (!input) return;
+    try {
+      input.focus({ preventScroll: true });
+    } catch {
+      input.focus();
+    }
+  }
+
   function openMealSearch(button) {
     safeSetRecordMeal(resolveMealFromButton(button));
     safeHide("mealActionMenu");
     safeHide("addSheet");
     safeCloseOverlay();
 
-    window.requestAnimationFrame(() => {
-      if (typeof openSearchScreen === "function") {
-        openSearchScreen();
+    if (typeof openSearchScreen === "function") {
+      openSearchScreen();
+    } else {
+      if (typeof openRootScreen === "function") {
+        openRootScreen("screenMeals");
       }
       if (typeof window.renderMealsSearch === "function") {
         window.renderMealsSearch();
       }
-    });
+      focusSearchInputFallback();
+    }
+
+    if (typeof window.renderMealsSearch === "function") {
+      window.renderMealsSearch();
+    }
   }
 
   function tryHandle(event) {
@@ -201,7 +218,7 @@
       button.dataset.mealTouchFix = "1";
       button.setAttribute("type", "button");
       const mealName = resolveMealFromButton(button);
-      button.setAttribute("aria-label", `Додати продукт до ${mealName}`);
+      button.setAttribute("aria-label", `\u0414\u043e\u0434\u0430\u0442\u0438 \u043f\u0440\u043e\u0434\u0443\u043a\u0442 \u0434\u043e ${mealName}`);
     });
   }
 
