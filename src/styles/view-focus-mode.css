@@ -1,0 +1,25 @@
+#openPremiumBtn,
+#quickProgressBtn,
+#openMealsScreenBtn,
+#openProgressScreenBtn,
+.bottom-dock .dock-btn[data-open-screen="screenProgress"],
+.bottom-dock .dock-btn[data-open-screen="screenMeals"],
+.bottom-dock .dock-btn[data-open-screen="screenMore"] {
+  display: none !important;
+}
+
+.top-premium-bar {
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.quick-action-row {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+}
+
+.bottom-dock-pill {
+  flex: 0 1 172px;
+  max-width: 172px;
+  grid-template-columns: minmax(0, 1fr) !important;
+}
