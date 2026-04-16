@@ -1,5 +1,5 @@
 // Keep the deployment entrypoint in the repository root while the main source lives in src/.
-const APP_VERSION = "20260416-onboarding-moon-1";
+const APP_VERSION = "20260416-onboarding-moon-2";
 const scriptQueue = [
   `./data/foods.js?v=${APP_VERSION}`,
   `./src/scripts/water-image-hotfix.js?v=${APP_VERSION}`,
@@ -9,7 +9,8 @@ const scriptQueue = [
   `./src/scripts/food-flow-upgrade.js?v=${APP_VERSION}`,
   `./src/scripts/meal-plus-touch-fix.js?v=${APP_VERSION}`,
   `./src/scripts/search-close-fix.js?v=${APP_VERSION}`,
-  `./src/scripts/onboarding-refresh.js?v=${APP_VERSION}`
+  `./src/scripts/onboarding-refresh.js?v=${APP_VERSION}`,
+  `./src/scripts/onboarding-force-start.js?v=${APP_VERSION}`
 ];
 
 function loadScriptAt(index) {
