@@ -1,0 +1,28 @@
+.meal-plus-btn,
+.meal-menu-btn {
+  min-width: 56px;
+  min-height: 56px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 9;
+  pointer-events: auto !important;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.meal-plus-btn::before,
+.meal-plus-btn::after,
+.meal-menu-btn::before,
+.meal-menu-btn::after,
+.meal-plus-btn > *,
+.meal-menu-btn > * {
+  pointer-events: none;
+}
+
+@media (max-width: 480px) {
+  .meal-plus-btn,
+  .meal-menu-btn {
+    min-width: 58px;
+    min-height: 58px;
+  }
+}
