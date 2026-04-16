@@ -1,0 +1,432 @@
+.app.onboarding-mode {
+  max-width: 100vw;
+  width: 100%;
+  background: transparent;
+}
+
+.app.onboarding-mode .onboarding-screen {
+  position: relative;
+  min-height: 100svh;
+  padding: 0;
+  color: #f5d5e0;
+  background:
+    radial-gradient(circle at 14% 0%, rgba(102, 103, 171, 0.88), transparent 34%),
+    radial-gradient(circle at 100% 6%, rgba(123, 51, 126, 0.72), transparent 32%),
+    radial-gradient(circle at 50% 78%, rgba(245, 213, 224, 0.10), transparent 26%),
+    linear-gradient(180deg, #6667ab 0%, #7b337e 40%, #420d4b 72%, #210635 100%);
+  overflow: hidden;
+}
+
+.app.onboarding-mode .onboarding-screen::before,
+.app.onboarding-mode .onboarding-screen::after {
+  content: "";
+  position: absolute;
+  inset: auto;
+  border-radius: 999px;
+  filter: blur(10px);
+  pointer-events: none;
+}
+
+.app.onboarding-mode .onboarding-screen::before {
+  top: 18%;
+  right: -88px;
+  width: 220px;
+  height: 220px;
+  background: rgba(245, 213, 224, 0.10);
+}
+
+.app.onboarding-mode .onboarding-screen::after {
+  left: -72px;
+  bottom: 22%;
+  width: 180px;
+  height: 180px;
+  background: rgba(102, 103, 171, 0.16);
+}
+
+.app.onboarding-mode .phone-top-space {
+  display: none;
+}
+
+.app.onboarding-mode .onboarding-wrap {
+  position: relative;
+  z-index: 1;
+  min-height: 100svh;
+  padding: max(18px, env(safe-area-inset-top)) 20px calc(28px + env(safe-area-inset-bottom));
+}
+
+.app.onboarding-mode .circle-back-btn {
+  width: 52px;
+  height: 52px;
+  margin-bottom: 18px;
+  border: 1px solid rgba(245, 213, 224, 0.18);
+  background: rgba(245, 213, 224, 0.08);
+  color: #fff7fa;
+  font-size: 28px;
+  box-shadow: 0 12px 28px rgba(33, 6, 53, 0.16);
+}
+
+.app.onboarding-mode .onboarding-progress-wrap {
+  margin-bottom: 18px;
+}
+
+.app.onboarding-mode .progress-ring-mini {
+  width: 84px;
+  height: 84px;
+  background: conic-gradient(#f5d5e0 0deg, #f5d5e0 var(--progress-deg), rgba(245, 213, 224, 0.16) var(--progress-deg), rgba(245, 213, 224, 0.16) 360deg);
+  box-shadow: 0 20px 40px rgba(33, 6, 53, 0.28);
+}
+
+.app.onboarding-mode .progress-ring-mini-inner {
+  width: 58px;
+  height: 58px;
+  background: rgba(33, 6, 53, 0.88);
+  color: #f5d5e0;
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+}
+
+.app.onboarding-mode .onboarding-step {
+  display: none;
+}
+
+.app.onboarding-mode .onboarding-step.active {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100svh - 132px);
+}
+
+.app.onboarding-mode .hero-title {
+  margin: 0 0 12px;
+  font-size: clamp(42px, 12vw, 64px);
+  line-height: 1.02;
+  letter-spacing: -1.8px;
+  color: #fff7fa;
+  text-shadow: 0 16px 36px rgba(33, 6, 53, 0.20);
+}
+
+.app.onboarding-mode .hero-title.no-top {
+  margin-top: 0;
+}
+
+.app.onboarding-mode .hero-subtitle {
+  margin: 0 0 24px;
+  color: rgba(245, 213, 224, 0.78);
+  font-size: 18px;
+  line-height: 1.48;
+}
+
+.app.onboarding-mode .primary-action {
+  min-height: 64px;
+  margin-top: auto;
+  border-radius: 28px;
+  background: linear-gradient(180deg, #f5d5e0 0%, #ebc1d5 100%);
+  color: #420d4b;
+  box-shadow: 0 18px 42px rgba(33, 6, 53, 0.32);
+  font-size: 22px;
+  font-weight: 900;
+}
+
+.app.onboarding-mode .text-btn {
+  margin-top: 16px;
+  color: rgba(245, 213, 224, 0.86);
+  font-size: 17px;
+}
+
+.app.onboarding-mode .moon-intro-badge {
+  align-self: flex-start;
+  margin-bottom: 8px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: rgba(245, 213, 224, 0.12);
+  color: #fff7fa;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.app.onboarding-mode .moon-intro-art {
+  position: relative;
+  min-height: 280px;
+  height: 38svh;
+  margin: 8px 0 18px;
+}
+
+.app.onboarding-mode .moon-intro-core {
+  position: absolute;
+  inset: 8% 8% auto;
+  margin: 0 auto;
+  width: min(78vw, 320px);
+  aspect-ratio: 1;
+  border-radius: 40%;
+  background: radial-gradient(circle at 32% 28%, rgba(245, 213, 224, 0.96), rgba(245, 213, 224, 0.34) 38%, rgba(102, 103, 171, 0.18) 58%, rgba(33, 6, 53, 0.18) 100%);
+  filter: drop-shadow(0 30px 46px rgba(33, 6, 53, 0.26));
+}
+
+.app.onboarding-mode .moon-intro-plate {
+  position: absolute;
+  inset: 14% auto auto 50%;
+  transform: translateX(-50%);
+  width: min(58vw, 240px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(180deg, rgba(255, 247, 250, 0.96), rgba(245, 213, 224, 0.78));
+  box-shadow: 0 22px 50px rgba(33, 6, 53, 0.24);
+}
+
+.app.onboarding-mode .moon-intro-emoji {
+  font-size: clamp(70px, 18vw, 108px);
+  filter: drop-shadow(0 12px 18px rgba(66, 13, 75, 0.16));
+}
+
+.app.onboarding-mode .moon-intro-chip {
+  position: absolute;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: rgba(245, 213, 224, 0.12);
+  border: 1px solid rgba(245, 213, 224, 0.16);
+  color: #fff7fa;
+  font-size: 14px;
+  font-weight: 700;
+  box-shadow: 0 14px 28px rgba(33, 6, 53, 0.18);
+}
+
+.app.onboarding-mode .moon-intro-chip.chip-one {
+  left: 0;
+  bottom: 22%;
+}
+
+.app.onboarding-mode .moon-intro-chip.chip-two {
+  right: 2%;
+  top: 22%;
+}
+
+.app.onboarding-mode .moon-intro-chip.chip-three {
+  right: 8%;
+  bottom: 14%;
+}
+
+.app.onboarding-mode .moon-intro-copy {
+  margin-bottom: 22px;
+}
+
+.app.onboarding-mode .onboarding-name-hidden {
+  display: none !important;
+}
+
+.app.onboarding-mode .choice-stack {
+  gap: 14px;
+}
+
+.app.onboarding-mode .choice-stack-long {
+  gap: 12px;
+}
+
+.app.onboarding-mode .choice-card,
+.app.onboarding-mode .choice-detail-card {
+  width: 100%;
+  min-height: 92px;
+  border-radius: 26px;
+  border: 1px solid rgba(245, 213, 224, 0.12);
+  background: rgba(245, 213, 224, 0.08);
+  color: #f7e7ee;
+  box-shadow: 0 18px 36px rgba(33, 6, 53, 0.14);
+}
+
+.app.onboarding-mode .choice-card {
+  min-height: 88px;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.app.onboarding-mode .choice-detail-card {
+  padding: 20px 18px;
+  text-align: left;
+}
+
+.app.onboarding-mode .choice-card.active,
+.app.onboarding-mode .choice-detail-card.active {
+  background: linear-gradient(180deg, rgba(245, 213, 224, 0.98), rgba(233, 190, 211, 0.92));
+  color: #420d4b;
+  border-color: rgba(245, 213, 224, 0.98);
+  box-shadow: 0 18px 34px rgba(245, 213, 224, 0.18);
+}
+
+.app.onboarding-mode .choice-detail-title {
+  margin-bottom: 8px;
+  color: inherit;
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.app.onboarding-mode .choice-detail-text {
+  color: rgba(245, 213, 224, 0.72);
+  font-size: 16px;
+  line-height: 1.42;
+}
+
+.app.onboarding-mode .choice-detail-card.active .choice-detail-text {
+  color: rgba(66, 13, 75, 0.78);
+}
+
+.app.onboarding-mode .wheel-picker-card,
+.app.onboarding-mode .goal-forecast-card,
+.app.onboarding-mode .plan-card {
+  background: linear-gradient(180deg, rgba(66, 13, 75, 0.58), rgba(33, 6, 53, 0.52));
+  border: 1px solid rgba(245, 213, 224, 0.14);
+  box-shadow: 0 24px 44px rgba(16, 4, 26, 0.22);
+  backdrop-filter: blur(18px);
+}
+
+.app.onboarding-mode .wheel-picker-card {
+  height: min(34svh, 320px);
+  margin-bottom: 24px;
+}
+
+.app.onboarding-mode .wheel-picker-card::before {
+  background: linear-gradient(180deg, rgba(102, 103, 171, 0.96), rgba(102, 103, 171, 0));
+}
+
+.app.onboarding-mode .wheel-picker-card::after {
+  background: linear-gradient(180deg, rgba(33, 6, 53, 0), rgba(33, 6, 53, 0.98));
+}
+
+.app.onboarding-mode .wheel-item {
+  color: rgba(245, 213, 224, 0.22);
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.app.onboarding-mode .wheel-item.active {
+  color: #fff7fa;
+  font-size: 34px;
+  transform: scale(1.04);
+  text-shadow: 0 14px 28px rgba(33, 6, 53, 0.28);
+}
+
+.app.onboarding-mode .wheel-highlight {
+  left: 14px;
+  right: 14px;
+  background: linear-gradient(90deg, rgba(245, 213, 224, 0.16), rgba(245, 213, 224, 0.08));
+  border: 1px solid rgba(245, 213, 224, 0.12);
+}
+
+.app.onboarding-mode .wheel-highlight span {
+  color: #f5d5e0;
+}
+
+.app.onboarding-mode .goal-forecast-card {
+  padding: 24px 20px;
+  margin-bottom: 18px;
+  text-align: center;
+}
+
+.app.onboarding-mode .forecast-icon {
+  background: rgba(245, 213, 224, 0.12);
+  color: #f5d5e0;
+}
+
+.app.onboarding-mode #forecastText,
+.app.onboarding-mode .forecast-mark span,
+.app.onboarding-mode .energy-label,
+.app.onboarding-mode .macro-tile-label {
+  color: rgba(245, 213, 224, 0.76);
+}
+
+.app.onboarding-mode .forecast-line {
+  background: linear-gradient(90deg, rgba(245, 213, 224, 0.84), rgba(102, 103, 171, 0.86));
+}
+
+.app.onboarding-mode .forecast-dot {
+  background: #f5d5e0;
+}
+
+.app.onboarding-mode .section-title.big {
+  font-size: 28px;
+  color: #fff7fa;
+}
+
+.app.onboarding-mode .energy-card {
+  border-color: rgba(245, 213, 224, 0.12);
+  background: rgba(245, 213, 224, 0.08);
+}
+
+.app.onboarding-mode .energy-icon {
+  border-color: rgba(245, 213, 224, 0.84);
+  color: #f5d5e0;
+}
+
+.app.onboarding-mode .energy-value,
+.app.onboarding-mode .macro-tile-value,
+.app.onboarding-mode .forecast-mark strong {
+  color: #fff7fa;
+}
+
+.app.onboarding-mode .macro-tiles {
+  gap: 12px;
+}
+
+.app.onboarding-mode .macro-tile {
+  min-height: 118px;
+  border: 1px solid rgba(245, 213, 224, 0.10);
+}
+
+.app.onboarding-mode .protein-tile {
+  background: rgba(245, 213, 224, 0.16);
+  color: #fff7fa;
+}
+
+.app.onboarding-mode .carbs-tile {
+  background: rgba(102, 103, 171, 0.28);
+  color: #fff7fa;
+}
+
+.app.onboarding-mode .fats-tile {
+  background: rgba(123, 51, 126, 0.36);
+  color: #fff7fa;
+}
+
+.app.onboarding-mode .fiber-tile {
+  background: rgba(245, 213, 224, 0.10);
+  color: #fff7fa;
+}
+
+@media (max-width: 430px) {
+  .app.onboarding-mode .onboarding-wrap {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .app.onboarding-mode .hero-title {
+    font-size: 44px;
+  }
+
+  .app.onboarding-mode .hero-subtitle {
+    font-size: 17px;
+  }
+
+  .app.onboarding-mode .moon-intro-art {
+    min-height: 250px;
+    height: 34svh;
+  }
+
+  .app.onboarding-mode .moon-intro-chip {
+    font-size: 13px;
+    padding: 9px 14px;
+  }
+
+  .app.onboarding-mode .choice-card {
+    font-size: 22px;
+  }
+
+  .app.onboarding-mode .choice-detail-title {
+    font-size: 20px;
+  }
+
+  .app.onboarding-mode .section-title.big {
+    font-size: 24px;
+  }
+}
